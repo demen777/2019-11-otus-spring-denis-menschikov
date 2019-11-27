@@ -1,12 +1,14 @@
 package ru.otus.demen.service;
 
-import ru.otus.demen.model.Test;
+import ru.otus.demen.model.OneTest;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Scanner;
 
 public class ConsoleUserInterface implements UserInterface {
+    private final Scanner scanner = new Scanner(System.in);
+
     @Override
     public String getStudentName() {
         System.out.println("Введите ваше имя: ");
@@ -14,9 +16,9 @@ public class ConsoleUserInterface implements UserInterface {
     }
 
     @Override
-    public List<String> getStudentAnswers(List<Test> tests) {
+    public List<String> getStudentAnswers(List<OneTest> tests) {
         List<String> answers = new ArrayList<>();
-        for(Test test: tests) {
+        for(OneTest test: tests) {
             answers.add(getStudentAnswer(test.getQuestion()));
         }
         return answers;
@@ -24,7 +26,7 @@ public class ConsoleUserInterface implements UserInterface {
 
 
     private String getStudentAnswer(String question) {
-        System.out.println("\nВопрос: " + question + "\n" + "Введите ответ :");
+        System.out.println("\nВопрос: " + question + "?");
         return getNextLine();
     }
 
@@ -35,8 +37,6 @@ public class ConsoleUserInterface implements UserInterface {
     }
 
     private String getNextLine() {
-        try(Scanner scanner = new Scanner(System.in)) {
-            return scanner.nextLine();
-        }
+        return scanner.nextLine();
     }
 }
