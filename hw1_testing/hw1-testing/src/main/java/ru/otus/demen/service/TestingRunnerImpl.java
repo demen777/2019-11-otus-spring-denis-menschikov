@@ -9,18 +9,14 @@ import java.util.List;
 public class TestingRunnerImpl implements TestingRunner {
     private final TestProvider testProvider;
     private final UserInterface userInterface;
+    private final TestResultCalculator testResultCalculator;
 
     @Override
     public void run() {
         List<Test> tests = testProvider.getTests();
         String studentName = userInterface.getStudentName();
-        int successTestCounter = 0;
-        for (Test test : tests) {
-            String studentAnswer = userInterface.getStudentAnswer(test.getQuestion());
-            if (test.getExpectedAnswer().equals(studentAnswer)) {
-                successTestCounter++;
-            }
-        }
+        List<String> answers = userInterface.getStudentAnswers(tests);
+        int successTestCounter = testResultCalculator.checkTests(tests, answers);
         userInterface.showTestingResult(studentName, successTestCounter, tests.size());
     }
 }
