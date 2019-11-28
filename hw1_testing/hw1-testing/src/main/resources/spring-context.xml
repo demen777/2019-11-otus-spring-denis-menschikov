@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns="http://www.springframework.org/schema/beans"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans
+        http://www.springframework.org/schema/beans/spring-beans.xsd">
+
+    <bean id="TestProvider" class="ru.otus.demen.service.CsvTestProvider">
+        <constructor-arg value="classpath:/tests.csv"/>
+    </bean>
+
+    <bean id="TestResultCalculator" class="ru.otus.demen.service.TestResultCalculator"/>
+
+    <bean id="UserInterface" class="ru.otus.demen.service.ConsoleUserInterface"/>
+
+    <bean id="TestingRunner" class="ru.otus.demen.service.TestingRunnerImpl">
+        <constructor-arg index="0" ref="TestProvider"/>
+        <constructor-arg index="1" ref="UserInterface"/>
+        <constructor-arg index="2" ref="TestResultCalculator"/>
+    </bean>
+
+</beans>
