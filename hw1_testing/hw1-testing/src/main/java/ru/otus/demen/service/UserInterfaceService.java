@@ -8,7 +8,7 @@ import java.util.List;
 
 
 @RequiredArgsConstructor
-public class ConsoleUserInterface implements UserInterface {
+public class UserInterfaceService implements UserInterface {
     private final IOService ioService;
 
     @Override

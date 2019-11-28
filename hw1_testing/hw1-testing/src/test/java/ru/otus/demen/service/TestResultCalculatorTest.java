@@ -1,6 +1,7 @@
 package ru.otus.demen.service;
 
 
+import org.junit.jupiter.api.BeforeEach;
 import ru.otus.demen.model.Test;
 
 import java.util.List;
@@ -8,9 +9,15 @@ import java.util.List;
 import static org.junit.jupiter.api.Assertions.*;
 
 class TestResultCalculatorTest {
-    private final TestResultCalculator testResultCalculator = new TestResultCalculator();
-    private final List<Test> tests = List.of(new Test("Красный по английски", "red"),
-        new Test("Синий по английски", "blue"));
+    private TestResultCalculator testResultCalculator;
+    private List<Test> tests;
+
+    @BeforeEach
+    void setUp() {
+        testResultCalculator = new TestResultCalculator();
+        tests = List.of(new Test("Красный по английски", "red"),
+                new Test("Синий по английски", "blue"));
+    }
 
     @org.junit.jupiter.api.Test
     void checkTests() {

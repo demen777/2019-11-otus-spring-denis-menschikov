@@ -25,7 +25,8 @@ public class CsvTestProvider implements TestProvider {
             }
             return tests;
         } catch (IOException e) {
-            throw new RuntimeException(e);
+            throw new CorruptedTestFileError(e);
         }
     }
+
 }

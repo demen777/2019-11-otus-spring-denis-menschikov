@@ -22,7 +22,7 @@
         </constructor-arg>
     </bean>
 
-    <bean id="UserInterface" class="ru.otus.demen.service.ConsoleUserInterface">
+    <bean id="UserInterface" class="ru.otus.demen.service.UserInterfaceService">
         <constructor-arg ref="StreamIOService"/>
     </bean>
 

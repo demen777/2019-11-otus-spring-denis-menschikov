@@ -1,6 +1,6 @@
 package ru.otus.demen.service;
 
-import org.springframework.core.io.ByteArrayResource;
+import org.springframework.core.io.ClassPathResource;
 import org.springframework.core.io.Resource;
 import ru.otus.demen.model.Test;
 
@@ -11,8 +11,7 @@ import static org.junit.jupiter.api.Assertions.*;
 class CsvTestProviderTest {
     @org.junit.jupiter.api.Test
     void getTests() {
-        String cvsExample = "Красный по английски;red\n" + "Синий по английски;blue";
-        Resource resource = new ByteArrayResource(cvsExample.getBytes());
+        Resource resource = new ClassPathResource("/tests_for_tests.csv");
         TestProvider testProvider = new CsvTestProvider(resource);
         List<Test> tests = testProvider.getTests();
         List<Test> expectedTests = List.of(new Test("Красный по английски", "red"),
