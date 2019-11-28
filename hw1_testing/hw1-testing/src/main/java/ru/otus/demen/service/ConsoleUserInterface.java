@@ -1,24 +1,26 @@
 package ru.otus.demen.service;
 
-import ru.otus.demen.model.OneTest;
+import lombok.RequiredArgsConstructor;
+import ru.otus.demen.model.Test;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Scanner;
 
+
+@RequiredArgsConstructor
 public class ConsoleUserInterface implements UserInterface {
-    private final Scanner scanner = new Scanner(System.in);
+    private final IOService ioService;
 
     @Override
     public String getStudentName() {
-        System.out.println("Введите ваше имя: ");
-        return getNextLine();
+        ioService.println("Введите ваше имя: ");
+        return ioService.getNextLine();
     }
 
     @Override
-    public List<String> getStudentAnswers(List<OneTest> tests) {
+    public List<String> getStudentAnswers(List<Test> tests) {
         List<String> answers = new ArrayList<>();
-        for(OneTest test: tests) {
+        for(Test test: tests) {
             answers.add(getStudentAnswer(test.getQuestion()));
         }
         return answers;
@@ -26,17 +28,13 @@ public class ConsoleUserInterface implements UserInterface {
 
 
     private String getStudentAnswer(String question) {
-        System.out.println("\nВопрос: " + question + "?");
-        return getNextLine();
+        ioService.println("\nВопрос: " + question + "?");
+        return ioService.getNextLine();
     }
 
     @Override
     public void showTestingResult(String studentName, int successTestCounter, int totalTestCounter) {
-        System.out.println("\nТестируемый " + studentName + "\n" +
+        ioService.println("\nТестируемый " + studentName + "\n" +
             "Успешно пройдено " + successTestCounter + " тестов из " + totalTestCounter);
-    }
-
-    private String getNextLine() {
-        return scanner.nextLine();
     }
 }

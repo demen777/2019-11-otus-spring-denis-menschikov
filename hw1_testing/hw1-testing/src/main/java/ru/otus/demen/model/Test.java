@@ -7,7 +7,7 @@ import lombok.RequiredArgsConstructor;
 @Getter
 @EqualsAndHashCode
 @RequiredArgsConstructor
-public class OneTest {
+public class Test {
     private final String question;
     private final String expectedAnswer;
 }

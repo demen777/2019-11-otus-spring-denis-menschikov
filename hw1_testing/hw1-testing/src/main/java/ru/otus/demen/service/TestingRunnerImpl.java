@@ -1,7 +1,7 @@
 package ru.otus.demen.service;
 
 import lombok.RequiredArgsConstructor;
-import ru.otus.demen.model.OneTest;
+import ru.otus.demen.model.Test;
 
 import java.util.List;
 
@@ -13,7 +13,7 @@ public class TestingRunnerImpl implements TestingRunner {
 
     @Override
     public void run() {
-        List<OneTest> tests = testProvider.getTests();
+        List<Test> tests = testProvider.getTests();
         String studentName = userInterface.getStudentName();
         List<String> answers = userInterface.getStudentAnswers(tests);
         int successTestCounter = testResultCalculator.checkTests(tests, answers);

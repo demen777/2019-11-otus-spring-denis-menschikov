@@ -1,9 +1,9 @@
 package ru.otus.demen.service;
 
-import ru.otus.demen.model.OneTest;
+import ru.otus.demen.model.Test;
 
 import java.util.List;
 
 interface TestProvider {
-    List<OneTest> getTests();
+    List<Test> getTests();
 }

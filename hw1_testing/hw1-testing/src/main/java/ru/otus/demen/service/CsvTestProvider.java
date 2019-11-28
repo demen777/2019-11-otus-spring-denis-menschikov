@@ -2,7 +2,7 @@ package ru.otus.demen.service;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.core.io.Resource;
-import ru.otus.demen.model.OneTest;
+import ru.otus.demen.model.Test;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -14,14 +14,14 @@ public class CsvTestProvider implements TestProvider {
     private final Resource csvResource;
 
     @Override
-    public List<OneTest> getTests() {
+    public List<Test> getTests() {
         try (Scanner scanner = new Scanner(csvResource.getInputStream()))
         {
-            List<OneTest> tests = new ArrayList<>();
+            List<Test> tests = new ArrayList<>();
             while (scanner.hasNextLine()) {
                 String testStr = scanner.nextLine();
                 String[] parts = testStr.split(";");
-                tests.add(new OneTest(parts[0], parts[1]));
+                tests.add(new Test(parts[0], parts[1]));
             }
             return tests;
         } catch (IOException e) {

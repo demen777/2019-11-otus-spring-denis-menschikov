@@ -1,8 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <beans xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns:util="http://www.springframework.org/schema/util"
        xmlns="http://www.springframework.org/schema/beans"
        xsi:schemaLocation="http://www.springframework.org/schema/beans
-        http://www.springframework.org/schema/beans/spring-beans.xsd">
+        http://www.springframework.org/schema/beans/spring-beans.xsd
+        http://www.springframework.org/schema/util
+        http://www.springframework.org/schema/util/spring-util.xsd">
 
     <bean id="TestProvider" class="ru.otus.demen.service.CsvTestProvider">
         <constructor-arg value="classpath:/tests.csv"/>
@@ -10,7 +13,18 @@
 
     <bean id="TestResultCalculator" class="ru.otus.demen.service.TestResultCalculator"/>
 
-    <bean id="UserInterface" class="ru.otus.demen.service.ConsoleUserInterface"/>
+    <bean id="StreamIOService" class="ru.otus.demen.service.StreamIOService">
+        <constructor-arg index="0">
+            <util:constant static-field="java.lang.System.in"/>
+        </constructor-arg>
+        <constructor-arg index="1">
+            <util:constant static-field="java.lang.System.out"/>
+        </constructor-arg>
+    </bean>
+
+    <bean id="UserInterface" class="ru.otus.demen.service.ConsoleUserInterface">
+        <constructor-arg ref="StreamIOService"/>
+    </bean>
 
     <bean id="TestingRunner" class="ru.otus.demen.service.TestingRunnerImpl">
         <constructor-arg index="0" ref="TestProvider"/>
