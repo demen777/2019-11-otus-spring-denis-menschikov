@@ -1,12 +1,14 @@
 package ru.otus.demen.service;
 
 import lombok.RequiredArgsConstructor;
+import org.springframework.stereotype.Service;
 import ru.otus.demen.model.Test;
 
 import java.util.ArrayList;
 import java.util.List;
 
 
+@Service
 @RequiredArgsConstructor
 public class UserInterfaceService implements UserInterface {
     private final IOService ioService;

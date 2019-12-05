@@ -1,10 +1,12 @@
 package ru.otus.demen.service;
 
 import lombok.RequiredArgsConstructor;
+import org.springframework.stereotype.Service;
 import ru.otus.demen.model.Test;
 
 import java.util.List;
 
+@Service
 @RequiredArgsConstructor
 public class TestingRunnerImpl implements TestingRunner {
     private final TestProvider testProvider;

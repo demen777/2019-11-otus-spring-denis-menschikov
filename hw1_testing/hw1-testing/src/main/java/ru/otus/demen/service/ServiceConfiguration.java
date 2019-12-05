@@ -6,6 +6,7 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.PropertySource;
 import org.springframework.context.support.ReloadableResourceBundleMessageSource;
+import org.springframework.core.io.ClassPathResource;
 
 import java.util.Locale;
 
@@ -13,15 +14,15 @@ import java.util.Locale;
 @PropertySource("classpath:application.properties")
 public class ServiceConfiguration {
     @Bean
-    public CsvResourceService csvResourceService(@Value("${locale}") String locale,
+    public CsvFilenameService csvResourceService(@Value("${locale}") String locale,
                                                  @Value("${csv.basename}") String basename)
     {
-        return new CsvResourceServiceImpl(new Locale(locale), basename);
+        return new CsvFilenameServiceImpl(new Locale(locale), basename);
     }
 
     @Bean
-    public TestProvider csvTestProvider(CsvResourceService csvResourceService) {
-        return new CsvTestProvider(csvResourceService.getResource());
+    public TestProvider csvTestProvider(CsvFilenameService csvFilenameService) {
+        return new CsvTestProvider(new ClassPathResource(csvFilenameService.getFilename()));
     }
 
     @Bean
@@ -37,5 +38,10 @@ public class ServiceConfiguration {
                                                            MessageSource messageSource)
     {
         return new LocalizedMessageServiceImpl(new Locale(locale), messageSource);
+    }
+
+    @Bean
+    IOService streamIOService() {
+        return new StreamIOService(System.in, System.out);
     }
 }
