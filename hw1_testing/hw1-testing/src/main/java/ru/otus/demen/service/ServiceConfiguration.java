@@ -10,7 +10,7 @@ import org.springframework.context.support.ReloadableResourceBundleMessageSource
 import java.util.Locale;
 
 @Configuration
-@PropertySource("classpath:application-prod.properties")
+@PropertySource("classpath:application.properties")
 public class ServiceConfiguration {
     @Bean
     public CsvResourceService csvResourceService(@Value("${locale}") String locale,

@@ -10,10 +10,11 @@ import java.util.List;
 @RequiredArgsConstructor
 public class UserInterfaceService implements UserInterface {
     private final IOService ioService;
+    private final LocalizedMessageService messageService;
 
     @Override
     public String getStudentName() {
-        ioService.println("Введите ваше имя: ");
+        ioService.println(messageService.getMessage("inputName") + " ");
         return ioService.getNextLine();
     }
 
@@ -28,13 +29,14 @@ public class UserInterfaceService implements UserInterface {
 
 
     private String getStudentAnswer(String question) {
-        ioService.println("\nВопрос: " + question + "?");
+        ioService.println("\n" + messageService.getMessage("question", new String[] {question}));
         return ioService.getNextLine();
     }
 
     @Override
     public void showTestingResult(String studentName, int successTestCounter, int totalTestCounter) {
-        ioService.println("\nТестируемый " + studentName + "\n" +
-            "Успешно пройдено " + successTestCounter + " тестов из " + totalTestCounter);
+        ioService.println("\n" + messageService.getMessage("outputName", new String[] {studentName}));
+        ioService.println(messageService.getMessage("results",
+                new String[] {Integer.toString(successTestCounter), Integer.toString(totalTestCounter)}));
     }
 }
