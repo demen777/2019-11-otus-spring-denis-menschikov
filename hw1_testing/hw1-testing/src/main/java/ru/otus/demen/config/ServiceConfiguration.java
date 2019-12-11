@@ -1,4 +1,4 @@
-package ru.otus.demen.service;
+package ru.otus.demen.config;
 
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.MessageSource;
@@ -7,17 +7,21 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.PropertySource;
 import org.springframework.context.support.ReloadableResourceBundleMessageSource;
 import org.springframework.core.io.ClassPathResource;
-
-import java.util.Locale;
+import ru.otus.demen.service.*;
 
 @Configuration
 @PropertySource("classpath:application.properties")
 public class ServiceConfiguration {
     @Bean
-    public CsvFilenameService csvResourceService(@Value("${locale}") String locale,
+    LocaleInfo localeInfo(@Value("${locale}") String locale) {
+        return new LocaleInfo(locale);
+    }
+
+    @Bean
+    public CsvFilenameService csvResourceService(LocaleInfo localeInfo,
                                                  @Value("${csv.basename}") String basename)
     {
-        return new CsvFilenameServiceImpl(new Locale(locale), basename);
+        return new CsvFilenameServiceImpl(localeInfo.getLocale(), basename);
     }
 
     @Bean
@@ -34,10 +38,10 @@ public class ServiceConfiguration {
     }
 
     @Bean
-    public LocalizedMessageService localizedMessageService(@Value("${locale}") String locale,
+    public LocalizedMessageService localizedMessageService(LocaleInfo localeInfo,
                                                            MessageSource messageSource)
     {
-        return new LocalizedMessageServiceImpl(new Locale(locale), messageSource);
+        return new LocalizedMessageServiceImpl(localeInfo.getLocale(), messageSource);
     }
 
     @Bean

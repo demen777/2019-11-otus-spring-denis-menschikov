@@ -1,16 +1,16 @@
 package ru.otus.demen.service;
 
 import org.springframework.stereotype.Service;
-import ru.otus.demen.model.Test;
+import ru.otus.demen.model.Question;
 
 import java.util.List;
 
 @Service
 class TestResultCalculator {
-    int checkTests(List<Test> tests, List<String> answers) {
+    int checkTests(List<Question> questions, List<String> answers) {
         int successTestCounter = 0;
-        for (int i = 0; i < tests.size(); i++) {
-            if (tests.get(i).getExpectedAnswer().toUpperCase().equals(answers.get(i).toUpperCase())) {
+        for (int i = 0; i < questions.size(); i++) {
+            if (questions.get(i).getExpectedAnswer().toUpperCase().equals(answers.get(i).toUpperCase())) {
                 successTestCounter++;
             }
         }

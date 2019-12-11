@@ -2,7 +2,7 @@ package ru.otus.demen.service;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
-import ru.otus.demen.model.Test;
+import ru.otus.demen.model.Question;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -16,29 +16,29 @@ public class UserInterfaceService implements UserInterface {
 
     @Override
     public String getStudentName() {
-        ioService.println(messageService.getMessage("inputName") + " ");
+        ioService.println(messageService.getMessage("input.name") + " ");
         return ioService.getNextLine();
     }
 
     @Override
-    public List<String> getStudentAnswers(List<Test> tests) {
+    public List<String> getStudentAnswers(List<Question> questions) {
         List<String> answers = new ArrayList<>();
-        for(Test test: tests) {
-            answers.add(getStudentAnswer(test.getQuestion()));
+        for(Question question : questions) {
+            answers.add(getStudentAnswer(question.getQuestion()));
         }
         return answers;
     }
 
 
     private String getStudentAnswer(String question) {
-        ioService.println("\n" + messageService.getMessage("question", new String[] {question}));
+        ioService.println("\n" + messageService.getMessage("question", question));
         return ioService.getNextLine();
     }
 
     @Override
     public void showTestingResult(String studentName, int successTestCounter, int totalTestCounter) {
-        ioService.println("\n" + messageService.getMessage("outputName", new String[] {studentName}));
+        ioService.println("\n" + messageService.getMessage("output.name", studentName));
         ioService.println(messageService.getMessage("results",
-                new String[] {Integer.toString(successTestCounter), Integer.toString(totalTestCounter)}));
+                Integer.toString(successTestCounter), Integer.toString(totalTestCounter)));
     }
 }

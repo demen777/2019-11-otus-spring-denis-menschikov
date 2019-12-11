@@ -9,7 +9,7 @@ import lombok.ToString;
 @EqualsAndHashCode
 @RequiredArgsConstructor
 @ToString
-public class Test {
+public class Question {
     private final String question;
     private final String expectedAnswer;
 }
