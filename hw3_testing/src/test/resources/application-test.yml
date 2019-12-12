@@ -1,5 +1,5 @@
 locale: ru_RU
-csv-basename: tests
+csv-basename: tests_for_tests
 
 spring:
   messages:
