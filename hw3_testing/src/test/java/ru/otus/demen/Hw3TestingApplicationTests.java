@@ -1,4 +1,4 @@
-package ru.otus.demen.hw3_testing;
+package ru.otus.demen;
 
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
