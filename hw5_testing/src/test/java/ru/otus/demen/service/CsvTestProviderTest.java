@@ -12,7 +12,7 @@ import static org.junit.jupiter.api.Assertions.*;
 class CsvTestProviderTest {
     @Test
     void getTests() {
-        Resource resource = new ClassPathResource("/tests_for_tests.csv");
+        Resource resource = new ClassPathResource("/tests_for_tests_ru_ru.csv");
         TestProvider testProvider = new CsvTestProvider(resource);
         List<Question> questions = testProvider.getTests();
         List<Question> expectedQuestions = List.of(new Question("Красный по английски", "red"),

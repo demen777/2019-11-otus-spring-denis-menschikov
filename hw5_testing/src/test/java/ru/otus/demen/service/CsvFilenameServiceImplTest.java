@@ -11,6 +11,6 @@ class CsvFilenameServiceImplTest {
     @Test
     void getFilename() {
         CsvFilenameServiceImpl csvFilenameService = new CsvFilenameServiceImpl(new Locale("ru_RU"), "tests");
-        assertThat("tests_ru_ru.csv").isEqualToIgnoringCase(csvFilenameService.getFilename());
+        assertThat("tests_ru_RU.csv").isEqualToIgnoringCase(csvFilenameService.getFilename());
     }
 }
