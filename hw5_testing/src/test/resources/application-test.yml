@@ -1,0 +1,10 @@
+locale: ru_RU
+csv-basename: tests_for_tests
+
+spring:
+  messages:
+    basename: messages
+    encoding: UTF-8
+  shell:
+    interactive:
+      enabled: false
