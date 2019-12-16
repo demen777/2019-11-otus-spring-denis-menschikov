@@ -1,4 +1,4 @@
-package ru.otus.demen.service;
+package ru.otus.demen.dao;
 
 
 class CorruptedTestFileError extends Error {

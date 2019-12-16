@@ -1,4 +1,4 @@
-package ru.otus.demen.service;
+package ru.otus.demen.dao;
 
 import lombok.Getter;
 

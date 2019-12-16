@@ -3,6 +3,8 @@ package ru.otus.demen.service;
 import org.junit.jupiter.api.Test;
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.core.io.Resource;
+import ru.otus.demen.dao.CsvTestProvider;
+import ru.otus.demen.dao.TestProvider;
 import ru.otus.demen.model.Question;
 
 import java.util.List;

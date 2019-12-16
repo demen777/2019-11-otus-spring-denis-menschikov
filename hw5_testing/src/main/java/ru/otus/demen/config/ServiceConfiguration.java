@@ -6,6 +6,9 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.PropertySource;
 import org.springframework.core.io.ClassPathResource;
+import ru.otus.demen.dao.CsvTestProvider;
+import ru.otus.demen.dao.LocaleInfo;
+import ru.otus.demen.dao.TestProvider;
 import ru.otus.demen.service.*;
 
 @Configuration

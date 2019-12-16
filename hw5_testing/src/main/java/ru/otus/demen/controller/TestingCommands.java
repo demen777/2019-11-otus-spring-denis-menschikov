@@ -1,4 +1,4 @@
-package ru.otus.demen.service;
+package ru.otus.demen.controller;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.shell.Availability;
@@ -6,10 +6,12 @@ import org.springframework.shell.standard.ShellComponent;
 import org.springframework.shell.standard.ShellMethod;
 import org.springframework.shell.standard.ShellMethodAvailability;
 import org.springframework.shell.standard.ShellOption;
+import ru.otus.demen.service.LocalizedMessageService;
+import ru.otus.demen.service.TestingRunner;
 
 @ShellComponent
 @RequiredArgsConstructor
-public class Hw5TestingCommands {
+public class TestingCommands {
     private final TestingRunner testingRunner;
     private final LocalizedMessageService messageService;
     private String studentName;
