@@ -1,0 +1,7 @@
+locale: ru_RU
+csv-basename: tests
+
+spring:
+  messages:
+    basename: messages
+    encoding: UTF-8
