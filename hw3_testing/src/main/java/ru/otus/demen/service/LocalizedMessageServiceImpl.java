@@ -2,8 +2,10 @@ package ru.otus.demen.service;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.MessageSource;
+import org.springframework.stereotype.Service;
 
 import java.util.Locale;
+
 
 @RequiredArgsConstructor
 public class LocalizedMessageServiceImpl implements LocalizedMessageService {

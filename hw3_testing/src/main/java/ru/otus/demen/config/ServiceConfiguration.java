@@ -36,7 +36,7 @@ public class ServiceConfiguration {
     }
 
     @Bean
-    IOService streamIOService() {
+    public IOService streamIOService() {
         return new StreamIOService(System.in, System.out);
     }
 }
