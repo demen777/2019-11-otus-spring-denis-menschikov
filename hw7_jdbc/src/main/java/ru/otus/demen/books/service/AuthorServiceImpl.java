@@ -6,6 +6,7 @@ import org.springframework.stereotype.Service;
 import ru.otus.demen.books.dao.AuthorDao;
 import ru.otus.demen.books.model.Author;
 
+import java.util.Collection;
 import java.util.Optional;
 
 @Service
@@ -28,5 +29,49 @@ public class AuthorServiceImpl implements AuthorService {
         Optional<Author> authorOptional = findById(id);
         return authorOptional
                 .orElseThrow(() -> new ServiceError(String.format("Не найден автор с id=%d", id)));
+    }
+
+    @Override
+    public Author add(String firstName, String surname) throws ServiceError {
+        try {
+            if(firstName == null || firstName.isEmpty()) {
+                throw new ServiceError("Имя не должно быть пустым");
+            }
+            if(surname == null || surname.isEmpty()) {
+                throw new ServiceError("Фамилия не должна быть пустой");
+            }
+            Optional<Author> alreadyExistsAuthor = findByNameAndSurname(firstName, surname);
+            if (alreadyExistsAuthor.isPresent()) {
+                throw new ServiceError(String.format("Автор %s %s уже существует в БД",
+                        firstName, surname));
+            }
+            Author author = new Author(firstName, surname);
+            return authorDao.save(author);
+        }
+        catch (DataAccessException error) {
+            throw new ServiceError(String.format("Ошибка Dao во время создания автора %s %s", firstName, surname),
+                    error);
+        }
+    }
+
+    public Optional<Author> findByNameAndSurname(String firstName, String surname) throws ServiceError {
+        try {
+            return authorDao.findByNameAndSurname(firstName, surname);
+        }
+        catch (DataAccessException error) {
+            throw new ServiceError(String.format("Ошибка Dao во время поиска по имени %s и фамилии %s",
+                    firstName, surname),
+                    error);
+        }
+    }
+
+    @Override
+    public Collection<Author> getAll() throws ServiceError {
+        try {
+            return authorDao.getAll();
+        }
+        catch (DataAccessException error) {
+            throw new ServiceError("Ошибка Dao во время получения списка всех авторов", error);
+        }
     }
 }

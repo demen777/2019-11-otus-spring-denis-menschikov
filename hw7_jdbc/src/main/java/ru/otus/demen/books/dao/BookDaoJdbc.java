@@ -1,6 +1,8 @@
 package ru.otus.demen.books.dao;
 
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.dao.IncorrectResultSizeDataAccessException;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcOperations;
@@ -16,7 +18,9 @@ import java.sql.SQLException;
 import java.util.Collection;
 import java.util.List;
 import java.util.Objects;
+import java.util.Optional;
 
+@Slf4j
 @Repository
 @RequiredArgsConstructor
 public class BookDaoJdbc implements BookDao {
@@ -38,7 +42,7 @@ public class BookDaoJdbc implements BookDao {
     }
 
     @Override
-    public Collection<Book> findBooksBySurname(String surname) {
+    public Collection<Book> findBySurname(String surname) {
         MapSqlParameterSource params = new MapSqlParameterSource();
         params.addValue("surname", surname);
         @SuppressWarnings("UnnecessaryLocalVariable")
@@ -48,6 +52,25 @@ public class BookDaoJdbc implements BookDao {
                         "  join genres g on b.genre_id = g.id" +
                         " where a.surname = :surname", params, BOOK_ROW_MAPPER);
         return books;
+    }
+
+    @Override
+    public Optional<Book> findById(long id) {
+        MapSqlParameterSource params = new MapSqlParameterSource();
+        params.addValue("id", id);
+        try {
+            Book book = namedParameterJdbcOperations.queryForObject(
+                    "select b.id, b.name, b.author_id, a.first_name, a.surname, b.genre_id, g.name genre_name" +
+                            " from books b join authors a on b.author_id = a.id" +
+                            "  join genres g on b.genre_id = g.id" +
+                            " where b.id = :id", params, BOOK_ROW_MAPPER);
+            assert book != null;
+            return Optional.of(book);
+        }
+        catch (IncorrectResultSizeDataAccessException error) {
+            log.info(String.format("Не найдена книга с id %d", id), error);
+            return Optional.empty();
+        }
     }
 
     private static class BookRowMapper implements RowMapper<Book> {

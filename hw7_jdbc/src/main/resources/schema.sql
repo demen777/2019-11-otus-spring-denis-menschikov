@@ -11,12 +11,16 @@ create table authors (
     surname varchar(255) not null
 );
 
+alter table authors
+add constraint authors_unique
+unique (first_name, surname);
+
 drop table if exists books;
 create table books (
     id identity primary key,
     name varchar(4000) not null,
-    author_id bigint,
-    genre_id bigint
+    author_id bigint not null,
+    genre_id bigint not null
 );
 
 alter table books
@@ -26,3 +30,7 @@ alter table books
 alter table books
     add foreign key(genre_id)
     references genres(id);
+
+alter table books
+add constraint books_unique
+unique (name, author_id);

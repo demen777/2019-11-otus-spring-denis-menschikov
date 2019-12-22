@@ -15,6 +15,7 @@ import ru.otus.demen.books.model.Genre;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.mockito.Mockito.when;
@@ -23,6 +24,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 @SpringBootTest(classes = BookServiceImpl.class)
 class BookServiceImplTest {
+    private static final String ERR_MSG_DAO_ERROR = "Ошибка Dao";
     private static final long TOLSTOY_AUTHOR_ID = 1L;
     private static final String TOLSTOY_AUTHOR_NAME = "Лев";
     private static final String TOLSTOY_AUTHOR_SURNAME = "Толстой";
@@ -53,51 +55,74 @@ class BookServiceImplTest {
     BookDao bookDao;
 
     @Test
+    @DisplayName("Успешное получение книги по id")
+    void getById_ok() throws ServiceError {
+        when(bookDao.findById(WAR_AND_PEACE_ID)).thenReturn(Optional.of(WAR_AND_PEACE_WITH_ID));
+        Book book = bookService.getById(WAR_AND_PEACE_ID);
+        assertThat(book).isEqualTo(WAR_AND_PEACE_ID);
+    }
+
+    @Test
+    @DisplayName("Книга по id не найдена")
+    void getById_notFound() {
+        when(bookDao.findById(ANNA_KARENINA_ID)).thenReturn(Optional.empty());
+        assertThatThrownBy(() -> bookService.getById(ANNA_KARENINA_ID)).isInstanceOf(ServiceError.class)
+                .hasMessageStartingWith(String.format("Книга с id=%d не найдена", ANNA_KARENINA_ID));
+    }
+
+    @Test
     @DisplayName("Успешное добавление книги")
-    void addBook_ok() throws ServiceError {
+    void add_ok() throws ServiceError {
         when(authorService.getById(TOLSTOY_AUTHOR_ID)).thenReturn(TOLSTOY_AUTHOR);
         when(genreService.getByName(NOVEL_GENRE_NAME)).thenReturn(NOVEL_GENRE);
         Book book = new Book(WAR_AND_PEACE_NAME, TOLSTOY_AUTHOR, NOVEL_GENRE);
         when(bookDao.save(book)).thenReturn(WAR_AND_PEACE_WITH_ID);
-        Book bookFromService = bookService.addBook(WAR_AND_PEACE_NAME, TOLSTOY_AUTHOR_ID, NOVEL_GENRE_NAME);
+        Book bookFromService = bookService.add(WAR_AND_PEACE_NAME, TOLSTOY_AUTHOR_ID, NOVEL_GENRE_NAME);
         assertThat(bookFromService).isEqualTo(WAR_AND_PEACE_WITH_ID);
     }
 
     @Test
+    @DisplayName("При добавлении книги с пустым именем выбрасывается исключение")
+    void add_emptyName() {
+        assertThatThrownBy(() -> bookService.add("", TOLSTOY_AUTHOR_ID, NOVEL_GENRE_NAME))
+                .isInstanceOf(ServiceError.class).hasMessageStartingWith("Имя книги должно быть не пустым");
+    }
+
+    @Test
     @DisplayName("При добавлении книги произошло DataAccessException исключение в BookDao")
-    void addBook_bookDaoThrowDataAccessException() throws ServiceError {
+    void add_bookDaoThrowDataAccessException() throws ServiceError {
         when(authorService.getById(TOLSTOY_AUTHOR_ID)).thenReturn(TOLSTOY_AUTHOR);
         when(genreService.getByName(NOVEL_GENRE_NAME)).thenReturn(NOVEL_GENRE);
         Book book = new Book(WAR_AND_PEACE_NAME, TOLSTOY_AUTHOR, NOVEL_GENRE);
         when(bookDao.save(book)).thenThrow(new DataIntegrityViolationException("DataIntegrityViolationException!!!"));
-        assertThatThrownBy(() -> bookService.addBook(WAR_AND_PEACE_NAME, TOLSTOY_AUTHOR_ID, NOVEL_GENRE_NAME))
-                .isInstanceOf(ServiceError.class).hasMessageContaining("Ошибка Dao во время добавления книги");
+        assertThatThrownBy(() -> bookService.add(WAR_AND_PEACE_NAME, TOLSTOY_AUTHOR_ID, NOVEL_GENRE_NAME))
+                .isInstanceOf(ServiceError.class).hasMessageContaining(ERR_MSG_DAO_ERROR);
     }
 
     @Test
     @DisplayName("Успешное получение списка книг по фамилии автора")
-    void findBooksBySurname_ok() throws ServiceError {
+    void findBySurname_ok() throws ServiceError {
         Collection<Book> expectedBooks = Arrays.asList(WAR_AND_PEACE_WITH_ID, ANNA_KARENINA_WITH_ID);
-        when(bookDao.findBooksBySurname(TOLSTOY_AUTHOR_SURNAME)).thenReturn(expectedBooks);
-        Collection<Book> books = bookService.findBooksBySurname(TOLSTOY_AUTHOR_SURNAME);
+        when(bookDao.findBySurname(TOLSTOY_AUTHOR_SURNAME)).thenReturn(expectedBooks);
+        Collection<Book> books = bookService.findBySurname(TOLSTOY_AUTHOR_SURNAME);
         assertThat(books).containsExactlyInAnyOrderElementsOf(expectedBooks);
     }
 
     @Test
     @DisplayName("Получение пустого списка книг по фамилии автора")
-    void findBooksBySurname_emptyList() throws ServiceError {
+    void findBySurname_emptyList() throws ServiceError {
         Collection<Book> expectedBooks = Collections.emptyList();
-        when(bookDao.findBooksBySurname(TOLSTOY_AUTHOR_SURNAME)).thenReturn(expectedBooks);
-        Collection<Book> books = bookService.findBooksBySurname(TOLSTOY_AUTHOR_SURNAME);
+        when(bookDao.findBySurname(TOLSTOY_AUTHOR_SURNAME)).thenReturn(expectedBooks);
+        Collection<Book> books = bookService.findBySurname(TOLSTOY_AUTHOR_SURNAME);
         assertThat(books).containsExactlyInAnyOrderElementsOf(expectedBooks);
     }
 
     @Test
     @DisplayName("При поиске книг по фамилии произошло DataAccessException исключение в BookDao")
-    void findBooksBySurname_bookDaoThrowDataAccessException() {
-        when(bookDao.findBooksBySurname(TOLSTOY_AUTHOR_SURNAME))
+    void findBySurname_bookDaoThrowDataAccessException() {
+        when(bookDao.findBySurname(TOLSTOY_AUTHOR_SURNAME))
                 .thenThrow(new DataAccessResourceFailureException("DataAccessResourceFailureException!!!"));
-        assertThatThrownBy(() -> bookService.findBooksBySurname(TOLSTOY_AUTHOR_SURNAME))
-                .isInstanceOf(ServiceError.class).hasMessageContaining("Ошибка Dao во время поиска книг по фамилии");
+        assertThatThrownBy(() -> bookService.findBySurname(TOLSTOY_AUTHOR_SURNAME))
+                .isInstanceOf(ServiceError.class).hasMessageContaining(ERR_MSG_DAO_ERROR);
     }
 }

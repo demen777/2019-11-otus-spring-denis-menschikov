@@ -9,6 +9,8 @@ import org.springframework.dao.DataAccessResourceFailureException;
 import ru.otus.demen.books.dao.GenreDao;
 import ru.otus.demen.books.model.Genre;
 
+import java.util.Collection;
+import java.util.List;
 import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -68,5 +70,37 @@ class GenreServiceImplTest {
                 .thenThrow(new DataAccessResourceFailureException("DataAccessResourceFailureException!!!"));
         assertThatThrownBy(() -> genreService.findByName(NOVEL_GENRE_NAME))
                 .isInstanceOf(ServiceError.class).hasMessageContaining("Ошибка Dao во время поиска жанра по имени");
+    }
+
+    @Test
+    @DisplayName("Успешное добавление жанра")
+    void add_ok() throws ServiceError {
+        when(genreDao.save(new Genre(NOVEL_GENRE_NAME))).thenReturn(NOVEL_GENRE);
+        Genre genre = genreService.add(NOVEL_GENRE_NAME);
+        assertThat(genre).isEqualTo(NOVEL_GENRE);
+    }
+
+    @Test
+    @DisplayName("Исключение при добавлении пустого имени жанра")
+    void add_emptyName() {
+        assertThatThrownBy(() -> genreService.add("")).isInstanceOf(ServiceError.class)
+                .hasMessageStartingWith("Имя жанра должно быть непустым");
+    }
+
+    @Test
+    @DisplayName("Исключение при добавлении жанра который уже есть в БД")
+    void add_alreadyExists() {
+        when(genreDao.findByName(NOVEL_GENRE_NAME)).thenReturn(Optional.of(NOVEL_GENRE));
+        assertThatThrownBy(() -> genreService.add(NOVEL_GENRE_NAME))
+                .isInstanceOf(ServiceError.class)
+                .hasMessageStartingWith(String.format("Жанр с именем %s уже есть в БД", NOVEL_GENRE_NAME));
+    }
+
+    @Test
+    @DisplayName("Получение списка всех жанров")
+    void getAll_ok() throws ServiceError {
+        when(genreDao.getAll()).thenReturn(List.of(NOVEL_GENRE));
+        Collection<Genre> genres = genreService.getAll();
+        assertThat(genres).containsExactlyInAnyOrderElementsOf(List.of(NOVEL_GENRE));
     }
 }

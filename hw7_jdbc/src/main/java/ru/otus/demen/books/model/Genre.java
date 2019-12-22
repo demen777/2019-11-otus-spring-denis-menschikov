@@ -4,6 +4,7 @@ import lombok.*;
 
 @Data
 @AllArgsConstructor
+@RequiredArgsConstructor
 public class Genre {
     private long id;
     @NonNull

@@ -20,7 +20,18 @@ public class BookShellComponent {
                           @ShellOption(value = "author-id") long authorId,
                           @ShellOption(value = "genre") String genre) {
         try {
-            Book book = bookService.addBook(name, authorId, genre);
+            Book book = bookService.add(name, authorId, genre);
+            return book.toString();
+        }
+        catch(ServiceError error) {
+            return error.getMessage();
+        }
+    }
+
+    @ShellMethod(value = "Get book by id", key = {"get-book-by-id"})
+    public String getBooksById(@ShellOption(value = "id") long id) {
+        try {
+            Book book = bookService.getById(id);
             return book.toString();
         }
         catch(ServiceError error) {
@@ -31,7 +42,7 @@ public class BookShellComponent {
     @ShellMethod(value = "Find books by author's surname", key = {"find-books-by-surname"})
     public String findBooksBySurname(@ShellOption(value = "surname") String surname) {
         try {
-            Collection<Book> books = bookService.findBooksBySurname(surname);
+            Collection<Book> books = bookService.findBySurname(surname);
             return books.toString();
         }
         catch(ServiceError error) {
