@@ -39,7 +39,7 @@ public class GenreDaoJdbc implements GenreDao {
     private static class GenreRowMapper implements RowMapper<Genre> {
         @Override
         public Genre mapRow(ResultSet resultSet, int i) throws SQLException {
-            return new Genre(resultSet.getLong(1), resultSet.getString(2));
+            return new Genre(resultSet.getLong("id"), resultSet.getString("name"));
         }
     }
 }

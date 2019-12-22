@@ -39,8 +39,8 @@ public class AuthorDaoJdbc implements AuthorDao {
     private static class AuthorRowMapper implements RowMapper<Author> {
         @Override
         public Author mapRow(ResultSet resultSet, int i) throws SQLException {
-            return new Author(resultSet.getLong(1), resultSet.getString(2),
-                    resultSet.getString(3));
+            return new Author(resultSet.getLong("id"), resultSet.getString("first_name"),
+                    resultSet.getString("surname"));
         }
     }
 }

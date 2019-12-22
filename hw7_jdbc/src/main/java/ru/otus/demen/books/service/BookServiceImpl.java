@@ -8,6 +8,8 @@ import ru.otus.demen.books.model.Author;
 import ru.otus.demen.books.model.Book;
 import ru.otus.demen.books.model.Genre;
 
+import java.util.Collection;
+
 @Service
 @RequiredArgsConstructor
 public class BookServiceImpl implements BookService {
@@ -25,6 +27,16 @@ public class BookServiceImpl implements BookService {
         }
         catch (DataAccessException error) {
             throw new ServiceError(String.format("Ошибка Dao во время добавления книги %s", book), error);
+        }
+    }
+
+    @Override
+    public Collection<Book> findBooksBySurname(String surname) throws ServiceError {
+        try {
+            return bookDao.findBooksBySurname(surname);
+        }
+        catch (DataAccessException error) {
+            throw new ServiceError(String.format("Ошибка Dao во время поиска книг по фамилии %s", surname), error);
         }
     }
 }

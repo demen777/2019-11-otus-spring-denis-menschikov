@@ -9,7 +9,24 @@
         </encoder>
     </appender>
 
-    <logger name="root" level="info">
-        <appender-ref ref="STDOUT" />
+    <property name="LOG_BASE_NAME" value="home_work" />
+    <appender name="LOG_FILE"
+              class="ch.qos.logback.core.FileAppender">
+        <file>${LOG_BASE_NAME}.log</file>
+        <encoder class="ch.qos.logback.classic.encoder.PatternLayoutEncoder">
+            <Pattern>
+                %d %-5level --- [%-15thread] %-20logger{20} : %msg%n
+            </Pattern>
+        </encoder>
+    </appender>
+
+
+    <logger name="ru.otus.demen" level="debug"
+            additivity="false">
+        <appender-ref ref="LOG_FILE" />
     </logger>
+
+    <root level="debug">
+        <appender-ref ref="LOG_FILE" />
+    </root>
 </configuration>

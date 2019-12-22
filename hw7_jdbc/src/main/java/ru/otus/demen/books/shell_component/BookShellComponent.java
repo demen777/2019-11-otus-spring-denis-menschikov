@@ -8,10 +8,12 @@ import ru.otus.demen.books.model.Book;
 import ru.otus.demen.books.service.BookService;
 import ru.otus.demen.books.service.ServiceError;
 
+import java.util.Collection;
+
 @ShellComponent
 @RequiredArgsConstructor
 public class BookShellComponent {
-    private BookService bookService;
+    private final BookService bookService;
 
     @ShellMethod(value = "Add book", key = {"add-book"})
     public String addBook(@ShellOption(value = "name") String name,
@@ -20,6 +22,17 @@ public class BookShellComponent {
         try {
             Book book = bookService.addBook(name, authorId, genre);
             return book.toString();
+        }
+        catch(ServiceError error) {
+            return error.getMessage();
+        }
+    }
+
+    @ShellMethod(value = "Find books by author's surname", key = {"find-books-by-surname"})
+    public String findBooksBySurname(@ShellOption(value = "surname") String surname) {
+        try {
+            Collection<Book> books = bookService.findBooksBySurname(surname);
+            return books.toString();
         }
         catch(ServiceError error) {
             return error.getMessage();
