@@ -9,6 +9,7 @@ import ru.otus.demen.books.service.AuthorService;
 import ru.otus.demen.books.service.ServiceError;
 
 import java.util.Collection;
+import java.util.Optional;
 
 @ShellComponent
 @RequiredArgsConstructor
@@ -32,6 +33,20 @@ public class AuthorShellComponent {
         try {
             Collection<Author> authors = authorService.getAll();
             return authors.toString();
+        }
+        catch (ServiceError error) {
+            return error.getMessage();
+        }
+    }
+
+    @ShellMethod(value = "Find by first name and surname", key = {"find-author-by-name-and-surname"})
+    public String findAuthorByNameAndSurname(@ShellOption(value = "first_name") String firstName,
+                                             @ShellOption(value = "surname") String surname) {
+        try {
+            Optional<Author> author = authorService.findByNameAndSurname(firstName, surname);
+            return author.isPresent()
+                    ? author.get().toString()
+                    : String.format("Автор по имени %s и фамилии %s не найден", firstName, surname);
         }
         catch (ServiceError error) {
             return error.getMessage();

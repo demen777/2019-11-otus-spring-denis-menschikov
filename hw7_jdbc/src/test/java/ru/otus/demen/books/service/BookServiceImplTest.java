@@ -59,7 +59,7 @@ class BookServiceImplTest {
     void getById_ok() throws ServiceError {
         when(bookDao.findById(WAR_AND_PEACE_ID)).thenReturn(Optional.of(WAR_AND_PEACE_WITH_ID));
         Book book = bookService.getById(WAR_AND_PEACE_ID);
-        assertThat(book).isEqualTo(WAR_AND_PEACE_ID);
+        assertThat(book).isEqualTo(WAR_AND_PEACE_WITH_ID);
     }
 
     @Test
@@ -67,7 +67,7 @@ class BookServiceImplTest {
     void getById_notFound() {
         when(bookDao.findById(ANNA_KARENINA_ID)).thenReturn(Optional.empty());
         assertThatThrownBy(() -> bookService.getById(ANNA_KARENINA_ID)).isInstanceOf(ServiceError.class)
-                .hasMessageStartingWith(String.format("Книга с id=%d не найдена", ANNA_KARENINA_ID));
+                .hasMessageStartingWith("Не найдена книга с id=");
     }
 
     @Test
