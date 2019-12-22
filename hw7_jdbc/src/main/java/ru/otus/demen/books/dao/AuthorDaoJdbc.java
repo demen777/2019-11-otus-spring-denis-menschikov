@@ -8,7 +8,6 @@ import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcOperations;
 import org.springframework.stereotype.Repository;
 import ru.otus.demen.books.model.Author;
-import ru.otus.demen.books.model.Genre;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;

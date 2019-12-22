@@ -19,7 +19,7 @@ public class GenreServiceImpl implements GenreService {
             return genreDao.findByName(name);
         }
         catch (DataAccessException error) {
-            throw new ServiceError(String.format("Ошибка во время поиска жанра по имени %s", name), error);
+            throw new ServiceError(String.format("Ошибка Dao во время поиска жанра по имени %s", name), error);
         }
     }
 

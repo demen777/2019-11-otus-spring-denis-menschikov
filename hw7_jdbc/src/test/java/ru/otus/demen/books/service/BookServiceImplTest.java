@@ -5,19 +5,13 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
-import org.springframework.boot.test.mock.mockito.MockBeans;
-import org.springframework.context.annotation.Import;
-import org.springframework.dao.DataAccessException;
 import org.springframework.dao.DataIntegrityViolationException;
-import ru.otus.demen.books.dao.AuthorDao;
 import ru.otus.demen.books.dao.BookDao;
-import ru.otus.demen.books.dao.GenreDao;
 import ru.otus.demen.books.model.Author;
 import ru.otus.demen.books.model.Book;
 import ru.otus.demen.books.model.Genre;
 
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
-import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -33,7 +27,7 @@ class BookServiceImplTest {
     private static final String WAR_AND_PEACE_NAME = "Война и мир";
 
     @Autowired
-    BookServiceImpl bookService;
+    BookService bookService;
 
     @MockBean
     AuthorService authorService;
