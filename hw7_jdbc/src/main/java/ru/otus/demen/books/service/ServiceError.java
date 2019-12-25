@@ -1,6 +1,6 @@
 package ru.otus.demen.books.service;
 
-public class ServiceError extends Exception {
+public class ServiceError extends RuntimeException {
     public ServiceError(String message) {
         super(message);
     }

@@ -32,8 +32,7 @@ public class AuthorDaoJdbc implements AuthorDao {
         try {
             Author author = namedParameterJdbcOperations.queryForObject(
                     "select id, first_name, surname from authors where id = :id", params, AUTHOR_ROW_MAPPER);
-            assert author != null;
-            return Optional.of(author);
+            return Optional.ofNullable(author);
         }
         catch (IncorrectResultSizeDataAccessException error) {
             log.info(String.format("Не найден единственный автор с id %d", id), error);

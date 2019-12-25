@@ -15,7 +15,7 @@ public class AuthorServiceImpl implements AuthorService {
     private final AuthorDao authorDao;
 
     @Override
-    public Optional<Author> findById(long id) throws ServiceError {
+    public Optional<Author> findById(long id) {
         try {
             return authorDao.findById(id);
         }
@@ -25,14 +25,14 @@ public class AuthorServiceImpl implements AuthorService {
     }
 
     @Override
-    public Author getById(long id) throws ServiceError {
+    public Author getById(long id) {
         Optional<Author> authorOptional = findById(id);
         return authorOptional
                 .orElseThrow(() -> new ServiceError(String.format("Не найден автор с id=%d", id)));
     }
 
     @Override
-    public Author add(String firstName, String surname) throws ServiceError {
+    public Author add(String firstName, String surname) {
         try {
             if(firstName == null || firstName.isEmpty()) {
                 throw new ServiceError("Имя не должно быть пустым");
@@ -54,7 +54,7 @@ public class AuthorServiceImpl implements AuthorService {
         }
     }
 
-    public Optional<Author> findByNameAndSurname(String firstName, String surname) throws ServiceError {
+    public Optional<Author> findByNameAndSurname(String firstName, String surname) {
         try {
             return authorDao.findByNameAndSurname(firstName, surname);
         }
@@ -66,7 +66,7 @@ public class AuthorServiceImpl implements AuthorService {
     }
 
     @Override
-    public Collection<Author> getAll() throws ServiceError {
+    public Collection<Author> getAll() {
         try {
             return authorDao.getAll();
         }

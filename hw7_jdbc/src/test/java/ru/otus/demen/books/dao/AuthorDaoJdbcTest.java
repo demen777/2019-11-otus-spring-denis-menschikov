@@ -32,8 +32,7 @@ class AuthorDaoJdbcTest {
     @DisplayName("Успешный поиск методом findById")
     void findById_ok() {
         Optional<Author> author = authorDao.findById(TOLSTOY_AUTHOR_ID);
-        assertThat(author.isPresent()).isTrue();
-        assertThat(author.get()).isEqualTo(TOLSTOY_AUTHOR);
+        assertThat(author).isPresent().get().isEqualTo(TOLSTOY_AUTHOR);
     }
 
     @Test

@@ -6,9 +6,9 @@ import java.util.Collection;
 import java.util.Optional;
 
 public interface AuthorService {
-    Optional<Author> findById(long id) throws ServiceError;
-    Author getById(long id) throws ServiceError;
-    Optional<Author> findByNameAndSurname(String firstName, String surname) throws ServiceError;
-    Author add(String firstName, String surname) throws ServiceError;
-    Collection<Author> getAll() throws ServiceError;
+    Optional<Author> findById(long id);
+    Author getById(long id);
+    Optional<Author> findByNameAndSurname(String firstName, String surname);
+    Author add(String firstName, String surname);
+    Collection<Author> getAll();
 }
