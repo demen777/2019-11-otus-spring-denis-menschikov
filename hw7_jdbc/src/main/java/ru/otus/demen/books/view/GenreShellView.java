@@ -1,7 +1,6 @@
 package ru.otus.demen.books.view;
 
 import org.springframework.stereotype.Service;
-import ru.otus.demen.books.model.Author;
 import ru.otus.demen.books.model.Genre;
 
 @Service

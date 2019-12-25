@@ -11,7 +11,6 @@ import ru.otus.demen.books.model.Author;
 import ru.otus.demen.books.service.exception.AlreadyExistsException;
 import ru.otus.demen.books.service.exception.DataAccessServiceException;
 import ru.otus.demen.books.service.exception.NotFoundException;
-import ru.otus.demen.books.service.exception.ServiceException;
 
 import java.util.Collection;
 import java.util.List;

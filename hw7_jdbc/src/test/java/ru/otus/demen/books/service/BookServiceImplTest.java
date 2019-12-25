@@ -14,7 +14,6 @@ import ru.otus.demen.books.model.Genre;
 import ru.otus.demen.books.service.exception.DataAccessServiceException;
 import ru.otus.demen.books.service.exception.IllegalParameterException;
 import ru.otus.demen.books.service.exception.NotFoundException;
-import ru.otus.demen.books.service.exception.ServiceException;
 
 import java.util.Arrays;
 import java.util.Collection;
