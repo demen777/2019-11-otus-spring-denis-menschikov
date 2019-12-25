@@ -6,8 +6,8 @@ import java.util.Collection;
 import java.util.Optional;
 
 public interface GenreService {
-    Optional<Genre> findByName(String name) throws ServiceError;
-    Genre getByName(String name) throws ServiceError;
-    Genre add(String name) throws ServiceError;
-    Collection<Genre> getAll() throws ServiceError;
+    Optional<Genre> findByName(String name);
+    Genre getByName(String name);
+    Genre add(String name);
+    Collection<Genre> getAll();
 }

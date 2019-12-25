@@ -6,7 +6,8 @@ import org.springframework.shell.standard.ShellMethod;
 import org.springframework.shell.standard.ShellOption;
 import ru.otus.demen.books.model.Book;
 import ru.otus.demen.books.service.BookService;
-import ru.otus.demen.books.service.ServiceError;
+import ru.otus.demen.books.service.exception.ServiceException;
+import ru.otus.demen.books.view.StringView;
 
 import java.util.Collection;
 
@@ -14,6 +15,8 @@ import java.util.Collection;
 @RequiredArgsConstructor
 public class BookShellComponent {
     private final BookService bookService;
+    private final StringView<Book> bookView;
+    private final StringView<Collection<Book>> booksView;
 
     @ShellMethod(value = "Add book", key = {"add-book"})
     public String addBook(@ShellOption(value = "name") String name,
@@ -21,9 +24,9 @@ public class BookShellComponent {
                           @ShellOption(value = "genre") String genre) {
         try {
             Book book = bookService.add(name, authorId, genre);
-            return book.toString();
+            return bookView.getView(book);
         }
-        catch(ServiceError error) {
+        catch(ServiceException error) {
             return error.getMessage();
         }
     }
@@ -32,9 +35,9 @@ public class BookShellComponent {
     public String getBooksById(@ShellOption(value = "id") long id) {
         try {
             Book book = bookService.getById(id);
-            return book.toString();
+            return bookView.getView(book);
         }
-        catch(ServiceError error) {
+        catch(ServiceException error) {
             return error.getMessage();
         }
     }
@@ -43,9 +46,9 @@ public class BookShellComponent {
     public String findBooksBySurname(@ShellOption(value = "surname") String surname) {
         try {
             Collection<Book> books = bookService.findBySurname(surname);
-            return books.toString();
+            return booksView.getView(books);
         }
-        catch(ServiceError error) {
+        catch(ServiceException error) {
             return error.getMessage();
         }
     }

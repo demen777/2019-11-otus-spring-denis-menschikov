@@ -5,6 +5,7 @@ import org.springframework.dao.DataAccessException;
 import org.springframework.stereotype.Service;
 import ru.otus.demen.books.dao.AuthorDao;
 import ru.otus.demen.books.model.Author;
+import ru.otus.demen.books.service.exception.*;
 
 import java.util.Collection;
 import java.util.Optional;
@@ -20,7 +21,7 @@ public class AuthorServiceImpl implements AuthorService {
             return authorDao.findById(id);
         }
         catch (DataAccessException error) {
-            throw new ServiceError(String.format("Ошибка Dao во время поиска автора по id %d", id), error);
+            throw new DataAccessServiceException(String.format("Ошибка Dao во время поиска автора по id %d", id), error);
         }
     }
 
@@ -28,28 +29,29 @@ public class AuthorServiceImpl implements AuthorService {
     public Author getById(long id) {
         Optional<Author> authorOptional = findById(id);
         return authorOptional
-                .orElseThrow(() -> new ServiceError(String.format("Не найден автор с id=%d", id)));
+                .orElseThrow(() -> new NotFoundException(String.format("Не найден автор с id=%d", id)));
     }
 
     @Override
     public Author add(String firstName, String surname) {
         try {
             if(firstName == null || firstName.isEmpty()) {
-                throw new ServiceError("Имя не должно быть пустым");
+                throw new IllegalParameterException("Имя не должно быть пустым");
             }
             if(surname == null || surname.isEmpty()) {
-                throw new ServiceError("Фамилия не должна быть пустой");
+                throw new IllegalParameterException("Фамилия не должна быть пустой");
             }
             Optional<Author> alreadyExistsAuthor = findByNameAndSurname(firstName, surname);
             if (alreadyExistsAuthor.isPresent()) {
-                throw new ServiceError(String.format("Автор %s %s уже существует в БД",
+                throw new AlreadyExistsException(String.format("Автор %s %s уже существует в БД",
                         firstName, surname));
             }
             Author author = new Author(firstName, surname);
             return authorDao.save(author);
         }
         catch (DataAccessException error) {
-            throw new ServiceError(String.format("Ошибка Dao во время создания автора %s %s", firstName, surname),
+            throw new DataAccessServiceException(
+                String.format("Ошибка Dao во время создания автора %s %s", firstName, surname),
                     error);
         }
     }
@@ -59,7 +61,7 @@ public class AuthorServiceImpl implements AuthorService {
             return authorDao.findByNameAndSurname(firstName, surname);
         }
         catch (DataAccessException error) {
-            throw new ServiceError(String.format("Ошибка Dao во время поиска по имени %s и фамилии %s",
+            throw new DataAccessServiceException(String.format("Ошибка Dao во время поиска по имени %s и фамилии %s",
                     firstName, surname),
                     error);
         }
@@ -71,7 +73,7 @@ public class AuthorServiceImpl implements AuthorService {
             return authorDao.getAll();
         }
         catch (DataAccessException error) {
-            throw new ServiceError("Ошибка Dao во время получения списка всех авторов", error);
+            throw new DataAccessServiceException("Ошибка Dao во время получения списка всех авторов", error);
         }
     }
 }

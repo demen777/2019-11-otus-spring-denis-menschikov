@@ -8,6 +8,10 @@ import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.dao.DataAccessResourceFailureException;
 import ru.otus.demen.books.dao.AuthorDao;
 import ru.otus.demen.books.model.Author;
+import ru.otus.demen.books.service.exception.AlreadyExistsException;
+import ru.otus.demen.books.service.exception.DataAccessServiceException;
+import ru.otus.demen.books.service.exception.NotFoundException;
+import ru.otus.demen.books.service.exception.ServiceException;
 
 import java.util.Collection;
 import java.util.List;
@@ -38,7 +42,7 @@ class AuthorServiceImplTest {
 
     @Test
     @DisplayName("Успешный поиск методом findById")
-    void findById_ok() throws ServiceError {
+    void findById_ok() {
         when(authorDao.findById(TOLSTOY_AUTHOR_ID)).thenReturn(Optional.of(TOLSTOY_AUTHOR));
         Optional<Author> author = authorService.findById(TOLSTOY_AUTHOR_ID);
         //noinspection OptionalGetWithoutIsPresent
@@ -47,7 +51,7 @@ class AuthorServiceImplTest {
 
     @Test
     @DisplayName("Поиск методом findById не нашел автора")
-    void findById_authorNotFoundById() throws ServiceError {
+    void findById_authorNotFoundById() {
         when(authorDao.findById(WRONG_AUTHOR_ID)).thenReturn(Optional.empty());
         Optional<Author> author = authorService.findById(WRONG_AUTHOR_ID);
         assertThat(author.isPresent()).isFalse();
@@ -59,12 +63,12 @@ class AuthorServiceImplTest {
         when(authorDao.findById(TOLSTOY_AUTHOR_ID))
                 .thenThrow(new DataAccessResourceFailureException("DataAccessResourceFailureException!!!"));
         assertThatThrownBy(() -> authorService.findById(TOLSTOY_AUTHOR_ID))
-                .isInstanceOf(ServiceError.class).hasMessageStartingWith(ERR_MSG_DAO_ERROR);
+                .isInstanceOf(DataAccessServiceException.class).hasMessageStartingWith(ERR_MSG_DAO_ERROR);
     }
 
     @Test
     @DisplayName("Успешное получение автора методом getById")
-    void getById_ok() throws ServiceError {
+    void getById_ok() {
         when(authorDao.findById(TOLSTOY_AUTHOR_ID)).thenReturn(Optional.of(TOLSTOY_AUTHOR));
         Author author = authorService.getById(TOLSTOY_AUTHOR_ID);
         assertThat(author).isEqualTo(TOLSTOY_AUTHOR);
@@ -75,12 +79,12 @@ class AuthorServiceImplTest {
     void getById_authorNotFoundById() {
         when(authorDao.findById(WRONG_AUTHOR_ID)).thenReturn(Optional.empty());
         assertThatThrownBy(() -> authorService.getById(WRONG_AUTHOR_ID))
-                .isInstanceOf(ServiceError.class).hasMessageContaining(ERR_MSG_AUTHOR_ID_NOT_FOUND);
+                .isInstanceOf(NotFoundException.class).hasMessageContaining(ERR_MSG_AUTHOR_ID_NOT_FOUND);
     }
 
     @Test
     @DisplayName("Успешное добавление автора")
-    void add_ok() throws ServiceError {
+    void add_ok() {
         when(authorDao.save(new Author(TOLSTOY_FIRST_NAME, TOLSTOY_SURNAME))).thenReturn(TOLSTOY_AUTHOR);
         Author author = authorService.add(TOLSTOY_FIRST_NAME, TOLSTOY_SURNAME);
         assertThat(author).isEqualTo(TOLSTOY_AUTHOR);
@@ -92,7 +96,7 @@ class AuthorServiceImplTest {
         when(authorDao.findByNameAndSurname(TOLSTOY_FIRST_NAME, TOLSTOY_SURNAME))
                 .thenReturn(Optional.of(TOLSTOY_AUTHOR));
         assertThatThrownBy(() -> authorService.add(TOLSTOY_FIRST_NAME, TOLSTOY_SURNAME))
-                .isInstanceOf(ServiceError.class).hasMessageContaining(ERR_MSG_AUTHOR_ALREADY_EXISTS);
+                .isInstanceOf(AlreadyExistsException.class).hasMessageContaining(ERR_MSG_AUTHOR_ALREADY_EXISTS);
     }
 
     @Test
@@ -101,12 +105,12 @@ class AuthorServiceImplTest {
         when(authorDao.save(TOLSTOY_AUTHOR_WITHOUT_ID))
                 .thenThrow(new DataAccessResourceFailureException("DataAccessResourceFailureException!!!"));
         assertThatThrownBy(() -> authorService.add(TOLSTOY_FIRST_NAME, TOLSTOY_SURNAME))
-                .isInstanceOf(ServiceError.class).hasMessageStartingWith(ERR_MSG_DAO_ERROR);
+                .isInstanceOf(DataAccessServiceException.class).hasMessageStartingWith(ERR_MSG_DAO_ERROR);
     }
 
     @Test
     @DisplayName("Успешный поиск по имени и фамилии")
-    void findByNameAndSurname_ok() throws ServiceError {
+    void findByNameAndSurname_ok() {
         when(authorDao.findByNameAndSurname(TOLSTOY_FIRST_NAME, TOLSTOY_SURNAME)).thenReturn(Optional.of(TOLSTOY_AUTHOR));
         Optional<Author> author = authorService.findByNameAndSurname(TOLSTOY_FIRST_NAME, TOLSTOY_SURNAME);
         //noinspection OptionalGetWithoutIsPresent
@@ -115,7 +119,7 @@ class AuthorServiceImplTest {
 
     @Test
     @DisplayName("Поиск по имени и фамилии не нашел автора")
-    void findByNameAndSurname_authorNotExist() throws ServiceError {
+    void findByNameAndSurname_authorNotExist() {
         when(authorDao.findByNameAndSurname(TOLSTOY_FIRST_NAME, TOLSTOY_SURNAME)).thenReturn(Optional.empty());
         Optional<Author> author = authorService.findByNameAndSurname(TOLSTOY_FIRST_NAME, TOLSTOY_SURNAME);
         assertThat(author.isPresent()).isFalse();
@@ -123,7 +127,7 @@ class AuthorServiceImplTest {
 
     @Test
     @DisplayName("Успешное получение списка всех авторов")
-    void getAll_ok() throws ServiceError {
+    void getAll_ok() {
         when(authorDao.getAll()).thenReturn(List.of(TOLSTOY_AUTHOR));
         Collection<Author> authors = authorService.getAll();
         assertThat(authors).containsExactlyInAnyOrderElementsOf(List.of(TOLSTOY_AUTHOR));

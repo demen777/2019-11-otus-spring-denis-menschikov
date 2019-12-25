@@ -4,9 +4,9 @@ import org.springframework.stereotype.Service;
 import ru.otus.demen.books.model.Author;
 
 @Service
-public class AuthorShellView implements ObjectView<Author> {
+public class AuthorShellView implements StringView<Author> {
     @Override
-    public String getView(Author object) {
-        return String.format("Автор(id=%d): %s %s", object.getId(), object.getFirstName(), object.getSurname());
+    public String getView(Author author) {
+        return String.format("Автор(id=%d): %s %s", author.getId(), author.getFirstName(), author.getSurname());
     }
 }

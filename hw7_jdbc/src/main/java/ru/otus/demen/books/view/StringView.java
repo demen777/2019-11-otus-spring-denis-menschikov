@@ -1,5 +1,5 @@
 package ru.otus.demen.books.view;
 
-public interface ObjectView<T> {
+public interface StringView<T> {
     String getView(T object);
 }

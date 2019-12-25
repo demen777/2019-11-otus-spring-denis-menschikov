@@ -7,7 +7,7 @@ import java.util.Collection;
 import java.util.stream.Collectors;
 
 @Service
-public class AuthorsShellView implements ObjectView<Collection<Author>> {
+public class AuthorsShellView implements StringView<Collection<Author>> {
     @Override
     public String getView(Collection<Author> authors) {
         return "Список авторов:\n" + authors.stream()

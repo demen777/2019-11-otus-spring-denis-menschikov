@@ -8,6 +8,7 @@ import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.dao.DataAccessResourceFailureException;
 import ru.otus.demen.books.dao.GenreDao;
 import ru.otus.demen.books.model.Genre;
+import ru.otus.demen.books.service.exception.*;
 
 import java.util.Collection;
 import java.util.List;
@@ -33,7 +34,7 @@ class GenreServiceImplTest {
     @SuppressWarnings("OptionalGetWithoutIsPresent")
     @Test
     @DisplayName("Успешный поиск методом findByName")
-    void findByName_ok() throws ServiceError {
+    void findByName_ok() {
         when(genreDao.findByName(NOVEL_GENRE_NAME)).thenReturn(Optional.of(NOVEL_GENRE));
         Optional<Genre> genre = genreService.findByName(NOVEL_GENRE_NAME);
         assertThat(genre.get()).isEqualTo(NOVEL_GENRE);
@@ -41,7 +42,7 @@ class GenreServiceImplTest {
 
     @Test
     @DisplayName("Поиск методом findByName не нашел жанр")
-    void findByName_genreNotFoundByName() throws ServiceError {
+    void findByName_genreNotFoundByName() {
         when(genreDao.findByName(NOVEL_GENRE_NAME)).thenReturn(Optional.empty());
         Optional<Genre> genre = genreService.findByName(NOVEL_GENRE_NAME);
         assertThat(genre.isPresent()).isFalse();
@@ -49,7 +50,7 @@ class GenreServiceImplTest {
 
     @Test
     @DisplayName("Успешное получение жанра методом getByName")
-    void getByName_ok() throws ServiceError {
+    void getByName_ok() {
         when(genreDao.findByName(WRONG_NOVEL_GENRE_NAME)).thenReturn(Optional.of(NOVEL_GENRE));
         Genre genre = genreService.getByName(WRONG_NOVEL_GENRE_NAME);
         assertThat(genre).isEqualTo(NOVEL_GENRE);
@@ -60,7 +61,7 @@ class GenreServiceImplTest {
     void getByName_genreNotFoundByName() {
         when(genreDao.findByName(WRONG_NOVEL_GENRE_NAME)).thenReturn(Optional.empty());
         assertThatThrownBy(() -> genreService.getByName(WRONG_NOVEL_GENRE_NAME))
-                .isInstanceOf(ServiceError.class).hasMessageContaining("Не найден жанр");
+                .isInstanceOf(NotFoundException.class).hasMessageContaining("Не найден жанр");
     }
 
     @Test
@@ -69,12 +70,12 @@ class GenreServiceImplTest {
         when(genreDao.findByName(NOVEL_GENRE_NAME))
                 .thenThrow(new DataAccessResourceFailureException("DataAccessResourceFailureException!!!"));
         assertThatThrownBy(() -> genreService.findByName(NOVEL_GENRE_NAME))
-                .isInstanceOf(ServiceError.class).hasMessageContaining("Ошибка Dao во время поиска жанра по имени");
+                .isInstanceOf(DataAccessServiceException.class);
     }
 
     @Test
     @DisplayName("Успешное добавление жанра")
-    void add_ok() throws ServiceError {
+    void add_ok() {
         when(genreDao.save(new Genre(NOVEL_GENRE_NAME))).thenReturn(NOVEL_GENRE);
         Genre genre = genreService.add(NOVEL_GENRE_NAME);
         assertThat(genre).isEqualTo(NOVEL_GENRE);
@@ -83,7 +84,7 @@ class GenreServiceImplTest {
     @Test
     @DisplayName("Исключение при добавлении пустого имени жанра")
     void add_emptyName() {
-        assertThatThrownBy(() -> genreService.add("")).isInstanceOf(ServiceError.class)
+        assertThatThrownBy(() -> genreService.add("")).isInstanceOf(IllegalParameterException.class)
                 .hasMessageStartingWith("Имя жанра должно быть непустым");
     }
 
@@ -92,13 +93,13 @@ class GenreServiceImplTest {
     void add_alreadyExists() {
         when(genreDao.findByName(NOVEL_GENRE_NAME)).thenReturn(Optional.of(NOVEL_GENRE));
         assertThatThrownBy(() -> genreService.add(NOVEL_GENRE_NAME))
-                .isInstanceOf(ServiceError.class)
+                .isInstanceOf(AlreadyExistsException.class)
                 .hasMessageStartingWith(String.format("Жанр с именем %s уже есть в БД", NOVEL_GENRE_NAME));
     }
 
     @Test
     @DisplayName("Получение списка всех жанров")
-    void getAll_ok() throws ServiceError {
+    void getAll_ok() {
         when(genreDao.getAll()).thenReturn(List.of(NOVEL_GENRE));
         Collection<Genre> genres = genreService.getAll();
         assertThat(genres).containsExactlyInAnyOrderElementsOf(List.of(NOVEL_GENRE));
