@@ -13,7 +13,7 @@ import java.util.Optional;
 
 @Slf4j
 @Repository
-public class AuthorDaoJdbc implements AuthorDao {
+public class AuthorDaoJpa implements AuthorDao {
     @PersistenceContext
     private EntityManager em;
 

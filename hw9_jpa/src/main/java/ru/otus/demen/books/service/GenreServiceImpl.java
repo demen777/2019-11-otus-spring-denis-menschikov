@@ -7,6 +7,7 @@ import ru.otus.demen.books.dao.GenreDao;
 import ru.otus.demen.books.model.Genre;
 import ru.otus.demen.books.service.exception.*;
 
+import javax.transaction.Transactional;
 import java.util.Collection;
 import java.util.Optional;
 
@@ -16,6 +17,7 @@ public class GenreServiceImpl implements GenreService {
     private final GenreDao genreDao;
 
     @Override
+    @Transactional
     public Optional<Genre> findByName(String name) {
         try {
             return genreDao.findByName(name);
@@ -26,6 +28,7 @@ public class GenreServiceImpl implements GenreService {
     }
 
     @Override
+    @Transactional
     public Genre getByName(String name) {
         Optional<Genre> genreOptional = findByName(name);
         return genreOptional
@@ -33,6 +36,7 @@ public class GenreServiceImpl implements GenreService {
     }
 
     @Override
+    @Transactional
     public Genre add(String name) {
         if (name == null || name.isEmpty()) {
             throw new IllegalParameterException("Имя жанра должно быть непустым");
@@ -51,6 +55,7 @@ public class GenreServiceImpl implements GenreService {
     }
 
     @Override
+    @Transactional
     public Collection<Genre> getAll() {
         try {
             return genreDao.getAll();

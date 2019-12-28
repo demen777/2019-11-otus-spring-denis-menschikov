@@ -14,8 +14,8 @@ import java.util.Optional;
 import static org.assertj.core.api.Assertions.assertThat;
 
 @DataJpaTest
-@Import(AuthorDaoJdbc.class)
-class AuthorDaoJdbcTest {
+@Import(AuthorDaoJpa.class)
+class AuthorDaoJpaTest {
     private static final long TOLSTOY_AUTHOR_ID = 1L;
     private static final String TOLSTOY_FIRST_NAME = "Лев";
     private static final String TOLSTOY_SURNAME = "Толстой";
