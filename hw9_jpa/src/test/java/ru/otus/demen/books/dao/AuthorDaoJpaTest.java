@@ -5,6 +5,7 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.boot.test.autoconfigure.orm.jpa.TestEntityManager;
+import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Import;
 import ru.otus.demen.books.model.Author;
 
@@ -15,7 +16,7 @@ import java.util.Optional;
 import static org.assertj.core.api.Assertions.assertThat;
 
 @DataJpaTest
-@Import(AuthorDaoJpa.class)
+@ComponentScan(basePackages = "ru.otus.demen.books.dao")
 class AuthorDaoJpaTest {
     private static final long TOLSTOY_AUTHOR_ID = 1L;
     private static final String TOLSTOY_FIRST_NAME = "Лев";

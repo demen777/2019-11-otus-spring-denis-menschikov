@@ -3,6 +3,7 @@ package ru.otus.demen.books.model;
 import lombok.*;
 
 import javax.persistence.*;
+import java.util.List;
 
 @Data
 @RequiredArgsConstructor
@@ -13,14 +14,18 @@ public class Book {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long id;
+
     @NonNull
     private String name;
+
     @NonNull
     @ManyToOne
     @JoinColumn(name = "author_id")
     private Author author;
+
     @NonNull
     @ManyToOne
     @JoinColumn(name = "genre_id")
     private Genre genre;
 }
+

@@ -5,6 +5,7 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.jdbc.JdbcTest;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
+import org.springframework.boot.test.autoconfigure.orm.jpa.TestEntityManager;
 import org.springframework.context.annotation.Import;
 import ru.otus.demen.books.model.Genre;
 
@@ -15,7 +16,6 @@ import java.util.Optional;
 import static org.assertj.core.api.Assertions.assertThat;
 
 @DataJpaTest
-@Import(GenreDaoJpa.class)
 class GenreDaoJpaTest {
     private static final String NOVEL_GENRE_NAME = "Роман";
     private static final long NOVEL_GENRE_ID = 1L;
@@ -25,6 +25,9 @@ class GenreDaoJpaTest {
 
     @Autowired
     GenreDao genreDao;
+
+    @Autowired
+    private TestEntityManager em;
 
     @Test
     @DisplayName("Успешный поиск по имени")
@@ -45,9 +48,10 @@ class GenreDaoJpaTest {
     @DisplayName("Добавление жанра успешно")
     void save_ok() {
         Genre genre = genreDao.save(new Genre(NEW_GENRE_NAME));
-        Optional<Genre> genreFromDb = genreDao.findByName(NEW_GENRE_NAME);
-        assertThat(genreFromDb.isPresent()).isTrue();
-        assertThat(genreFromDb.get()).isEqualTo(genre);
+        em.clear();
+        Genre genreFromDb = em.find(Genre.class, genre.getId());
+        assertThat(genreFromDb).isNotNull();
+        assertThat(genreFromDb).isEqualTo(genre);
     }
 
     @Test

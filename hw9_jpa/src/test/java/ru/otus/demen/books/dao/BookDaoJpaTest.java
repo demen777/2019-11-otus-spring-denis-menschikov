@@ -1,10 +1,12 @@
 package ru.otus.demen.books.dao;
 
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.jdbc.JdbcTest;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
+import org.springframework.boot.test.autoconfigure.orm.jpa.TestEntityManager;
 import org.springframework.context.annotation.Import;
 import ru.otus.demen.books.model.Author;
 import ru.otus.demen.books.model.Book;
@@ -33,19 +35,21 @@ class BookDaoJpaTest {
             new Book(WAR_AND_PEACE_ID, WAR_AND_PEACE_NAME, TOLSTOY_AUTHOR, NOVEL_GENRE);
     private static final long ANNA_KARENINA_ID = 2L;
     private static final String ANNA_KARENINA_NAME = "Анна Каренина";
-    private static final Book ANNA_KARENINA_WITHOUT_ID =
-            new Book(ANNA_KARENINA_NAME, TOLSTOY_AUTHOR, NOVEL_GENRE);
 
     @Autowired
     BookDao bookDao;
 
+    @Autowired
+    private TestEntityManager em;
+
     @Test
     @DisplayName("Успешное добавление новой книги")
     void save_ok() {
-        Book book = bookDao.save(ANNA_KARENINA_WITHOUT_ID);
-        Optional<Book> bookFromDb = bookDao.findById(book.getId());
-        assertThat(bookFromDb.isPresent()).isTrue();
-        assertThat(bookFromDb.get()).isEqualTo(book);
+        Book book = bookDao.save(new Book(ANNA_KARENINA_NAME, TOLSTOY_AUTHOR, NOVEL_GENRE));
+        em.clear();
+        Book bookFromDb = em.find(Book.class, book.getId());
+        assertThat(bookFromDb).isNotNull();
+        assertThat(bookFromDb).isEqualTo(book);
     }
 
     @Test
