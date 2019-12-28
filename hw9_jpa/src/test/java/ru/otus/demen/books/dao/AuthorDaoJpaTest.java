@@ -4,6 +4,7 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
+import org.springframework.boot.test.autoconfigure.orm.jpa.TestEntityManager;
 import org.springframework.context.annotation.Import;
 import ru.otus.demen.books.model.Author;
 
@@ -28,6 +29,9 @@ class AuthorDaoJpaTest {
     @Autowired
     AuthorDao authorDao;
 
+    @Autowired
+    private TestEntityManager em;
+
     @Test
     @DisplayName("Успешный поиск методом findById")
     void findById_ok() {
@@ -47,18 +51,20 @@ class AuthorDaoJpaTest {
     void save_ok() {
         Author newAuthor = NEW_AUTHOR;
         Author authorWithId = authorDao.save(newAuthor);
-        Optional<Author> fromDb = authorDao.findById(authorWithId.getId());
-        assertThat(fromDb.isPresent()).isTrue();
-        assertThat(fromDb.get().getFirstName()).isEqualTo(newAuthor.getFirstName());
-        assertThat(fromDb.get().getSurname()).isEqualTo(newAuthor.getSurname());
+        em.clear();
+        Author fromDb = em.find(Author.class, authorWithId.getId());
+        assertThat(fromDb).isNotNull();
+        assertThat(fromDb.getFirstName()).isEqualTo(newAuthor.getFirstName());
+        assertThat(fromDb.getSurname()).isEqualTo(newAuthor.getSurname());
     }
 
     @Test
     @DisplayName("Успешное получение списка всех авторов")
     void getAll_ok() {
-        Author newAuthor = authorDao.save(NEW_AUTHOR);
+        em.persist(NEW_AUTHOR);
+        em.clear();
         Collection<Author> authors = authorDao.getAll();
-        assertThat(authors).containsExactlyInAnyOrderElementsOf(List.of(TOLSTOY_AUTHOR, newAuthor));
+        assertThat(authors).containsExactlyInAnyOrderElementsOf(List.of(TOLSTOY_AUTHOR, NEW_AUTHOR));
     }
 
     @Test
