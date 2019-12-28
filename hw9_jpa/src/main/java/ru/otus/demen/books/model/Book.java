@@ -17,8 +17,10 @@ public class Book {
     private String name;
     @NonNull
     @ManyToOne
+    @JoinColumn(name = "author_id")
     private Author author;
     @NonNull
     @ManyToOne
+    @JoinColumn(name = "genre_id")
     private Genre genre;
 }

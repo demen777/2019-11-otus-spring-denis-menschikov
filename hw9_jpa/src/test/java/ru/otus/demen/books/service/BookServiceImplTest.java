@@ -7,7 +7,9 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.dao.DataAccessResourceFailureException;
 import org.springframework.dao.DataIntegrityViolationException;
+import ru.otus.demen.books.dao.AuthorDao;
 import ru.otus.demen.books.dao.BookDao;
+import ru.otus.demen.books.dao.GenreDao;
 import ru.otus.demen.books.model.Author;
 import ru.otus.demen.books.model.Book;
 import ru.otus.demen.books.model.Genre;
@@ -49,10 +51,10 @@ class BookServiceImplTest {
     BookService bookService;
 
     @MockBean
-    AuthorService authorService;
+    AuthorDao authorDao;
 
     @MockBean
-    GenreService genreService;
+    GenreDao genreDao;
 
     @MockBean
     BookDao bookDao;
@@ -76,8 +78,8 @@ class BookServiceImplTest {
     @Test
     @DisplayName("Успешное добавление книги")
     void add_ok() {
-        when(authorService.getById(TOLSTOY_AUTHOR_ID)).thenReturn(TOLSTOY_AUTHOR);
-        when(genreService.getByName(NOVEL_GENRE_NAME)).thenReturn(NOVEL_GENRE);
+        when(authorDao.findById(TOLSTOY_AUTHOR_ID)).thenReturn(Optional.of(TOLSTOY_AUTHOR));
+        when(genreDao.findByName(NOVEL_GENRE_NAME)).thenReturn(Optional.of(NOVEL_GENRE));
         Book book = new Book(WAR_AND_PEACE_NAME, TOLSTOY_AUTHOR, NOVEL_GENRE);
         when(bookDao.save(book)).thenReturn(WAR_AND_PEACE_WITH_ID);
         Book bookFromService = bookService.add(WAR_AND_PEACE_NAME, TOLSTOY_AUTHOR_ID, NOVEL_GENRE_NAME);
@@ -94,8 +96,8 @@ class BookServiceImplTest {
     @Test
     @DisplayName("При добавлении книги произошло DataAccessException исключение в BookDao")
     void add_bookDaoThrowDataAccessException() {
-        when(authorService.getById(TOLSTOY_AUTHOR_ID)).thenReturn(TOLSTOY_AUTHOR);
-        when(genreService.getByName(NOVEL_GENRE_NAME)).thenReturn(NOVEL_GENRE);
+        when(authorDao.findById(TOLSTOY_AUTHOR_ID)).thenReturn(Optional.of(TOLSTOY_AUTHOR));
+        when(genreDao.findByName(NOVEL_GENRE_NAME)).thenReturn(Optional.of(NOVEL_GENRE));
         Book book = new Book(WAR_AND_PEACE_NAME, TOLSTOY_AUTHOR, NOVEL_GENRE);
         when(bookDao.save(book)).thenThrow(new DataIntegrityViolationException("DataIntegrityViolationException!!!"));
         assertThatThrownBy(() -> bookService.add(WAR_AND_PEACE_NAME, TOLSTOY_AUTHOR_ID, NOVEL_GENRE_NAME))

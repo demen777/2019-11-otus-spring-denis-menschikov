@@ -4,6 +4,7 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.jdbc.JdbcTest;
+import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.context.annotation.Import;
 import ru.otus.demen.books.model.Author;
 import ru.otus.demen.books.model.Book;
@@ -15,9 +16,9 @@ import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-@JdbcTest
-@Import(BookDaoJdbc.class)
-class BookDaoJdbcTest {
+@DataJpaTest
+@Import(BookDaoJpa.class)
+class BookDaoJpaTest {
     private static final long TOLSTOY_AUTHOR_ID = 1L;
     private static final String TOLSTOY_AUTHOR_NAME = "Лев";
     private static final String TOLSTOY_AUTHOR_SURNAME = "Толстой";
