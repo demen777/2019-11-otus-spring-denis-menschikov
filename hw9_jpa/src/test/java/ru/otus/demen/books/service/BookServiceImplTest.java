@@ -28,7 +28,7 @@ import static org.mockito.Mockito.when;
 import static org.assertj.core.api.Assertions.assertThat;
 
 
-@SpringBootTest(classes = BookServiceImpl.class)
+@SpringBootTest(classes = ServiceTestConfiguration.class)
 class BookServiceImplTest {
     private static final String ERR_MSG_DAO_ERROR = "Ошибка Dao";
     private static final long TOLSTOY_AUTHOR_ID = 1L;
@@ -49,13 +49,13 @@ class BookServiceImplTest {
     @Autowired
     BookService bookService;
 
-    @MockBean
+    @Autowired
     AuthorDao authorDao;
 
-    @MockBean
+    @Autowired
     GenreDao genreDao;
 
-    @MockBean
+    @Autowired
     BookDao bookDao;
 
     @BeforeEach

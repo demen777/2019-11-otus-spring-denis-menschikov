@@ -1,10 +1,10 @@
-drop table if exists genres;
+drop table if exists genres cascade;
 create table genres (
     id identity primary key,
     name varchar(255) unique not null
 );
 
-drop table if exists authors;
+drop table if exists authors cascade;
 create table authors (
     id identity primary key,
     first_name varchar(255) not null,
@@ -15,7 +15,7 @@ alter table authors
 add constraint authors_unique
 unique (first_name, surname);
 
-drop table if exists books;
+drop table if exists books cascade;
 create table books (
     id identity primary key,
     name varchar(4000) not null,
@@ -35,7 +35,7 @@ alter table books
 add constraint books_unique
 unique (name, author_id);
 
-drop table if exists book_comments;
+drop table if exists book_comments cascade;
 create table book_comments (
     id identity primary key,
     book_id bigint not null,

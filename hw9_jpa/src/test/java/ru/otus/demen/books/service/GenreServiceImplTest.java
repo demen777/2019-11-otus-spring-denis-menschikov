@@ -19,7 +19,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.mockito.Mockito.when;
 
-@SpringBootTest(classes = GenreServiceImpl.class)
+@SpringBootTest(classes = ServiceTestConfiguration.class)
 class GenreServiceImplTest {
     private static final String NOVEL_GENRE_NAME = "Роман";
     private static final long NOVEL_GENRE_ID = 1L;
@@ -30,7 +30,7 @@ class GenreServiceImplTest {
     @Autowired
     GenreService genreService;
 
-    @MockBean
+    @Autowired
     GenreDao genreDao;
 
     @BeforeEach

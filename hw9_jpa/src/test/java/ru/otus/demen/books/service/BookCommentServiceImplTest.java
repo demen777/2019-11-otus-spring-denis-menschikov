@@ -23,7 +23,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.mockito.Mockito.when;
 
-@SpringBootTest(classes = BookCommentServiceImpl.class)
+@SpringBootTest(classes = ServiceTestConfiguration.class)
 class BookCommentServiceImplTest {
     private static final long TOLSTOY_AUTHOR_ID = 1L;
     private static final String TOLSTOY_FIRST_NAME = "Лев";
@@ -41,10 +41,10 @@ class BookCommentServiceImplTest {
     @Autowired
     BookCommentServiceImpl bookCommentService;
 
-    @MockBean
+    @Autowired
     BookCommentDao bookCommentDao;
 
-    @MockBean
+    @Autowired
     BookDao bookDao;
 
     @BeforeEach

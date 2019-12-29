@@ -21,7 +21,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.mockito.Mockito.when;
 
-@SpringBootTest(classes = AuthorServiceImpl.class)
+@SpringBootTest(classes = ServiceTestConfiguration.class)
 class AuthorServiceImplTest {
     private static final long TOLSTOY_AUTHOR_ID = 1L;
     private static final String TOLSTOY_FIRST_NAME = "Лев";
@@ -38,7 +38,7 @@ class AuthorServiceImplTest {
     @Autowired
     AuthorService authorService;
 
-    @MockBean
+    @Autowired
     AuthorDao authorDao;
 
     @BeforeEach
