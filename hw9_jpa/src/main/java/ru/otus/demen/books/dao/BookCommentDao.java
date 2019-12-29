@@ -5,7 +5,6 @@ import ru.otus.demen.books.model.BookComment;
 import java.util.Collection;
 
 public interface BookCommentDao {
-    BookComment save(BookComment bookComment);
     Collection<BookComment> findByBookId(long bookId);
     int deleteById(long bookCommentId);
 }

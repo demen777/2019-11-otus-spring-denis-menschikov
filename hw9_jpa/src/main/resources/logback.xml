@@ -26,6 +26,22 @@
         <appender-ref ref="LOG_FILE" />
     </logger>
 
+    <logger name="org.hibernate.SQL" level="debug"
+            additivity="false">
+        <appender-ref ref="LOG_FILE" />
+    </logger>
+
+    <logger name="org.hibernate.type.descriptor.sql.BasicBinder" level="trace"
+            additivity="false">
+        <appender-ref ref="LOG_FILE" />
+    </logger>
+
+    <logger name="org.hibernate" level="info"
+            additivity="false">
+        <appender-ref ref="LOG_FILE" />
+    </logger>
+
+
     <root level="debug">
         <appender-ref ref="LOG_FILE" />
     </root>

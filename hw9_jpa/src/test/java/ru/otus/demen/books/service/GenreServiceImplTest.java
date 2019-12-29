@@ -1,5 +1,6 @@
 package ru.otus.demen.books.service;
 
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -22,8 +23,9 @@ import static org.mockito.Mockito.when;
 class GenreServiceImplTest {
     private static final String NOVEL_GENRE_NAME = "Роман";
     private static final long NOVEL_GENRE_ID = 1L;
-    private static final Genre NOVEL_GENRE = new Genre(NOVEL_GENRE_ID, NOVEL_GENRE_NAME);
     private static final String WRONG_NOVEL_GENRE_NAME = "Чугун";
+
+    private Genre novelGenre;
 
     @Autowired
     GenreService genreService;
@@ -31,13 +33,19 @@ class GenreServiceImplTest {
     @MockBean
     GenreDao genreDao;
 
+    @BeforeEach
+    void setUp() {
+        novelGenre = new Genre(NOVEL_GENRE_NAME);
+        novelGenre.setId(NOVEL_GENRE_ID);
+    }
+
     @SuppressWarnings("OptionalGetWithoutIsPresent")
     @Test
     @DisplayName("Успешный поиск методом findByName")
     void findByName_ok() {
-        when(genreDao.findByName(NOVEL_GENRE_NAME)).thenReturn(Optional.of(NOVEL_GENRE));
+        when(genreDao.findByName(NOVEL_GENRE_NAME)).thenReturn(Optional.of(novelGenre));
         Optional<Genre> genre = genreService.findByName(NOVEL_GENRE_NAME);
-        assertThat(genre.get()).isEqualTo(NOVEL_GENRE);
+        assertThat(genre.get()).isEqualTo(novelGenre);
     }
 
     @Test
@@ -51,9 +59,9 @@ class GenreServiceImplTest {
     @Test
     @DisplayName("Успешное получение жанра методом getByName")
     void getByName_ok() {
-        when(genreDao.findByName(WRONG_NOVEL_GENRE_NAME)).thenReturn(Optional.of(NOVEL_GENRE));
+        when(genreDao.findByName(WRONG_NOVEL_GENRE_NAME)).thenReturn(Optional.of(novelGenre));
         Genre genre = genreService.getByName(WRONG_NOVEL_GENRE_NAME);
-        assertThat(genre).isEqualTo(NOVEL_GENRE);
+        assertThat(genre).isEqualTo(novelGenre);
     }
 
     @Test
@@ -76,9 +84,9 @@ class GenreServiceImplTest {
     @Test
     @DisplayName("Успешное добавление жанра")
     void add_ok() {
-        when(genreDao.save(new Genre(NOVEL_GENRE_NAME))).thenReturn(NOVEL_GENRE);
+        when(genreDao.save(new Genre(NOVEL_GENRE_NAME))).thenReturn(novelGenre);
         Genre genre = genreService.add(NOVEL_GENRE_NAME);
-        assertThat(genre).isEqualTo(NOVEL_GENRE);
+        assertThat(genre).isEqualTo(novelGenre);
     }
 
     @Test
@@ -91,7 +99,7 @@ class GenreServiceImplTest {
     @Test
     @DisplayName("Исключение при добавлении жанра который уже есть в БД")
     void add_alreadyExists() {
-        when(genreDao.findByName(NOVEL_GENRE_NAME)).thenReturn(Optional.of(NOVEL_GENRE));
+        when(genreDao.findByName(NOVEL_GENRE_NAME)).thenReturn(Optional.of(novelGenre));
         assertThatThrownBy(() -> genreService.add(NOVEL_GENRE_NAME))
                 .isInstanceOf(AlreadyExistsException.class)
                 .hasMessageStartingWith(String.format("Жанр с именем %s уже есть в БД", NOVEL_GENRE_NAME));
@@ -100,8 +108,8 @@ class GenreServiceImplTest {
     @Test
     @DisplayName("Получение списка всех жанров")
     void getAll_ok() {
-        when(genreDao.getAll()).thenReturn(List.of(NOVEL_GENRE));
+        when(genreDao.getAll()).thenReturn(List.of(novelGenre));
         Collection<Genre> genres = genreService.getAll();
-        assertThat(genres).containsExactlyInAnyOrderElementsOf(List.of(NOVEL_GENRE));
+        assertThat(genres).containsExactlyInAnyOrderElementsOf(List.of(novelGenre));
     }
 }

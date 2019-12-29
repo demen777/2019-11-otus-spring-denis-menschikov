@@ -39,7 +39,7 @@ drop table if exists book_comments;
 create table book_comments (
     id identity primary key,
     book_id bigint not null,
-    text varchar(4000)
+    text varchar(4000) not null
 );
 
 alter table book_comments

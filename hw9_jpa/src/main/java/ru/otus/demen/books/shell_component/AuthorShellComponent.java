@@ -7,7 +7,8 @@ import org.springframework.shell.standard.ShellOption;
 import ru.otus.demen.books.model.Author;
 import ru.otus.demen.books.service.AuthorService;
 import ru.otus.demen.books.service.exception.ServiceException;
-import ru.otus.demen.books.view.TextView;
+import ru.otus.demen.books.view.AuthorShellView;
+import ru.otus.demen.books.view.AuthorsShellView;
 
 import java.util.Collection;
 import java.util.Optional;
@@ -16,8 +17,8 @@ import java.util.Optional;
 @RequiredArgsConstructor
 public class AuthorShellComponent {
     private final AuthorService authorService;
-    private final TextView<Author> authorView;
-    private final TextView<Collection<Author>> authorsView;
+    private final AuthorShellView authorView;
+    private final AuthorsShellView authorsView;
 
     @ShellMethod(value = "Add author", key = {"add-author"})
     public String addAuthor(@ShellOption(value = "first_name") String firstName,

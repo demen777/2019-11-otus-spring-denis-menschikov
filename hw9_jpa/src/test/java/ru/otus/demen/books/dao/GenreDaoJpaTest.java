@@ -1,12 +1,12 @@
 package ru.otus.demen.books.dao;
 
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.autoconfigure.jdbc.JdbcTest;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.boot.test.autoconfigure.orm.jpa.TestEntityManager;
-import org.springframework.context.annotation.Import;
+import org.springframework.context.annotation.ComponentScan;
 import ru.otus.demen.books.model.Genre;
 
 import java.util.Collection;
@@ -16,10 +16,11 @@ import java.util.Optional;
 import static org.assertj.core.api.Assertions.assertThat;
 
 @DataJpaTest
+@ComponentScan(basePackages = "ru.otus.demen.books.dao")
 class GenreDaoJpaTest {
     private static final String NOVEL_GENRE_NAME = "Роман";
     private static final long NOVEL_GENRE_ID = 1L;
-    private static final Genre NOVEL_GENRE = new Genre(NOVEL_GENRE_ID, NOVEL_GENRE_NAME);
+    private Genre novelGenre;
     private static final String NEW_GENRE_NAME = "Сказка";
     private static final String WRONG_NOVEL_GENRE_NAME = "Чугун";
 
@@ -29,12 +30,19 @@ class GenreDaoJpaTest {
     @Autowired
     private TestEntityManager em;
 
+    @BeforeEach
+    void setUp() {
+        novelGenre = new Genre(NOVEL_GENRE_NAME);
+        novelGenre.setId(NOVEL_GENRE_ID);
+    }
+
+
     @Test
     @DisplayName("Успешный поиск по имени")
     void findByName_ok() {
         Optional<Genre> genre = genreDao.findByName(NOVEL_GENRE_NAME);
         assertThat(genre.isPresent()).isTrue();
-        assertThat(genre.get()).isEqualTo(NOVEL_GENRE);
+        assertThat(genre.get()).isEqualTo(novelGenre);
     }
 
     @Test
@@ -58,6 +66,6 @@ class GenreDaoJpaTest {
     @DisplayName("Получение списка жанров")
     void getAll() {
         Collection<Genre> genres = genreDao.getAll();
-        assertThat(genres).containsExactlyInAnyOrderElementsOf(List.of(NOVEL_GENRE));
+        assertThat(genres).containsExactlyInAnyOrderElementsOf(List.of(novelGenre));
     }
 }

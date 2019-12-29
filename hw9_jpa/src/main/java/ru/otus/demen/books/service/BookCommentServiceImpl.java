@@ -1,5 +1,6 @@
 package ru.otus.demen.books.service;
 
+import com.google.common.collect.Iterables;
 import lombok.RequiredArgsConstructor;
 import org.springframework.dao.DataAccessException;
 import org.springframework.stereotype.Service;
@@ -31,8 +32,10 @@ public class BookCommentServiceImpl implements BookCommentService {
             Optional<Book> bookOptional = bookDao.findById(bookId);
             Book book = bookOptional.orElseThrow(
                     () -> new NotFoundException(String.format("Не найдена книга с id=%d", bookId)));
-            BookComment bookComment = new BookComment(0L, text, book);
-            return bookCommentDao.save(bookComment);
+            BookComment bookComment = new BookComment(text);
+            book.getBookComments().add(bookComment);
+            bookDao.save(book);
+            return Iterables.getLast(book.getBookComments());
         }
         catch (DataAccessException error) {
             throw new DataAccessServiceException("Ошибка Dao во время добавления комментария", error);
