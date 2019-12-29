@@ -17,7 +17,6 @@ import ru.otus.demen.books.model.Genre;
 import ru.otus.demen.books.service.exception.DataAccessServiceException;
 import ru.otus.demen.books.service.exception.NotFoundException;
 
-import java.util.List;
 import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -87,14 +86,6 @@ class BookCommentServiceImplTest {
                 .thenThrow(new TransientDataAccessResourceException("TransientDataAccessResourceException"));
         assertThatThrownBy(() -> bookCommentService.add(WAR_AND_PEACE_ID, "Комментарий"))
                 .isInstanceOf(DataAccessServiceException.class);
-    }
-
-    @Test
-    @DisplayName("Успешный поиск комментариев по id книги, непустой результат")
-    void findByBookId_ok() {
-        when(bookCommentDao.findByBookId(WAR_AND_PEACE_ID)).thenReturn(List.of(warAndPeaceComment));
-        assertThat(bookCommentService.findByBookId(WAR_AND_PEACE_ID))
-                .containsExactlyInAnyOrder(warAndPeaceComment);
     }
 
     @Test

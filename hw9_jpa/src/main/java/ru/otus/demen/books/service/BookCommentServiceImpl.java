@@ -13,7 +13,6 @@ import ru.otus.demen.books.service.exception.IllegalParameterException;
 import ru.otus.demen.books.service.exception.NotFoundException;
 
 import javax.transaction.Transactional;
-import java.util.Collection;
 import java.util.Optional;
 
 @Service
@@ -39,17 +38,6 @@ public class BookCommentServiceImpl implements BookCommentService {
         }
         catch (DataAccessException error) {
             throw new DataAccessServiceException("Ошибка Dao во время добавления комментария", error);
-        }
-    }
-
-    @Override
-    @Transactional
-    public Collection<BookComment> findByBookId(long bookId) {
-        try {
-            return bookCommentDao.findByBookId(bookId);
-        }
-        catch (DataAccessException error) {
-            throw new DataAccessServiceException("Ошибка Dao во время поиска комментариев по id книги", error);
         }
     }
 
