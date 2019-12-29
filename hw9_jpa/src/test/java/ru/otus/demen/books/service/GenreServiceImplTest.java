@@ -3,10 +3,11 @@ package ru.otus.demen.books.service;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.dao.DataAccessResourceFailureException;
+import org.springframework.test.context.ContextConfiguration;
+import org.springframework.test.context.junit.jupiter.SpringExtension;
 import ru.otus.demen.books.dao.GenreDao;
 import ru.otus.demen.books.model.Genre;
 import ru.otus.demen.books.service.exception.*;
@@ -19,7 +20,9 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.mockito.Mockito.when;
 
-@SpringBootTest(classes = ServiceTestConfiguration.class)
+
+@ExtendWith(SpringExtension.class)
+@ContextConfiguration(classes = ServiceTestConfiguration.class)
 class GenreServiceImplTest {
     private static final String NOVEL_GENRE_NAME = "Роман";
     private static final long NOVEL_GENRE_ID = 1L;

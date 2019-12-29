@@ -3,10 +3,11 @@ package ru.otus.demen.books.service;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.dao.DataAccessResourceFailureException;
+import org.springframework.test.context.ContextConfiguration;
+import org.springframework.test.context.junit.jupiter.SpringExtension;
 import ru.otus.demen.books.dao.AuthorDao;
 import ru.otus.demen.books.model.Author;
 import ru.otus.demen.books.service.exception.AlreadyExistsException;
@@ -21,7 +22,8 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.mockito.Mockito.when;
 
-@SpringBootTest(classes = ServiceTestConfiguration.class)
+@ExtendWith(SpringExtension.class)
+@ContextConfiguration(classes = ServiceTestConfiguration.class)
 class AuthorServiceImplTest {
     private static final long TOLSTOY_AUTHOR_ID = 1L;
     private static final String TOLSTOY_FIRST_NAME = "Лев";

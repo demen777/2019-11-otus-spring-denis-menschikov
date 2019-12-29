@@ -3,11 +3,12 @@ package ru.otus.demen.books.service;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.dao.DataAccessResourceFailureException;
 import org.springframework.dao.DataIntegrityViolationException;
+import org.springframework.test.context.ContextConfiguration;
+import org.springframework.test.context.junit.jupiter.SpringExtension;
 import ru.otus.demen.books.dao.AuthorDao;
 import ru.otus.demen.books.dao.BookDao;
 import ru.otus.demen.books.dao.GenreDao;
@@ -28,7 +29,8 @@ import static org.mockito.Mockito.when;
 import static org.assertj.core.api.Assertions.assertThat;
 
 
-@SpringBootTest(classes = ServiceTestConfiguration.class)
+@ExtendWith(SpringExtension.class)
+@ContextConfiguration(classes = ServiceTestConfiguration.class)
 class BookServiceImplTest {
     private static final String ERR_MSG_DAO_ERROR = "Ошибка Dao";
     private static final long TOLSTOY_AUTHOR_ID = 1L;
