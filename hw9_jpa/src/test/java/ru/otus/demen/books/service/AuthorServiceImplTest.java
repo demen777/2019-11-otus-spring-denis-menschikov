@@ -28,13 +28,13 @@ class AuthorServiceImplTest {
     private static final long TOLSTOY_AUTHOR_ID = 1L;
     private static final String TOLSTOY_FIRST_NAME = "Лев";
     private static final String TOLSTOY_SURNAME = "Толстой";
-    private Author tolstoyAuthorWithoutId;
     private static final long WRONG_AUTHOR_ID = -1L;
     private static final String ERR_MSG_AUTHOR_ID_NOT_FOUND = String.format("Не найден автор с id=%d", WRONG_AUTHOR_ID);
     private static final String ERR_MSG_DAO_ERROR = "Ошибка Dao";
     private static final String ERR_MSG_AUTHOR_ALREADY_EXISTS
             = String.format("Автор %s %s уже существует в БД", TOLSTOY_FIRST_NAME, TOLSTOY_SURNAME);
 
+    private Author tolstoyAuthorWithoutId;
     private Author tolstoyAuthor;
 
     @Autowired
