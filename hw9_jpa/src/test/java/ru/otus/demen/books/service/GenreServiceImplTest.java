@@ -5,6 +5,7 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.dao.DataAccessResourceFailureException;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
@@ -21,8 +22,7 @@ import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.mockito.Mockito.when;
 
 
-@ExtendWith(SpringExtension.class)
-@ContextConfiguration(classes = ServiceTestConfiguration.class)
+@SpringBootTest(classes = ServiceTestConfiguration.class)
 class GenreServiceImplTest {
     private static final String NOVEL_GENRE_NAME = "Роман";
     private static final long NOVEL_GENRE_ID = 1L;
@@ -56,7 +56,7 @@ class GenreServiceImplTest {
     void findByName_genreNotFoundByName() {
         when(genreDao.findByName(NOVEL_GENRE_NAME)).thenReturn(Optional.empty());
         Optional<Genre> genre = genreService.findByName(NOVEL_GENRE_NAME);
-        assertThat(genre.isPresent()).isFalse();
+        assertThat(genre).isEmpty();
     }
 
     @Test
