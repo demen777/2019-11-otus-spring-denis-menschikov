@@ -27,6 +27,7 @@ class BookCommentDaoJpaTest {
     private static final String COMMENT_TEXT = "Хорошая книга";
 
     private BookComment warAndPeaceCommentWithoutId;
+    private Book warAndPeaceWithId;
 
     @Autowired
     BookCommentDao bookCommentDao;
@@ -41,7 +42,7 @@ class BookCommentDaoJpaTest {
         tolstoyAuthor.setId(TOLSTOY_AUTHOR_ID);
         Genre novelGenre = new Genre(NOVEL_GENRE_NAME);
         novelGenre.setId(NOVEL_GENRE_ID);
-        Book warAndPeaceWithId = new Book(WAR_AND_PEACE_NAME, tolstoyAuthor, novelGenre);
+        warAndPeaceWithId = new Book(WAR_AND_PEACE_NAME, tolstoyAuthor, novelGenre);
         warAndPeaceWithId.setId(WAR_AND_PEACE_ID);
         warAndPeaceCommentWithoutId = new BookComment(COMMENT_TEXT, warAndPeaceWithId);
     }
@@ -66,5 +67,15 @@ class BookCommentDaoJpaTest {
     void deleteById_notFound() {
         addWarAndPeaceComment();
         assertThat(bookCommentDao.deleteById(-1)).isEqualTo(0);
+    }
+
+    @Test
+    @DisplayName("Успешный поиск комментариев по книге")
+    void findByBookId() {
+        BookComment comment1 = addWarAndPeaceComment();
+        BookComment comment2 = new BookComment("Объемная книга", warAndPeaceWithId);
+        em.persist(comment2);
+        em.clear();
+        assertThat(bookCommentDao.findByBookId(WAR_AND_PEACE_ID)).containsExactlyInAnyOrder(comment1, comment2);
     }
 }

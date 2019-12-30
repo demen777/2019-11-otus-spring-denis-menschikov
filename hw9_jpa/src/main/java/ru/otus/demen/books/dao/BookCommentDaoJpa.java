@@ -16,7 +16,9 @@ public class BookCommentDaoJpa implements BookCommentDao {
     @Override
     public Collection<BookComment> findByBookId(long bookId) {
         TypedQuery<BookComment> query = em.createQuery(
-                "select bc from BookComment bc join bc.book b where b.id = :bookId",
+                "select bc " +
+                    "from BookComment bc join fetch bc.book b join fetch b.author join fetch b.genre " +
+                    "where b.id = :bookId",
                 BookComment.class);
         query.setParameter("bookId", bookId);
         return query.getResultList();
