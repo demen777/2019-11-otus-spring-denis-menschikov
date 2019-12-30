@@ -28,4 +28,15 @@ public class BookCommentDaoJpa implements BookCommentDao {
         query.setParameter("id", id);
         return query.executeUpdate();
     }
+
+    @Override
+    public BookComment save(BookComment bookComment) {
+        if (bookComment.getId() <= 0) {
+            em.persist(bookComment);
+            return bookComment;
+        }
+        else {
+            return em.merge(bookComment);
+        }
+    }
 }

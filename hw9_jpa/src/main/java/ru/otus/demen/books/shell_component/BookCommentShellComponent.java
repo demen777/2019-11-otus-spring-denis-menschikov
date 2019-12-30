@@ -7,12 +7,16 @@ import org.springframework.shell.standard.ShellOption;
 import ru.otus.demen.books.model.BookComment;
 import ru.otus.demen.books.service.BookCommentService;
 import ru.otus.demen.books.view.BookCommentShellView;
+import ru.otus.demen.books.view.BookCommentsShellView;
+
+import java.util.Collection;
 
 @ShellComponent
 @RequiredArgsConstructor
 public class BookCommentShellComponent {
     private final BookCommentService bookCommentService;
     private final BookCommentShellView bookCommentShellView;
+    private final BookCommentsShellView bookCommentsView;
 
     @ShellMethod(value = "Add comment to book", key = "add-book-comment")
     String addBookComment(@ShellOption(value = "book_id") long bookId, @ShellOption(value = "comment") String comment){
@@ -31,6 +35,14 @@ public class BookCommentShellComponent {
             else {
                 return String.format("Комментарий с id=%d отсуствует в хранилище", bookCommentId);
             }
+        });
+    }
+
+    @ShellMethod(value = "Show comments for book", key = "show-comments-for-book")
+    String findCommentsByBook(@ShellOption(value = "book_id") long bookId) {
+        return GetStringOrServiceExceptionMessage.call(()->{
+            Collection<BookComment> bookComments = bookCommentService.getByBookId(bookId);
+            return bookCommentsView.getView(bookComments);
         });
     }
 }

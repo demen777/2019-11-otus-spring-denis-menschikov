@@ -7,4 +7,5 @@ import java.util.Collection;
 public interface BookCommentDao {
     Collection<BookComment> findByBookId(long bookId);
     int deleteById(long bookCommentId);
+    BookComment save(BookComment bookComment);
 }

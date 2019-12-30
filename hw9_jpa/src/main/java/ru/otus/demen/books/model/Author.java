@@ -12,8 +12,10 @@ public class Author {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long id;
+
     @NonNull
     private String firstName;
+
     @NonNull
     private String surname;
 }

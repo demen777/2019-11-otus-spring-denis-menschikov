@@ -3,12 +3,9 @@ package ru.otus.demen.books.service;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.dao.TransientDataAccessResourceException;
-import org.springframework.test.context.ContextConfiguration;
-import org.springframework.test.context.junit.jupiter.SpringExtension;
 import ru.otus.demen.books.dao.BookCommentDao;
 import ru.otus.demen.books.dao.BookDao;
 import ru.otus.demen.books.model.Author;
@@ -58,7 +55,7 @@ class BookCommentServiceImplTest {
         warAndPeaceWithId =
                 new Book(WAR_AND_PEACE_NAME, tolstoyAuthor, novelGenre);
         warAndPeaceWithId.setId(WAR_AND_PEACE_ID);
-        warAndPeaceComment = new BookComment(COMMENT_TEXT);
+        warAndPeaceComment = new BookComment(COMMENT_TEXT, warAndPeaceWithId);
         warAndPeaceComment.setId(WAR_AND_PEACE_COMMENT_ID);
     }
 
@@ -66,7 +63,7 @@ class BookCommentServiceImplTest {
     @DisplayName("Успешное добавление комментария")
     void add_ok() {
         when(bookDao.findById(WAR_AND_PEACE_ID)).thenReturn(Optional.of(warAndPeaceWithId));
-        warAndPeaceWithId.getBookComments().add(warAndPeaceComment);
+        when(bookCommentDao.save(new BookComment(COMMENT_TEXT, warAndPeaceWithId))).thenReturn(warAndPeaceComment);
         BookComment bookComment = bookCommentService.add(WAR_AND_PEACE_ID, COMMENT_TEXT);
         assertThat(bookComment.getText()).isEqualTo(warAndPeaceComment.getText());
     }

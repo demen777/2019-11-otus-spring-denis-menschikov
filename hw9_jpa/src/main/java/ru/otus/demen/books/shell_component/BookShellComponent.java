@@ -6,7 +6,6 @@ import org.springframework.shell.standard.ShellMethod;
 import org.springframework.shell.standard.ShellOption;
 import ru.otus.demen.books.model.Book;
 import ru.otus.demen.books.service.BookService;
-import ru.otus.demen.books.view.BookCommentsShellView;
 import ru.otus.demen.books.view.BookShellView;
 import ru.otus.demen.books.view.BooksShellView;
 
@@ -18,7 +17,6 @@ public class BookShellComponent {
     private final BookService bookService;
     private final BookShellView bookView;
     private final BooksShellView booksView;
-    private final BookCommentsShellView bookCommentsView;
 
     @ShellMethod(value = "Add book", key = {"add-book"})
     public String addBook(@ShellOption(value = "name") String name,
@@ -43,14 +41,6 @@ public class BookShellComponent {
         return GetStringOrServiceExceptionMessage.call(()->{
             Collection<Book> books = bookService.findBySurname(surname);
             return booksView.getView(books);
-        });
-    }
-
-    @ShellMethod(value = "Show comments for book", key = "show-comments-for-book")
-    String findCommentsByBook(@ShellOption(value = "book_id") long bookId) {
-        return GetStringOrServiceExceptionMessage.call(()->{
-            Book book = bookService.getById(bookId);
-            return bookCommentsView.getView(book);
         });
     }
 }

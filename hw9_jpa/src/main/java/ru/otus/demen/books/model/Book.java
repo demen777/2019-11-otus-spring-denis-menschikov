@@ -3,8 +3,6 @@ package ru.otus.demen.books.model;
 import lombok.*;
 
 import javax.persistence.*;
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Objects;
 
 @Getter
@@ -30,10 +28,6 @@ public class Book {
     @ManyToOne
     @JoinColumn(name = "genre_id")
     private Genre genre;
-
-    @OneToMany(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
-    @JoinColumn(name = "book_id", nullable = false)
-    private List<BookComment> bookComments = new ArrayList<>();
 
     @Override
     public boolean equals(Object o) {

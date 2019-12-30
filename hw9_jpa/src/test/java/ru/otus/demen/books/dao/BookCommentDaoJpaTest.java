@@ -37,28 +37,26 @@ class BookCommentDaoJpaTest {
     @BeforeEach
     void setUp()
     {
-        warAndPeaceCommentWithoutId = new BookComment(COMMENT_TEXT);
         Author tolstoyAuthor = new Author(TOLSTOY_AUTHOR_NAME, TOLSTOY_AUTHOR_SURNAME);
         tolstoyAuthor.setId(TOLSTOY_AUTHOR_ID);
         Genre novelGenre = new Genre(NOVEL_GENRE_NAME);
         novelGenre.setId(NOVEL_GENRE_ID);
         Book warAndPeaceWithId = new Book(WAR_AND_PEACE_NAME, tolstoyAuthor, novelGenre);
         warAndPeaceWithId.setId(WAR_AND_PEACE_ID);
+        warAndPeaceCommentWithoutId = new BookComment(COMMENT_TEXT, warAndPeaceWithId);
     }
 
-    private Book addWarAndPeaceComment() {
-        Book warAndPeace = em.find(Book.class, WAR_AND_PEACE_ID);
-        warAndPeace.getBookComments().add(warAndPeaceCommentWithoutId);
-        em.merge(warAndPeace);
+    private BookComment addWarAndPeaceComment() {
+        em.persist(warAndPeaceCommentWithoutId);
         em.clear();
-        return warAndPeace;
+        return warAndPeaceCommentWithoutId;
     }
 
     @Test
     @DisplayName("Успешное удаление комментария по id")
     void deleteById_ok() {
-        Book warAndPeace = addWarAndPeaceComment();
-        long bookCommentId = warAndPeace.getBookComments().get(0).getId();
+        BookComment warAndPeaceComment = addWarAndPeaceComment();
+        long bookCommentId = warAndPeaceComment.getId();
         assertThat(bookCommentDao.deleteById(bookCommentId)).isEqualTo(1);
         assertThat(em.find(BookComment.class, bookCommentId)).isNull();
     }
