@@ -41,11 +41,12 @@ public class Book {
         if (o == null || getClass() != o.getClass()) return false;
         Book book = (Book) o;
         return name.equals(book.name) &&
-                author.equals(book.author);
+            author.equals(book.author) &&
+            genre.equals(book.genre);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(name, author);
+        return Objects.hash(name, author, genre);
     }
 }
