@@ -17,7 +17,7 @@ public class BookComment {
     private String text;
 
     @NonNull
-    @ManyToOne(fetch = FetchType.EAGER)
+    @ManyToOne
     @JoinColumn(name = "book_id", nullable = false)
     private Book book;
 }

@@ -52,7 +52,7 @@ class AuthorDaoJpaTest {
     @DisplayName("Поиск методом findById не нашел автора")
     void findById_authorNotFound() {
         Optional<Author> author = authorDao.findById(WRONG_AUTHOR_ID);
-        assertThat(author.isPresent()).isFalse();
+        assertThat(author).isEmpty();
     }
 
     @Test
@@ -79,7 +79,7 @@ class AuthorDaoJpaTest {
     @DisplayName("Успешный поиск по имени и фамилии")
     void findByNameAndSurname_ok() {
         Optional<Author> author = authorDao.findByNameAndSurname(TOLSTOY_FIRST_NAME, TOLSTOY_SURNAME);
-        assertThat(author.isPresent()).isTrue();
+        assertThat(author).isPresent();
         assertThat(author.get()).isEqualTo(tolstoyAuthor);
     }
 
@@ -87,6 +87,6 @@ class AuthorDaoJpaTest {
     @DisplayName("Поиск по имени и фамилии не нашел автора")
     void findByNameAndSurname_authorNotFound() {
         Optional<Author> author = authorDao.findByNameAndSurname(DOSTOEVSKY_FIRST_NAME, DOSTOEVSKY_SURNAME);
-        assertThat(author.isPresent()).isFalse();
+        assertThat(author).isEmpty();
     }
 }

@@ -49,7 +49,7 @@ class GenreDaoJpaTest {
     @DisplayName("Поиск по имени не нашел жанр")
     void findByName_notFound() {
         Optional<Genre> genre = genreDao.findByName(WRONG_NOVEL_GENRE_NAME);
-        assertThat(genre.isPresent()).isFalse();
+        assertThat(genre).isEmpty();
     }
 
     @Test

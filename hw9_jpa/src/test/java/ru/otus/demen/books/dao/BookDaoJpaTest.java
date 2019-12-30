@@ -80,6 +80,6 @@ class BookDaoJpaTest {
     @DisplayName("Поиск по id не нашел книгу")
     void findById_notFound() {
         Optional<Book> book = bookDao.findById(ANNA_KARENINA_ID);
-        assertThat(book.isPresent()).isFalse();
+        assertThat(book).isEmpty();
     }
 }
