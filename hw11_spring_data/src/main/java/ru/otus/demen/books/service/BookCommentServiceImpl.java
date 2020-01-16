@@ -47,7 +47,7 @@ public class BookCommentServiceImpl implements BookCommentService {
     @Transactional
     public boolean deleteById(long bookCommentId) {
         try {
-            int deletedQuantity = bookCommentDao.deleteById(bookCommentId);
+            long deletedQuantity = bookCommentDao.removeById(bookCommentId);
             return deletedQuantity > 0;
         }
         catch (DataAccessException error) {

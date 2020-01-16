@@ -14,7 +14,7 @@ import ru.otus.demen.books.service.exception.IllegalParameterException;
 import ru.otus.demen.books.service.exception.NotFoundException;
 
 import javax.transaction.Transactional;
-import java.util.Collection;
+import java.util.List;
 import java.util.Optional;
 
 @Service
@@ -46,7 +46,7 @@ public class BookServiceImpl implements BookService {
 
     @Override
     @Transactional
-    public Collection<Book> findBySurname(String surname) {
+    public List<Book> findBySurname(String surname) {
         try {
             return bookDao.findByAuthorSurname(surname);
         } catch (DataAccessException error) {

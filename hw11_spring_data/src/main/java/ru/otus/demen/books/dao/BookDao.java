@@ -3,9 +3,8 @@ package ru.otus.demen.books.dao;
 import org.springframework.data.jpa.repository.JpaRepository;
 import ru.otus.demen.books.model.Book;
 
-import java.util.Collection;
-import java.util.Optional;
+import java.util.List;
 
 public interface BookDao extends JpaRepository<Book, Long> {
-    Collection<Book> findByAuthorSurname(String surname);
+    List<Book> findByAuthorSurname(String surname);
 }

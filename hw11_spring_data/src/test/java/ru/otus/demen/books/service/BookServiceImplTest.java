@@ -17,10 +17,7 @@ import ru.otus.demen.books.service.exception.DataAccessServiceException;
 import ru.otus.demen.books.service.exception.IllegalParameterException;
 import ru.otus.demen.books.service.exception.NotFoundException;
 
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.Optional;
+import java.util.*;
 
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.mockito.Mockito.when;
@@ -118,18 +115,18 @@ class BookServiceImplTest {
     @Test
     @DisplayName("Успешное получение списка книг по фамилии автора")
     void findBySurname_ok() {
-        Collection<Book> expectedBooks = Arrays.asList(warAndPeaceWithId, annaKareninaWithId);
+        List<Book> expectedBooks = Arrays.asList(warAndPeaceWithId, annaKareninaWithId);
         when(bookDao.findByAuthorSurname(TOLSTOY_SURNAME)).thenReturn(expectedBooks);
-        Collection<Book> books = bookService.findBySurname(TOLSTOY_SURNAME);
+        List<Book> books = bookService.findBySurname(TOLSTOY_SURNAME);
         assertThat(books).containsExactlyInAnyOrderElementsOf(expectedBooks);
     }
 
     @Test
     @DisplayName("Получение пустого списка книг по фамилии автора")
     void findBySurname_emptyList() {
-        Collection<Book> expectedBooks = Collections.emptyList();
+        List<Book> expectedBooks = Collections.emptyList();
         when(bookDao.findByAuthorSurname(TOLSTOY_SURNAME)).thenReturn(expectedBooks);
-        Collection<Book> books = bookService.findBySurname(TOLSTOY_SURNAME);
+        List<Book> books = bookService.findBySurname(TOLSTOY_SURNAME);
         assertThat(books).containsExactlyInAnyOrderElementsOf(expectedBooks);
     }
 

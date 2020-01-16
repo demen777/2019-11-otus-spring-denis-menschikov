@@ -58,7 +58,7 @@ class BookCommentDaoJpaTest {
     void deleteById_ok() {
         BookComment warAndPeaceComment = addWarAndPeaceComment();
         long bookCommentId = warAndPeaceComment.getId();
-        assertThat(bookCommentDao.deleteById(bookCommentId)).isEqualTo(1);
+        assertThat(bookCommentDao.removeById(bookCommentId)).isEqualTo(1);
         assertThat(em.find(BookComment.class, bookCommentId)).isNull();
     }
 
@@ -66,7 +66,7 @@ class BookCommentDaoJpaTest {
     @DisplayName("Комментарий по id не найден")
     void deleteById_notFound() {
         addWarAndPeaceComment();
-        assertThat(bookCommentDao.deleteById(-1)).isEqualTo(0);
+        assertThat(bookCommentDao.removeById(-1L)).isEqualTo(0);
     }
 
     @Test

@@ -1,11 +1,11 @@
 package ru.otus.demen.books.dao;
 
+import org.springframework.data.jpa.repository.JpaRepository;
 import ru.otus.demen.books.model.BookComment;
 
-import java.util.Collection;
+import java.util.List;
 
-public interface BookCommentDao {
-    Collection<BookComment> findByBookId(long bookId);
-    int deleteById(long bookCommentId);
-    BookComment save(BookComment bookComment);
+public interface BookCommentDao extends JpaRepository<BookComment, Long> {
+    List<BookComment> findByBookId(long bookId);
+    long removeById(Long id);
 }

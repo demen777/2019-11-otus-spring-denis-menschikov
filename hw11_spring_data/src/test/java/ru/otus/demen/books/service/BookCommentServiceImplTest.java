@@ -88,14 +88,14 @@ class BookCommentServiceImplTest {
     @Test
     @DisplayName("Успешное удаление комментария")
     void deleteById_ok() {
-        when(bookCommentDao.deleteById(WAR_AND_PEACE_COMMENT_ID)).thenReturn(1);
+        when(bookCommentDao.removeById(WAR_AND_PEACE_COMMENT_ID)).thenReturn(1L);
         assertThat(bookCommentService.deleteById(WAR_AND_PEACE_COMMENT_ID)).isTrue();
     }
 
     @Test
     @DisplayName("Удаление комментария отсуствующего в хранилище")
     void deleteById_idNotFound() {
-        when(bookCommentDao.deleteById(WAR_AND_PEACE_COMMENT_ID)).thenReturn(0);
+        when(bookCommentDao.removeById(WAR_AND_PEACE_COMMENT_ID)).thenReturn(0L);
         assertThat(bookCommentService.deleteById(WAR_AND_PEACE_COMMENT_ID)).isFalse();
     }
 }
