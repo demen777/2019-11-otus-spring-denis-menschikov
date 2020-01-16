@@ -58,7 +58,7 @@ public class GenreServiceImpl implements GenreService {
     @Transactional
     public Collection<Genre> getAll() {
         try {
-            return genreDao.getAll();
+            return genreDao.findAll();
         }
         catch (DataAccessException error) {
             throw new DataAccessServiceException("Ошибка Dao во время получения списка жанров", error);

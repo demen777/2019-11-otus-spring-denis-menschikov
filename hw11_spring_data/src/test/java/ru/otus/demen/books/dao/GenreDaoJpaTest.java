@@ -65,7 +65,7 @@ class GenreDaoJpaTest {
     @Test
     @DisplayName("Получение списка жанров")
     void getAll() {
-        Collection<Genre> genres = genreDao.getAll();
+        Collection<Genre> genres = genreDao.findAll();
         assertThat(genres).containsExactlyInAnyOrderElementsOf(List.of(novelGenre));
     }
 }

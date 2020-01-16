@@ -108,7 +108,7 @@ class GenreServiceImplTest {
     @Test
     @DisplayName("Получение списка всех жанров")
     void getAll_ok() {
-        when(genreDao.getAll()).thenReturn(List.of(novelGenre));
+        when(genreDao.findAll()).thenReturn(List.of(novelGenre));
         Collection<Genre> genres = genreService.getAll();
         assertThat(genres).containsExactlyInAnyOrderElementsOf(List.of(novelGenre));
     }

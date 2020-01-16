@@ -64,7 +64,7 @@ class BookDaoJpaTest {
     @Test
     @DisplayName("Поиск по фамилии возвращает список книг")
     void findBySurname_ok() {
-        Collection<Book> books = bookDao.findBySurname(TOLSTOY_SURNAME);
+        Collection<Book> books = bookDao.findByAuthorSurname(TOLSTOY_SURNAME);
         assertThat(books).containsExactlyInAnyOrderElementsOf(List.of(warAndPeaceWithId));
     }
 

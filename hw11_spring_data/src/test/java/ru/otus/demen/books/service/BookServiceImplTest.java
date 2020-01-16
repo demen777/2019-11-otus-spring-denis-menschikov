@@ -119,7 +119,7 @@ class BookServiceImplTest {
     @DisplayName("Успешное получение списка книг по фамилии автора")
     void findBySurname_ok() {
         Collection<Book> expectedBooks = Arrays.asList(warAndPeaceWithId, annaKareninaWithId);
-        when(bookDao.findBySurname(TOLSTOY_SURNAME)).thenReturn(expectedBooks);
+        when(bookDao.findByAuthorSurname(TOLSTOY_SURNAME)).thenReturn(expectedBooks);
         Collection<Book> books = bookService.findBySurname(TOLSTOY_SURNAME);
         assertThat(books).containsExactlyInAnyOrderElementsOf(expectedBooks);
     }
@@ -128,7 +128,7 @@ class BookServiceImplTest {
     @DisplayName("Получение пустого списка книг по фамилии автора")
     void findBySurname_emptyList() {
         Collection<Book> expectedBooks = Collections.emptyList();
-        when(bookDao.findBySurname(TOLSTOY_SURNAME)).thenReturn(expectedBooks);
+        when(bookDao.findByAuthorSurname(TOLSTOY_SURNAME)).thenReturn(expectedBooks);
         Collection<Book> books = bookService.findBySurname(TOLSTOY_SURNAME);
         assertThat(books).containsExactlyInAnyOrderElementsOf(expectedBooks);
     }
@@ -136,7 +136,7 @@ class BookServiceImplTest {
     @Test
     @DisplayName("При поиске книг по фамилии произошло DataAccessException исключение в BookDao")
     void findBySurname_bookDaoThrowDataAccessException() {
-        when(bookDao.findBySurname(TOLSTOY_SURNAME))
+        when(bookDao.findByAuthorSurname(TOLSTOY_SURNAME))
                 .thenThrow(new DataAccessResourceFailureException("DataAccessResourceFailureException!!!"));
         assertThatThrownBy(() -> bookService.findBySurname(TOLSTOY_SURNAME))
                 .isInstanceOf(DataAccessServiceException.class).hasMessageContaining(ERR_MSG_DAO_ERROR);

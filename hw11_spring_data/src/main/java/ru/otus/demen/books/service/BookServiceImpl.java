@@ -48,7 +48,7 @@ public class BookServiceImpl implements BookService {
     @Transactional
     public Collection<Book> findBySurname(String surname) {
         try {
-            return bookDao.findBySurname(surname);
+            return bookDao.findByAuthorSurname(surname);
         } catch (DataAccessException error) {
             throw new DataAccessServiceException(
                     String.format("Ошибка Dao во время поиска книг по фамилии %s", surname), error);
