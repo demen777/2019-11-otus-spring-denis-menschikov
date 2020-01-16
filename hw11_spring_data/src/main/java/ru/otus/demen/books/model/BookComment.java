@@ -4,6 +4,13 @@ import lombok.*;
 
 import javax.persistence.*;
 
+@NamedEntityGraph(name = "BookComment.book",
+    attributeNodes = {@NamedAttributeNode(value = "book", subgraph = "Book.authorAndGenre")},
+        subgraphs = {@NamedSubgraph(
+                name = "Book.authorAndGenre",
+                attributeNodes = {@NamedAttributeNode("author"), @NamedAttributeNode("genre")}
+        )}
+)
 @Data
 @NoArgsConstructor
 @RequiredArgsConstructor
