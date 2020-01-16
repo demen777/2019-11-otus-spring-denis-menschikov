@@ -62,7 +62,7 @@ public class AuthorServiceImpl implements AuthorService {
     @Transactional
     public Optional<Author> findByNameAndSurname(String firstName, String surname) {
         try {
-            return authorDao.findByNameAndSurname(firstName, surname);
+            return authorDao.findByFirstNameAndSurname(firstName, surname);
         } catch (DataAccessException error) {
             throw new DataAccessServiceException(String.format("Ошибка Dao во время поиска по имени %s и фамилии %s",
                     firstName, surname),
@@ -74,7 +74,7 @@ public class AuthorServiceImpl implements AuthorService {
     @Transactional
     public Collection<Author> getAll() {
         try {
-            return authorDao.getAll();
+            return authorDao.findAll();
         } catch (DataAccessException error) {
             throw new DataAccessServiceException("Ошибка Dao во время получения списка всех авторов", error);
         }

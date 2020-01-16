@@ -71,14 +71,14 @@ class AuthorDaoJpaTest {
     void getAll_ok() {
         em.persist(newAuthor);
         em.clear();
-        Collection<Author> authors = authorDao.getAll();
+        Collection<Author> authors = authorDao.findAll();
         assertThat(authors).containsExactlyInAnyOrderElementsOf(List.of(tolstoyAuthor, newAuthor));
     }
 
     @Test
     @DisplayName("Успешный поиск по имени и фамилии")
     void findByNameAndSurname_ok() {
-        Optional<Author> author = authorDao.findByNameAndSurname(TOLSTOY_FIRST_NAME, TOLSTOY_SURNAME);
+        Optional<Author> author = authorDao.findByFirstNameAndSurname(TOLSTOY_FIRST_NAME, TOLSTOY_SURNAME);
         assertThat(author).isPresent();
         assertThat(author.get()).isEqualTo(tolstoyAuthor);
     }
@@ -86,7 +86,7 @@ class AuthorDaoJpaTest {
     @Test
     @DisplayName("Поиск по имени и фамилии не нашел автора")
     void findByNameAndSurname_authorNotFound() {
-        Optional<Author> author = authorDao.findByNameAndSurname(DOSTOEVSKY_FIRST_NAME, DOSTOEVSKY_SURNAME);
+        Optional<Author> author = authorDao.findByFirstNameAndSurname(DOSTOEVSKY_FIRST_NAME, DOSTOEVSKY_SURNAME);
         assertThat(author).isEmpty();
     }
 }

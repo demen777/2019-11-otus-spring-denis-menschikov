@@ -101,7 +101,7 @@ class AuthorServiceImplTest {
     @Test
     @DisplayName("Попытка добавить уже существующего в БД автора")
     void add_alreadyExists() {
-        when(authorDao.findByNameAndSurname(TOLSTOY_FIRST_NAME, TOLSTOY_SURNAME))
+        when(authorDao.findByFirstNameAndSurname(TOLSTOY_FIRST_NAME, TOLSTOY_SURNAME))
                 .thenReturn(Optional.of(tolstoyAuthor));
         assertThatThrownBy(() -> authorService.add(TOLSTOY_FIRST_NAME, TOLSTOY_SURNAME))
                 .isInstanceOf(AlreadyExistsException.class).hasMessageContaining(ERR_MSG_AUTHOR_ALREADY_EXISTS);
@@ -119,7 +119,7 @@ class AuthorServiceImplTest {
     @Test
     @DisplayName("Успешный поиск по имени и фамилии")
     void findByNameAndSurname_ok() {
-        when(authorDao.findByNameAndSurname(TOLSTOY_FIRST_NAME, TOLSTOY_SURNAME)).thenReturn(Optional.of(tolstoyAuthor));
+        when(authorDao.findByFirstNameAndSurname(TOLSTOY_FIRST_NAME, TOLSTOY_SURNAME)).thenReturn(Optional.of(tolstoyAuthor));
         Optional<Author> author = authorService.findByNameAndSurname(TOLSTOY_FIRST_NAME, TOLSTOY_SURNAME);
         //noinspection OptionalGetWithoutIsPresent
         assertThat(author.get()).isEqualTo(tolstoyAuthor);
@@ -128,7 +128,7 @@ class AuthorServiceImplTest {
     @Test
     @DisplayName("Поиск по имени и фамилии не нашел автора")
     void findByNameAndSurname_authorNotExist() {
-        when(authorDao.findByNameAndSurname(TOLSTOY_FIRST_NAME, TOLSTOY_SURNAME)).thenReturn(Optional.empty());
+        when(authorDao.findByFirstNameAndSurname(TOLSTOY_FIRST_NAME, TOLSTOY_SURNAME)).thenReturn(Optional.empty());
         Optional<Author> author = authorService.findByNameAndSurname(TOLSTOY_FIRST_NAME, TOLSTOY_SURNAME);
         assertThat(author.isPresent()).isFalse();
     }
@@ -136,7 +136,7 @@ class AuthorServiceImplTest {
     @Test
     @DisplayName("Успешное получение списка всех авторов")
     void getAll_ok() {
-        when(authorDao.getAll()).thenReturn(List.of(tolstoyAuthor));
+        when(authorDao.findAll()).thenReturn(List.of(tolstoyAuthor));
         Collection<Author> authors = authorService.getAll();
         assertThat(authors).containsExactlyInAnyOrderElementsOf(List.of(tolstoyAuthor));
     }
