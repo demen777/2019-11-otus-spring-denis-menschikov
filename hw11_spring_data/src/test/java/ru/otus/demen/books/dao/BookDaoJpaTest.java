@@ -96,6 +96,8 @@ class BookDaoJpaTest {
     @DisplayName("Тест метода findAll")
     void findAll_ok() {
         List<Book> books = bookDao.findAll();
+        assertThat(books.size()).isEqualTo(1);
+        assertThat(books.get(0)).isEqualTo(warAndPeaceWithId);
         assertThat(statistics.getPrepareStatementCount()).isEqualTo(1);
     }
 }
