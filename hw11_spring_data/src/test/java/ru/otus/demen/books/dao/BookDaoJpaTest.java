@@ -1,5 +1,7 @@
 package ru.otus.demen.books.dao;
 
+import org.hibernate.SessionFactory;
+import org.hibernate.stat.Statistics;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -40,6 +42,8 @@ class BookDaoJpaTest {
     @Autowired
     private TestEntityManager em;
 
+    private Statistics statistics;
+
     @BeforeEach
     void setUp() {
         tolstoyAuthor = new Author(TOLSTOY_FIRST_NAME, TOLSTOY_SURNAME);
@@ -49,6 +53,9 @@ class BookDaoJpaTest {
         warAndPeaceWithId =
                 new Book(WAR_AND_PEACE_NAME, tolstoyAuthor, novelGenre);
         warAndPeaceWithId.setId(WAR_AND_PEACE_ID);
+        statistics = em.getEntityManager().getEntityManagerFactory()
+            .unwrap(SessionFactory.class).getStatistics();
+        statistics.clear();
     }
 
     @Test
@@ -66,6 +73,7 @@ class BookDaoJpaTest {
     void findBySurname_ok() {
         Collection<Book> books = bookDao.findByAuthorSurname(TOLSTOY_SURNAME);
         assertThat(books).containsExactlyInAnyOrderElementsOf(List.of(warAndPeaceWithId));
+        assertThat(statistics.getPrepareStatementCount()).isEqualTo(1);
     }
 
     @Test
@@ -74,6 +82,7 @@ class BookDaoJpaTest {
         Optional<Book> book = bookDao.findById(TOLSTOY_AUTHOR_ID);
         assertThat(book.isPresent()).isTrue();
         assertThat(book.get()).isEqualTo(warAndPeaceWithId);
+        assertThat(statistics.getPrepareStatementCount()).isEqualTo(1);
     }
 
     @Test
@@ -81,5 +90,12 @@ class BookDaoJpaTest {
     void findById_notFound() {
         Optional<Book> book = bookDao.findById(ANNA_KARENINA_ID);
         assertThat(book).isEmpty();
+    }
+
+    @Test
+    @DisplayName("Тест метода findAll")
+    void findAll_ok() {
+        List<Book> books = bookDao.findAll();
+        assertThat(statistics.getPrepareStatementCount()).isEqualTo(1);
     }
 }

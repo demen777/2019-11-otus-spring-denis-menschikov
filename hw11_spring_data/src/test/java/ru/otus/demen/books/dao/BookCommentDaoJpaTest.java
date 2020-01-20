@@ -1,5 +1,7 @@
 package ru.otus.demen.books.dao;
 
+import org.hibernate.SessionFactory;
+import org.hibernate.stat.Statistics;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -35,6 +37,8 @@ class BookCommentDaoJpaTest {
     @Autowired
     private TestEntityManager em;
 
+    private Statistics statistics;
+
     @BeforeEach
     void setUp()
     {
@@ -45,6 +49,9 @@ class BookCommentDaoJpaTest {
         warAndPeaceWithId = new Book(WAR_AND_PEACE_NAME, tolstoyAuthor, novelGenre);
         warAndPeaceWithId.setId(WAR_AND_PEACE_ID);
         warAndPeaceCommentWithoutId = new BookComment(COMMENT_TEXT, warAndPeaceWithId);
+        statistics = em.getEntityManager().getEntityManagerFactory()
+            .unwrap(SessionFactory.class).getStatistics();
+        statistics.clear();
     }
 
     private BookComment addWarAndPeaceComment() {
@@ -76,6 +83,8 @@ class BookCommentDaoJpaTest {
         BookComment comment2 = new BookComment("Объемная книга", warAndPeaceWithId);
         em.persist(comment2);
         em.clear();
+        statistics.clear();
         assertThat(bookCommentDao.findByBookId(WAR_AND_PEACE_ID)).containsExactlyInAnyOrder(comment1, comment2);
+        assertThat(statistics.getPrepareStatementCount()).isEqualTo(1);
     }
 }
