@@ -5,7 +5,6 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.data.mongo.DataMongoTest;
-import org.springframework.boot.test.autoconfigure.orm.jpa.TestEntityManager;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.data.mongodb.core.MongoTemplate;
 import ru.otus.demen.books.model.Genre;
@@ -16,9 +15,8 @@ import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-@DataMongoTest
-@ComponentScan(basePackages = "ru.otus.demen.books.dao")
-class GenreDaoJpaTest {
+
+class GenreDaoMongoTest extends BaseDaoMongoTest {
     private static final String NOVEL_GENRE_NAME = "Роман";
     private static final long NOVEL_GENRE_ID = 1L;
     private Genre novelGenre;
@@ -26,10 +24,7 @@ class GenreDaoJpaTest {
     private static final String WRONG_NOVEL_GENRE_NAME = "Чугун";
 
     @Autowired
-    GenreDao genreDao;
-
-    @Autowired
-    private MongoTemplate mongoTemplate;
+    private GenreDao genreDao;
 
     @BeforeEach
     void setUp() {

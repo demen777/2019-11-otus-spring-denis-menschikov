@@ -19,7 +19,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 @DataMongoTest
 @ComponentScan(basePackages = "ru.otus.demen.books.dao")
-class BookDaoJpaTest {
+class BookDaoMongoTest {
     private static final long TOLSTOY_AUTHOR_ID = 1L;
     private static final String TOLSTOY_FIRST_NAME = "Лев";
     private static final String TOLSTOY_SURNAME = "Толстой";

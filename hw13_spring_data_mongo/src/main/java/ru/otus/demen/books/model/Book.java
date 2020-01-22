@@ -25,6 +25,13 @@ public class Book {
     @NonNull
     private Genre genre;
 
+    public Book(long id, @NonNull String name, @NonNull Author author, @NonNull Genre genre) {
+        this.id = id;
+        this.name = name;
+        this.author = author;
+        this.genre = genre;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
