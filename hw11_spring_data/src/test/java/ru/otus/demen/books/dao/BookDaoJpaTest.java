@@ -31,6 +31,7 @@ class BookDaoJpaTest {
     private static final String WAR_AND_PEACE_NAME = "Война и мир";
     private static final long ANNA_KARENINA_ID = 2L;
     private static final String ANNA_KARENINA_NAME = "Анна Каренина";
+    private static final int ONE_SELECT_EXPECTED = 1;
 
     private Author tolstoyAuthor;
     private Genre novelGenre;
@@ -73,7 +74,7 @@ class BookDaoJpaTest {
     void findBySurname_ok() {
         Collection<Book> books = bookDao.findByAuthorSurname(TOLSTOY_SURNAME);
         assertThat(books).containsExactlyInAnyOrderElementsOf(List.of(warAndPeaceWithId));
-        assertThat(statistics.getPrepareStatementCount()).isEqualTo(1);
+        assertThat(statistics.getPrepareStatementCount()).isEqualTo(ONE_SELECT_EXPECTED);
     }
 
     @Test
@@ -82,7 +83,7 @@ class BookDaoJpaTest {
         Optional<Book> book = bookDao.findById(TOLSTOY_AUTHOR_ID);
         assertThat(book.isPresent()).isTrue();
         assertThat(book.get()).isEqualTo(warAndPeaceWithId);
-        assertThat(statistics.getPrepareStatementCount()).isEqualTo(1);
+        assertThat(statistics.getPrepareStatementCount()).isEqualTo(ONE_SELECT_EXPECTED);
     }
 
     @Test
@@ -98,6 +99,6 @@ class BookDaoJpaTest {
         List<Book> books = bookDao.findAll();
         assertThat(books.size()).isEqualTo(1);
         assertThat(books.get(0)).isEqualTo(warAndPeaceWithId);
-        assertThat(statistics.getPrepareStatementCount()).isEqualTo(1);
+        assertThat(statistics.getPrepareStatementCount()).isEqualTo(ONE_SELECT_EXPECTED);
     }
 }
