@@ -2,8 +2,11 @@ package ru.otus.demen.books.model;
 
 import lombok.*;
 import org.springframework.data.annotation.Id;
+import org.springframework.data.mongodb.core.mapping.DBRef;
 import org.springframework.data.mongodb.core.mapping.Document;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Objects;
 
 @Getter
@@ -11,7 +14,7 @@ import java.util.Objects;
 @ToString
 @RequiredArgsConstructor
 @NoArgsConstructor
-@Document(collection = "books")
+@Document
 public class Book {
     @Id
     private long id;
@@ -20,10 +23,15 @@ public class Book {
     private String name;
 
     @NonNull
+    @DBRef
     private Author author;
 
     @NonNull
+    @DBRef
     private Genre genre;
+
+    @DBRef
+    List<BookComment> bookComments = new ArrayList<>();
 
     public Book(long id, @NonNull String name, @NonNull Author author, @NonNull Genre genre) {
         this.id = id;

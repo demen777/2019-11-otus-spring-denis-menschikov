@@ -9,9 +9,7 @@ import org.springframework.core.env.Environment;
 import org.springframework.data.mongodb.core.MongoTemplate;
 import ru.otus.demen.books.bee.changelog.DatabaseChangelog;
 
-@Configuration
-public class MongoBeeConfig {
-
+@Configuration public class MongoBeeConfig {
     @Autowired
     private MongoClient mongoClient;
 
@@ -21,7 +19,7 @@ public class MongoBeeConfig {
     @Bean
     public Mongobee mongobee(Environment environment) {
         return new Mongobee(mongoClient)
-                .setDbName("library_db")
+                .setDbName(environment.getProperty("spring.data.mongodb.database"))
                 .setChangeLogsScanPackage(DatabaseChangelog.class.getPackage().getName())
                 .setMongoTemplate(mongoTemplate)
                 .setSpringEnvironment(environment);

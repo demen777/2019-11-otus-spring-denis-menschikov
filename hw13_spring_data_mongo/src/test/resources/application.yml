@@ -6,4 +6,14 @@ spring:
 
   data:
     mongodb:
-      database: library_db
+      database: libraryDb
+      host: localhost
+
+logging:
+  level:
+    org:
+      springframework:
+        data:
+          mongodb:
+            core:
+              MongoTemplate: DEBUG

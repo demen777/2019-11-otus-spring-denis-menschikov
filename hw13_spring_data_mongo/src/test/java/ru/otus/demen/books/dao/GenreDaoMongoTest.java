@@ -4,9 +4,6 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.autoconfigure.data.mongo.DataMongoTest;
-import org.springframework.context.annotation.ComponentScan;
-import org.springframework.data.mongodb.core.MongoTemplate;
 import ru.otus.demen.books.model.Genre;
 
 import java.util.Collection;
@@ -30,6 +27,8 @@ class GenreDaoMongoTest extends BaseDaoMongoTest {
     void setUp() {
         novelGenre = new Genre(NOVEL_GENRE_NAME);
         novelGenre.setId(NOVEL_GENRE_ID);
+        mongoTemplate.dropCollection(Genre.class);
+        mongoTemplate.save(novelGenre);
     }
 
 

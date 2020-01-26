@@ -8,7 +8,7 @@ import org.springframework.data.mongodb.core.MongoTemplate;
 
 
 @DataMongoTest
-@ComponentScan(basePackages = {"ru.otus.demen.books.dao", "ru.otus.demen.books.bee"})
+@ComponentScan(basePackages = {"ru.otus.demen.books.dao"})
 class BaseDaoMongoTest {
     @Autowired
     MongoTemplate mongoTemplate;

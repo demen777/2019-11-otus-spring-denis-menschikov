@@ -4,9 +4,6 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.autoconfigure.data.mongo.DataMongoTest;
-import org.springframework.boot.test.autoconfigure.orm.jpa.TestEntityManager;
-import org.springframework.context.annotation.ComponentScan;
 import ru.otus.demen.books.model.Author;
 import ru.otus.demen.books.model.Book;
 import ru.otus.demen.books.model.Genre;
@@ -17,9 +14,8 @@ import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-@DataMongoTest
-@ComponentScan(basePackages = "ru.otus.demen.books.dao")
-class BookDaoMongoTest {
+
+class BookDaoMongoTest extends BaseDaoMongoTest {
     private static final long TOLSTOY_AUTHOR_ID = 1L;
     private static final String TOLSTOY_FIRST_NAME = "Лев";
     private static final String TOLSTOY_SURNAME = "Толстой";
@@ -37,9 +33,6 @@ class BookDaoMongoTest {
     @Autowired
     BookDao bookDao;
 
-    @Autowired
-    private TestEntityManager em;
-
     @BeforeEach
     void setUp() {
         tolstoyAuthor = new Author(TOLSTOY_FIRST_NAME, TOLSTOY_SURNAME);
@@ -49,14 +42,19 @@ class BookDaoMongoTest {
         warAndPeaceWithId =
                 new Book(WAR_AND_PEACE_NAME, tolstoyAuthor, novelGenre);
         warAndPeaceWithId.setId(WAR_AND_PEACE_ID);
+        mongoTemplate.dropCollection(Book.class);
+        mongoTemplate.dropCollection(Genre.class);
+        mongoTemplate.dropCollection(Author.class);
+        mongoTemplate.save(tolstoyAuthor);
+        mongoTemplate.save(novelGenre);
+        mongoTemplate.save(warAndPeaceWithId);
     }
 
     @Test
     @DisplayName("Успешное добавление новой книги")
     void save_ok() {
         Book book = bookDao.save(new Book(ANNA_KARENINA_NAME, tolstoyAuthor, novelGenre));
-        em.clear();
-        Book bookFromDb = em.find(Book.class, book.getId());
+        Book bookFromDb = mongoTemplate.findById(book.getId(), Book.class);
         assertThat(bookFromDb).isNotNull();
         assertThat(bookFromDb).isEqualTo(book);
     }
