@@ -33,7 +33,7 @@ public class BookCommentShellComponent {
                 return "OK";
             }
             else {
-                return String.format("Комментарий с id=%d отсуствует в хранилище", bookCommentId);
+                return String.format("Комментарий с id=%s отсуствует в хранилище", bookCommentId);
             }
         });
     }

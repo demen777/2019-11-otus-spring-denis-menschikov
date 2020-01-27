@@ -11,7 +11,7 @@ public class GenresShellView implements TextView<Collection<Genre>> {
     @Override
     public String getView(Collection<Genre> genres) {
         return "Список жанров:\n" + genres.stream()
-            .map((genre) -> String.format("Жанр(id=%d): %s", genre.getId(), genre.getName()))
+            .map((genre) -> String.format("Жанр(id=%s): %s", genre.getId(), genre.getName()))
                 .collect(Collectors.joining("\n"));
     }
 }

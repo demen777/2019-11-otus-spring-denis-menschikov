@@ -7,6 +7,6 @@ import ru.otus.demen.books.model.Genre;
 public class GenreShellView implements TextView<Genre> {
     @Override
     public String getView(Genre genre) {
-        return String.format("Жанр(id=%d): %s", genre.getId(), genre.getName());
+        return String.format("Жанр(id=%s): %s", genre.getId(), genre.getName());
     }
 }

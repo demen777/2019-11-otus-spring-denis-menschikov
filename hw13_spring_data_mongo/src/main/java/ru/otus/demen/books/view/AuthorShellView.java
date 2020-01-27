@@ -7,6 +7,6 @@ import ru.otus.demen.books.model.Author;
 public class AuthorShellView implements TextView<Author> {
     @Override
     public String getView(Author author) {
-        return String.format("Автор(id=%d): %s %s", author.getId(), author.getFirstName(), author.getSurname());
+        return String.format("Автор(id=%s): %s %s", author.getId(), author.getFirstName(), author.getSurname());
     }
 }

@@ -40,7 +40,7 @@ public class BookCommentServiceImpl implements BookCommentService {
     private Book getBook(String bookId) {
         Optional<Book> bookOptional = bookDao.findById(bookId);
         return bookOptional.orElseThrow(
-                () -> new NotFoundException(String.format("Не найдена книга с id=%d", bookId)));
+                () -> new NotFoundException(String.format("Не найдена книга с id=%s", bookId)));
     }
 
     @Override

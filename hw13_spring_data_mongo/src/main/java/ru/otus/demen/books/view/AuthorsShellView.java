@@ -12,7 +12,7 @@ public class AuthorsShellView implements TextView<Collection<Author>> {
     public String getView(Collection<Author> authors) {
         return "Список авторов:\n" + authors.stream()
             .map((author) -> String.format(
-                "Автор(id=%d): %s %s", author.getId(), author.getFirstName(), author.getSurname()))
+                "Автор(id=%s): %s %s", author.getId(), author.getFirstName(), author.getSurname()))
             .collect(Collectors.joining("\n"));
     }
 }
