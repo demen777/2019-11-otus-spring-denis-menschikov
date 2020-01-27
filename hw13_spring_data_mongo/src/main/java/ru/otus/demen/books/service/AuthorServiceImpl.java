@@ -18,21 +18,21 @@ public class AuthorServiceImpl implements AuthorService {
 
     @Override
     @Transactional
-    public Optional<Author> findById(long id) {
+    public Optional<Author> findById(String id) {
         try {
             return authorDao.findById(id);
         } catch (DataAccessException error) {
-            throw new DataAccessServiceException(String.format("Ошибка Dao во время поиска автора по id %d", id),
+            throw new DataAccessServiceException(String.format("Ошибка Dao во время поиска автора по id %s", id),
                     error);
         }
     }
 
     @Override
     @Transactional
-    public Author getById(long id) {
+    public Author getById(String id) {
         Optional<Author> authorOptional = findById(id);
         return authorOptional
-                .orElseThrow(() -> new NotFoundException(String.format("Не найден автор с id=%d", id)));
+                .orElseThrow(() -> new NotFoundException(String.format("Не найден автор с id=%s", id)));
     }
 
     @Override

@@ -17,12 +17,12 @@ import static org.assertj.core.api.Assertions.assertThat;
 @DataMongoTest
 @ComponentScan(basePackages = "ru.otus.demen.books.dao")
 class BookCommentDaoMongoTest {
-    private static final long TOLSTOY_AUTHOR_ID = 1L;
+    private static final String TOLSTOY_AUTHOR_ID = "1";
     private static final String TOLSTOY_AUTHOR_NAME = "Лев";
     private static final String TOLSTOY_AUTHOR_SURNAME = "Толстой";
     private static final String NOVEL_GENRE_NAME = "Роман";
-    private static final long NOVEL_GENRE_ID = 1L;
-    private static final long WAR_AND_PEACE_ID = 1L;
+    private static final String NOVEL_GENRE_ID = "1";
+    private static final String WAR_AND_PEACE_ID = "1";
     private static final String WAR_AND_PEACE_NAME = "Война и мир";
     private static final String COMMENT_TEXT = "Хорошая книга";
 
@@ -57,7 +57,7 @@ class BookCommentDaoMongoTest {
     @DisplayName("Успешное удаление комментария по id")
     void deleteById_ok() {
         BookComment warAndPeaceComment = addWarAndPeaceComment();
-        long bookCommentId = warAndPeaceComment.getId();
+        String bookCommentId = warAndPeaceComment.getId();
         assertThat(bookCommentDao.removeById(bookCommentId)).isEqualTo(1);
         assertThat(em.find(BookComment.class, bookCommentId)).isNull();
     }
@@ -66,7 +66,7 @@ class BookCommentDaoMongoTest {
     @DisplayName("Комментарий по id не найден")
     void deleteById_notFound() {
         addWarAndPeaceComment();
-        assertThat(bookCommentDao.removeById(-1L)).isEqualTo(0);
+        assertThat(bookCommentDao.removeById("-1")).isEqualTo(0);
     }
 
     @Test

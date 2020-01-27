@@ -16,14 +16,14 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 
 class BookDaoMongoTest extends BaseDaoMongoTest {
-    private static final long TOLSTOY_AUTHOR_ID = 1L;
+    private static final String TOLSTOY_AUTHOR_ID = "1";
     private static final String TOLSTOY_FIRST_NAME = "Лев";
     private static final String TOLSTOY_SURNAME = "Толстой";
     private static final String NOVEL_GENRE_NAME = "Роман";
-    private static final long NOVEL_GENRE_ID = 1L;
-    private static final long WAR_AND_PEACE_ID = 1L;
+    private static final String NOVEL_GENRE_ID = "1";
+    private static final String WAR_AND_PEACE_ID = "1";
     private static final String WAR_AND_PEACE_NAME = "Война и мир";
-    private static final long ANNA_KARENINA_ID = 2L;
+    private static final String ANNA_KARENINA_ID = "2";
     private static final String ANNA_KARENINA_NAME = "Анна Каренина";
 
     private Author tolstoyAuthor;

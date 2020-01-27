@@ -26,14 +26,14 @@ public class BookServiceImpl implements BookService {
 
     @Override
     @Transactional
-    public Book add(String name, long authorId, String genreName) {
+    public Book add(String name, String authorId, String genreName) {
         if (name == null || name.isEmpty()) {
             throw new IllegalParameterException("Имя книги должно быть не пустым");
         }
         try {
             Optional<Author> authorOptional = authorDao.findById(authorId);
             Author author = authorOptional.orElseThrow(
-                    () -> new NotFoundException(String.format("Не найден автор с id=%d", authorId)));
+                    () -> new NotFoundException(String.format("Не найден автор с id=%s", authorId)));
             Optional<Genre> genreOptional = genreDao.findByName(genreName);
             Genre genre = genreOptional.orElseThrow(
                     () -> new NotFoundException(String.format("Не найден жанр с именем %s", genreName)));
@@ -57,12 +57,12 @@ public class BookServiceImpl implements BookService {
 
     @Override
     @Transactional
-    public Book getById(long id) {
+    public Book getById(String id) {
         try {
             Optional<Book> book = bookDao.findById(id);
-            return book.orElseThrow(() -> new NotFoundException(String.format("Не найдена книга с id=%d", id)));
+            return book.orElseThrow(() -> new NotFoundException(String.format("Не найдена книга с id=%s", id)));
         } catch (DataAccessException error) {
-            throw new DataAccessServiceException(String.format("Ошибка Dao во время поиска книги по id %d", id), error);
+            throw new DataAccessServiceException(String.format("Ошибка Dao во время поиска книги по id %s", id), error);
         }
     }
 }

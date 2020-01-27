@@ -23,7 +23,7 @@ public class BookCommentServiceImpl implements BookCommentService {
 
     @Override
     @Transactional
-    public BookComment add(long bookId, String text) {
+    public BookComment add(String bookId, String text) {
         if (text == null || text.isEmpty()) {
             throw new IllegalParameterException("Текст комментария должен быть непустым");
         }
@@ -37,7 +37,7 @@ public class BookCommentServiceImpl implements BookCommentService {
         }
     }
 
-    private Book getBook(long bookId) {
+    private Book getBook(String bookId) {
         Optional<Book> bookOptional = bookDao.findById(bookId);
         return bookOptional.orElseThrow(
                 () -> new NotFoundException(String.format("Не найдена книга с id=%d", bookId)));
@@ -45,26 +45,26 @@ public class BookCommentServiceImpl implements BookCommentService {
 
     @Override
     @Transactional
-    public boolean deleteById(long bookCommentId) {
+    public boolean deleteById(String bookCommentId) {
         try {
             long deletedQuantity = bookCommentDao.removeById(bookCommentId);
             return deletedQuantity > 0;
         }
         catch (DataAccessException error) {
             throw new DataAccessServiceException(
-                    String.format("Ошибка Dao во время удаления комментария с id=%d", bookCommentId), error);
+                    String.format("Ошибка Dao во время удаления комментария с id=%s", bookCommentId), error);
         }
     }
 
     @Override
-    public Collection<BookComment> getByBookId(long bookId) {
+    public Collection<BookComment> getByBookId(String bookId) {
         try {
             getBook(bookId);
             return bookCommentDao.findByBookId(bookId);
         }
         catch (DataAccessException error) {
             throw new DataAccessServiceException(
-                String.format("Ошибка Dao во время получения комментариев для книги с id=%d", bookId), error);
+                String.format("Ошибка Dao во время получения комментариев для книги с id=%s", bookId), error);
         }
     }
 }

@@ -19,7 +19,7 @@ public class BookCommentShellComponent {
     private final BookCommentsShellView bookCommentsView;
 
     @ShellMethod(value = "Add comment to book", key = "add-book-comment")
-    String addBookComment(@ShellOption(value = "book_id") long bookId, @ShellOption(value = "comment") String comment){
+    String addBookComment(@ShellOption(value = "book_id") String bookId, @ShellOption(value = "comment") String comment){
         return GetStringOrServiceExceptionMessage.call(()->{
             BookComment bookComment = bookCommentService.add(bookId, comment);
             return bookCommentShellView.getView(bookComment);
@@ -27,7 +27,7 @@ public class BookCommentShellComponent {
     }
 
     @ShellMethod(value = "Delete book comment", key = "delete-book-comment")
-    String deleteBookComment(@ShellOption("book_comment_id") long bookCommentId) {
+    String deleteBookComment(@ShellOption("book_comment_id") String bookCommentId) {
         return GetStringOrServiceExceptionMessage.call(()->{
             if (bookCommentService.deleteById(bookCommentId)) {
                 return "OK";
@@ -39,7 +39,7 @@ public class BookCommentShellComponent {
     }
 
     @ShellMethod(value = "Show comments for book", key = "show-comments-for-book")
-    String findCommentsByBook(@ShellOption(value = "book_id") long bookId) {
+    String findCommentsByBook(@ShellOption(value = "book_id") String bookId) {
         return GetStringOrServiceExceptionMessage.call(()->{
             Collection<BookComment> bookComments = bookCommentService.getByBookId(bookId);
             return bookCommentsView.getView(bookComments);

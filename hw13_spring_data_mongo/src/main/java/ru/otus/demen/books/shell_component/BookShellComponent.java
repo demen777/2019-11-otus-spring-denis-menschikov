@@ -20,7 +20,7 @@ public class BookShellComponent {
 
     @ShellMethod(value = "Add book", key = {"add-book"})
     public String addBook(@ShellOption(value = "name") String name,
-                          @ShellOption(value = "author-id") long authorId,
+                          @ShellOption(value = "author-id") String authorId,
                           @ShellOption(value = "genre") String genre) {
         return GetStringOrServiceExceptionMessage.call(()->{
             Book book = bookService.add(name, authorId, genre);
@@ -29,7 +29,7 @@ public class BookShellComponent {
     }
 
     @ShellMethod(value = "Get book by id", key = {"get-book-by-id"})
-    public String getBooksById(@ShellOption(value = "id") long id) {
+    public String getBooksById(@ShellOption(value = "id") String id) {
         return GetStringOrServiceExceptionMessage.call(()->{
             Book book = bookService.getById(id);
             return bookView.getView(book);

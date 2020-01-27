@@ -14,10 +14,10 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 
 class AuthorDaoMongoTest extends BaseDaoMongoTest {
-    private static final long TOLSTOY_AUTHOR_ID = 1L;
+    private static final String TOLSTOY_AUTHOR_ID = "1";
     private static final String TOLSTOY_FIRST_NAME = "Лев";
     private static final String TOLSTOY_SURNAME = "Толстой";
-    private static final long WRONG_AUTHOR_ID = -1L;
+    private static final String WRONG_AUTHOR_ID = "-1";
     private static final String DOSTOEVSKY_FIRST_NAME = "Федор";
     private static final String DOSTOEVSKY_SURNAME = "Достоевский";
 

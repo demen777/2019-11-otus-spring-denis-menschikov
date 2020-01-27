@@ -5,7 +5,7 @@ import ru.otus.demen.books.model.BookComment;
 import java.util.Collection;
 
 public interface BookCommentService {
-    BookComment add(long bookId, String text);
-    boolean deleteById(long bookCommentId);
-    Collection<BookComment> getByBookId(long bookId);
+    BookComment add(String bookId, String text);
+    boolean deleteById(String bookCommentId);
+    Collection<BookComment> getByBookId(String bookId);
 }

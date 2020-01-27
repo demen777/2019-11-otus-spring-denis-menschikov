@@ -22,7 +22,7 @@ import static org.mockito.Mockito.when;
 @SpringBootTest(classes = ServiceTestConfiguration.class)
 class GenreServiceImplTest {
     private static final String NOVEL_GENRE_NAME = "Роман";
-    private static final long NOVEL_GENRE_ID = 1L;
+    private static final String NOVEL_GENRE_ID = "1";
     private static final String WRONG_NOVEL_GENRE_NAME = "Чугун";
 
     private Genre novelGenre;

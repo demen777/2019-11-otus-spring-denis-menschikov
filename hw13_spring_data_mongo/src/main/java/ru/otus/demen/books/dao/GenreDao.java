@@ -6,6 +6,6 @@ import ru.otus.demen.books.model.Genre;
 import java.util.Optional;
 
 
-public interface GenreDao extends MongoRepository<Genre, Long> {
+public interface GenreDao extends MongoRepository<Genre, String> {
     Optional<Genre> findByName(String name);
 }

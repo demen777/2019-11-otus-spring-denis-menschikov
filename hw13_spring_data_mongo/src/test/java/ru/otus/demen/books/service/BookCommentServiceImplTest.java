@@ -24,15 +24,15 @@ import static org.mockito.Mockito.when;
 
 @SpringBootTest(classes = ServiceTestConfiguration.class)
 class BookCommentServiceImplTest {
-    private static final long TOLSTOY_AUTHOR_ID = 1L;
+    private static final String TOLSTOY_AUTHOR_ID = "1";
     private static final String TOLSTOY_FIRST_NAME = "Лев";
     private static final String TOLSTOY_SURNAME = "Толстой";
     private static final String NOVEL_GENRE_NAME = "Роман";
-    private static final long NOVEL_GENRE_ID = 1L;
-    private static final long WAR_AND_PEACE_ID = 1L;
+    private static final String NOVEL_GENRE_ID = "1";
+    private static final String WAR_AND_PEACE_ID = "1";
     private static final String WAR_AND_PEACE_NAME = "Война и мир";
     private static final String COMMENT_TEXT = "Хорошая книга";
-    private static final long WAR_AND_PEACE_COMMENT_ID = 1L;
+    private static final String WAR_AND_PEACE_COMMENT_ID = "1";
 
     private BookComment warAndPeaceComment;
     private Book warAndPeaceWithId;
@@ -71,8 +71,8 @@ class BookCommentServiceImplTest {
     @Test
     @DisplayName("При добавлении комментария с неверным id книги выбрасывается NotFoundException")
     void add_bookNotFound() {
-        when(bookDao.findById(-1L)).thenReturn(Optional.empty());
-        assertThatThrownBy(() -> bookCommentService.add(-1L, "Комментарий"))
+        when(bookDao.findById("-1")).thenReturn(Optional.empty());
+        assertThatThrownBy(() -> bookCommentService.add("-1", "Комментарий"))
                 .isInstanceOf(NotFoundException.class);
     }
 

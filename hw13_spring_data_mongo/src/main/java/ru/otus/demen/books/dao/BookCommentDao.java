@@ -5,7 +5,7 @@ import ru.otus.demen.books.model.BookComment;
 
 import java.util.List;
 
-public interface BookCommentDao extends MongoRepository<BookComment, Long> {
-    List<BookComment> findByBookId(long bookId);
-    long removeById(Long id);
+public interface BookCommentDao extends MongoRepository<BookComment, String> {
+    List<BookComment> findByBookId(String bookId);
+    long removeById(String id);
 }

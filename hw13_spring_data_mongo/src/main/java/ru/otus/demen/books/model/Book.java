@@ -17,7 +17,7 @@ import java.util.Objects;
 @Document
 public class Book {
     @Id
-    private long id;
+    private String id;
 
     @NonNull
     private String name;
@@ -30,10 +30,10 @@ public class Book {
     @DBRef
     private Genre genre;
 
-    @DBRef
+    @DBRef(lazy = true)
     List<BookComment> bookComments = new ArrayList<>();
 
-    public Book(long id, @NonNull String name, @NonNull Author author, @NonNull Genre genre) {
+    public Book(String id, @NonNull String name, @NonNull Author author, @NonNull Genre genre) {
         this.id = id;
         this.name = name;
         this.author = author;

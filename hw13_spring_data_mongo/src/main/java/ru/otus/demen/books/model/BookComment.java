@@ -11,7 +11,7 @@ import org.springframework.data.mongodb.core.mapping.Document;
 @Document
 public class BookComment {
     @Id
-    private long id;
+    private String id;
 
     @NonNull
     private String text;

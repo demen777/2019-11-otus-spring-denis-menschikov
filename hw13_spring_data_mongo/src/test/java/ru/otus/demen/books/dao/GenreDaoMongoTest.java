@@ -15,7 +15,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 class GenreDaoMongoTest extends BaseDaoMongoTest {
     private static final String NOVEL_GENRE_NAME = "Роман";
-    private static final long NOVEL_GENRE_ID = 1L;
+    private static final String NOVEL_GENRE_ID = "1";
     private Genre novelGenre;
     private static final String NEW_GENRE_NAME = "Сказка";
     private static final String WRONG_NOVEL_GENRE_NAME = "Чугун";
