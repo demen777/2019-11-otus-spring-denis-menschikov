@@ -23,11 +23,9 @@ public class Book {
     private String name;
 
     @NonNull
-    @DBRef
     private Author author;
 
     @NonNull
-    @DBRef
     private Genre genre;
 
     @NonNull
