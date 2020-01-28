@@ -4,6 +4,9 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.mongodb.core.aggregation.AggregationResults;
+import org.springframework.data.mongodb.core.query.Criteria;
+import org.springframework.data.mongodb.core.query.Query;
 import ru.otus.demen.books.model.Author;
 import ru.otus.demen.books.model.Book;
 import ru.otus.demen.books.model.BookComment;
@@ -15,6 +18,7 @@ import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
+import static org.springframework.data.mongodb.core.aggregation.Aggregation.*;
 
 
 class BookDaoMongoTest extends BaseDaoMongoTest {
@@ -86,11 +90,26 @@ class BookDaoMongoTest extends BaseDaoMongoTest {
     @Test
     @DisplayName("Успешное удаление комментария по id")
     void deleteById_ok() {
+        assertThat(getMongoArraySize("book", "comments", warAndPeace.getId())).isEqualTo(1);
         assertThat(bookDao.removeCommentById(warAndPeaceComment.getId())).isEqualTo(1);
-        assertThat(mongoTemplate.findById(warAndPeaceComment.getId(), BookComment.class)).isNull();
+        assertThat(mongoTemplate.count(new Query(), BookComment.class)).isEqualTo(0);
         Book bookFromDb = mongoTemplate.findById(warAndPeace.getId(), Book.class);
         assertThat(bookFromDb).isNotNull();
         assertThat(bookFromDb.getComments()).hasSize(0);
+        assertThat(getMongoArraySize("book", "comments", warAndPeace.getId())).isEqualTo(0);
+    }
+
+    static class IntegerCount { int count; }
+
+    @SuppressWarnings("SameParameterValue")
+    private int getMongoArraySize(String collectionName, String arrayName, String id) {
+        AggregationResults<IntegerCount> aggregationResults = mongoTemplate.aggregate(newAggregation(
+                match(Criteria.where("_id").is(id)),
+                project().and(arrayName).size().as("count")
+                        .andExclude("_id")
+        ), collectionName, IntegerCount.class);
+        List<IntegerCount> results = aggregationResults.getMappedResults();
+        return results.get(0).count;
     }
 
     @Test

@@ -34,7 +34,7 @@ public class BookRepositoryCustomImpl implements BookRepositoryCustom {
     public long removeCommentById(String commentId) {
         DeleteResult deleteResult =
                 mongoTemplate.remove(new Query(Criteria.where("id").is(commentId)), BookComment.class);
-        mongoTemplate.updateFirst(new Query(),
+        mongoTemplate.updateMulti(new Query(),
                 new Update().pull("comments", Query.query(Criteria.where("$id").is(new ObjectId(commentId)))),
                 Book.class);
         return deleteResult.getDeletedCount();

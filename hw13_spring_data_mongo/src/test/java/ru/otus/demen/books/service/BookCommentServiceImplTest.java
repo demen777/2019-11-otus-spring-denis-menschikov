@@ -28,7 +28,6 @@ class BookCommentServiceImplTest {
     private static final String NOVEL_GENRE_NAME = "Роман";
     private static final String NOVEL_GENRE_ID = "1";
     private static final String WAR_AND_PEACE_ID = "1";
-    private static final String WAR_AND_PEACE_NAME = "Война и мир";
     private static final String COMMENT_TEXT = "Хорошая книга";
     private static final String WAR_AND_PEACE_COMMENT_ID = "1";
 
