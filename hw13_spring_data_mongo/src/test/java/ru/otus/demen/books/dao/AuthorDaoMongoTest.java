@@ -14,7 +14,6 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 
 class AuthorDaoMongoTest extends BaseDaoMongoTest {
-    private static final String TOLSTOY_AUTHOR_ID = "1";
     private static final String TOLSTOY_FIRST_NAME = "Лев";
     private static final String TOLSTOY_SURNAME = "Толстой";
     private static final String WRONG_AUTHOR_ID = "-1";
@@ -30,7 +29,6 @@ class AuthorDaoMongoTest extends BaseDaoMongoTest {
     @BeforeEach
     void setUp() {
         tolstoyAuthor = new Author(TOLSTOY_FIRST_NAME, TOLSTOY_SURNAME);
-        tolstoyAuthor.setId(TOLSTOY_AUTHOR_ID);
         newAuthor = new Author(DOSTOEVSKY_FIRST_NAME, DOSTOEVSKY_SURNAME);
         mongoTemplate.dropCollection(Author.class);
         mongoTemplate.save(tolstoyAuthor);
@@ -39,7 +37,7 @@ class AuthorDaoMongoTest extends BaseDaoMongoTest {
     @Test
     @DisplayName("Успешный поиск методом findById")
     void findById_ok() {
-        Optional<Author> author = authorDao.findById(TOLSTOY_AUTHOR_ID);
+        Optional<Author> author = authorDao.findById(tolstoyAuthor.getId());
         assertThat(author).isPresent().get().isEqualTo(tolstoyAuthor);
     }
 

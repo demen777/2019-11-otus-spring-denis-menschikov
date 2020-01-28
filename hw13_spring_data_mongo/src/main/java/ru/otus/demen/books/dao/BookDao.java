@@ -4,4 +4,5 @@ import org.springframework.data.mongodb.repository.MongoRepository;
 import ru.otus.demen.books.model.Book;
 
 public interface BookDao extends MongoRepository<Book, String>, BookRepositoryCustom {
+    long countById(String id);
 }

@@ -15,7 +15,4 @@ public class BookComment {
 
     @NonNull
     private String text;
-
-    @NonNull
-    private Book book;
 }

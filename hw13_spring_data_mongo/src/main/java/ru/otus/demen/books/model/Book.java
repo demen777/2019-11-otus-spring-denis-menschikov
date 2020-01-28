@@ -30,15 +30,9 @@ public class Book {
     @DBRef
     private Genre genre;
 
+    @NonNull
     @DBRef(lazy = true)
-    List<BookComment> bookComments = new ArrayList<>();
-
-    public Book(String id, @NonNull String name, @NonNull Author author, @NonNull Genre genre) {
-        this.id = id;
-        this.name = name;
-        this.author = author;
-        this.genre = genre;
-    }
+    private List<BookComment> comments = new ArrayList<>();
 
     @Override
     public boolean equals(Object o) {

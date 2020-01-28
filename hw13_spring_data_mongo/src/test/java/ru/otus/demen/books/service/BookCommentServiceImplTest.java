@@ -6,10 +6,8 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.dao.TransientDataAccessResourceException;
-import ru.otus.demen.books.dao.BookCommentDao;
 import ru.otus.demen.books.dao.BookDao;
 import ru.otus.demen.books.model.Author;
-import ru.otus.demen.books.model.Book;
 import ru.otus.demen.books.model.BookComment;
 import ru.otus.demen.books.model.Genre;
 import ru.otus.demen.books.service.exception.DataAccessServiceException;
@@ -35,13 +33,9 @@ class BookCommentServiceImplTest {
     private static final String WAR_AND_PEACE_COMMENT_ID = "1";
 
     private BookComment warAndPeaceComment;
-    private Book warAndPeaceWithId;
 
     @Autowired
     BookCommentServiceImpl bookCommentService;
-
-    @Autowired
-    BookCommentDao bookCommentDao;
 
     @Autowired
     BookDao bookDao;
@@ -52,18 +46,14 @@ class BookCommentServiceImplTest {
         tolstoyAuthor.setId(TOLSTOY_AUTHOR_ID);
         Genre novelGenre = new Genre(NOVEL_GENRE_NAME);
         novelGenre.setId(NOVEL_GENRE_ID);
-        warAndPeaceWithId =
-                new Book(WAR_AND_PEACE_NAME, tolstoyAuthor, novelGenre);
-        warAndPeaceWithId.setId(WAR_AND_PEACE_ID);
-        warAndPeaceComment = new BookComment(COMMENT_TEXT, warAndPeaceWithId);
+        warAndPeaceComment = new BookComment(COMMENT_TEXT);
         warAndPeaceComment.setId(WAR_AND_PEACE_COMMENT_ID);
     }
 
     @Test
     @DisplayName("Успешное добавление комментария")
     void add_ok() {
-        when(bookDao.findById(WAR_AND_PEACE_ID)).thenReturn(Optional.of(warAndPeaceWithId));
-        when(bookCommentDao.save(new BookComment(COMMENT_TEXT, warAndPeaceWithId))).thenReturn(warAndPeaceComment);
+        when(bookDao.countById(WAR_AND_PEACE_ID)).thenReturn(1L);
         BookComment bookComment = bookCommentService.add(WAR_AND_PEACE_ID, COMMENT_TEXT);
         assertThat(bookComment.getText()).isEqualTo(warAndPeaceComment.getText());
     }
@@ -79,7 +69,7 @@ class BookCommentServiceImplTest {
     @Test
     @DisplayName("При добавлении комментария происходит ошибка на уровне Dao -> выбрасывается DataAccessServiceException")
     void add_dataAccessServiceException() {
-        when(bookDao.findById(WAR_AND_PEACE_ID))
+        when(bookDao.countById(WAR_AND_PEACE_ID))
                 .thenThrow(new TransientDataAccessResourceException("TransientDataAccessResourceException"));
         assertThatThrownBy(() -> bookCommentService.add(WAR_AND_PEACE_ID, "Комментарий"))
                 .isInstanceOf(DataAccessServiceException.class);
@@ -88,14 +78,14 @@ class BookCommentServiceImplTest {
     @Test
     @DisplayName("Успешное удаление комментария")
     void deleteById_ok() {
-        when(bookCommentDao.removeById(WAR_AND_PEACE_COMMENT_ID)).thenReturn(1L);
+        when(bookDao.removeCommentById(WAR_AND_PEACE_COMMENT_ID)).thenReturn(1L);
         assertThat(bookCommentService.deleteById(WAR_AND_PEACE_COMMENT_ID)).isTrue();
     }
 
     @Test
     @DisplayName("Удаление комментария отсуствующего в хранилище")
     void deleteById_idNotFound() {
-        when(bookCommentDao.removeById(WAR_AND_PEACE_COMMENT_ID)).thenReturn(0L);
+        when(bookDao.removeCommentById(WAR_AND_PEACE_COMMENT_ID)).thenReturn(0L);
         assertThat(bookCommentService.deleteById(WAR_AND_PEACE_COMMENT_ID)).isFalse();
     }
 }

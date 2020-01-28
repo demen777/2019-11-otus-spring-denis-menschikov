@@ -15,7 +15,6 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 class GenreDaoMongoTest extends BaseDaoMongoTest {
     private static final String NOVEL_GENRE_NAME = "Роман";
-    private static final String NOVEL_GENRE_ID = "1";
     private Genre novelGenre;
     private static final String NEW_GENRE_NAME = "Сказка";
     private static final String WRONG_NOVEL_GENRE_NAME = "Чугун";
@@ -26,7 +25,6 @@ class GenreDaoMongoTest extends BaseDaoMongoTest {
     @BeforeEach
     void setUp() {
         novelGenre = new Genre(NOVEL_GENRE_NAME);
-        novelGenre.setId(NOVEL_GENRE_ID);
         mongoTemplate.dropCollection(Genre.class);
         mongoTemplate.save(novelGenre);
     }
