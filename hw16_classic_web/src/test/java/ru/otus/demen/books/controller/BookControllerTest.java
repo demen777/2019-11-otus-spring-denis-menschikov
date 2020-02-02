@@ -3,10 +3,12 @@ package ru.otus.demen.books.controller;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
+import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
+import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.ResultActions;
+import org.springframework.web.context.WebApplicationContext;
 import ru.otus.demen.books.model.Author;
 import ru.otus.demen.books.model.Book;
 import ru.otus.demen.books.model.BookComment;
@@ -19,13 +21,14 @@ import ru.otus.demen.books.service.GenreService;
 import java.util.List;
 
 import static org.hamcrest.core.StringContains.containsString;
-import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 
-@WebMvcTest(BookController.class)
+@SpringBootTest
+@AutoConfigureMockMvc
 class BookControllerTest {
     private static final Genre NOVEL = new Genre(1L, "Роман");
     private static final Author TOLSTOY = new Author(1L, "Лев", "Толстой");
@@ -49,6 +52,8 @@ class BookControllerTest {
     @MockBean
     GenreService genreService;
 
+    @Autowired
+    private WebApplicationContext context;
 
     @Test
     @DisplayName("Успешное отображение списка книг по url /books")
@@ -108,11 +113,13 @@ class BookControllerTest {
     void editBookPost_changeName() throws Exception {
         ResultActions resultActions = mockMvc.perform(post("/book/edit?id=" + WAR_AND_PEACE.getId())
                 .param("name", ANNA_KARENINA.getName())
-                .param("author", String.valueOf(TOLSTOY.getId()))
-                .param("genre", String.valueOf(NOVEL.getId()))
+                .param("author", "1")
+                .param("genre", "1")
         );
-        resultActions.andExpect(status().isOk())
-                .andExpect(content().contentType("text/html;charset=UTF-8"))
+        resultActions.andExpect(status().is3xxRedirection())
                 .andExpect(redirectedUrl("/books"));
+        verify(bookService, times(1))
+                .update(new Book(WAR_AND_PEACE.getId(), ANNA_KARENINA.getName(), WAR_AND_PEACE.getAuthor(),
+                        WAR_AND_PEACE.getGenre()));
     }
 }
