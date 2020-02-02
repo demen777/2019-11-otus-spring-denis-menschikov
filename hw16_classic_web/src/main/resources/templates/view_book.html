@@ -8,7 +8,10 @@
 </head>
 <body>
 <div th:replace="~{menu::menu}">Menu</div>
-<header><h3>Информация о книге "${book.name}"</h3></header>
+<header>
+    <h3 th:text="${'Информация о книге &quot;' + book.name + '&quot;'}">Информация о книге</h3>
+</header>
+
 <div class="actions">
     <a class="action" href="add_book_comment.html" th:href="@{/book-comment/new}">Добавить комментарий</a>
     <a class="action" href="add_book.html" th:href="@{/book/new}">Добавить новую</a>

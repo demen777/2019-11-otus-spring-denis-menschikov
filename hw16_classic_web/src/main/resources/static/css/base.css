@@ -7,3 +7,7 @@ a.action {
     font-weight: bold;
     margin-right: 12px;
 }
+
+div.buttons {
+    margin-top: 16px
+}

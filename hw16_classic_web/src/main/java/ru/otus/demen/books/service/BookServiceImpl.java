@@ -75,4 +75,15 @@ public class BookServiceImpl implements BookService {
             throw new DataAccessServiceException("Ошибка Dao во время получения списка всех книг", error);
         }
     }
+
+    @Override
+    @Transactional
+    public Book update(Book book) {
+        try {
+            return bookDao.save(book);
+        }
+        catch (DataAccessException error) {
+            throw new DataAccessServiceException("Ошибка Dao во время изменения книги", error);
+        }
+    }
 }

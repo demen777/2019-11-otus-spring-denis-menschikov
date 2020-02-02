@@ -11,16 +11,18 @@ import ru.otus.demen.books.model.Author;
 import ru.otus.demen.books.model.Book;
 import ru.otus.demen.books.model.BookComment;
 import ru.otus.demen.books.model.Genre;
+import ru.otus.demen.books.service.AuthorService;
 import ru.otus.demen.books.service.BookCommentService;
 import ru.otus.demen.books.service.BookService;
+import ru.otus.demen.books.service.GenreService;
 
 import java.util.List;
 
 import static org.hamcrest.core.StringContains.containsString;
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 
 @WebMvcTest(BookController.class)
@@ -40,6 +42,13 @@ class BookControllerTest {
 
     @MockBean
     BookCommentService bookCommentService;
+
+    @MockBean
+    AuthorService authorService;
+
+    @MockBean
+    GenreService genreService;
+
 
     @Test
     @DisplayName("Успешное отображение списка книг по url /books")
@@ -80,5 +89,30 @@ class BookControllerTest {
     void viewBook_no_id() throws Exception {
         ResultActions resultActions = mockMvc.perform(get("/book/view"));
         resultActions.andExpect(status().is4xxClientError());
+    }
+
+    @Test
+    @DisplayName("Успешное отображение книги для редактирования")
+    void editBookGet_ok() throws Exception {
+        when(bookService.getById(WAR_AND_PEACE.getId())).thenReturn(WAR_AND_PEACE);
+        when(authorService.getAll()).thenReturn(List.of(TOLSTOY));
+        when(genreService.getAll()).thenReturn(List.of(NOVEL));
+        ResultActions resultActions = mockMvc.perform(get("/book/edit?id=" + WAR_AND_PEACE.getId()));
+        resultActions.andExpect(status().isOk())
+                .andExpect(content().contentType("text/html;charset=UTF-8"))
+                .andExpect(content().string(containsString(WAR_AND_PEACE.getName())));
+    }
+
+    @Test
+    @DisplayName("Успешное изменение наименования книги")
+    void editBookPost_changeName() throws Exception {
+        ResultActions resultActions = mockMvc.perform(post("/book/edit?id=" + WAR_AND_PEACE.getId())
+                .param("name", ANNA_KARENINA.getName())
+                .param("author", String.valueOf(TOLSTOY.getId()))
+                .param("genre", String.valueOf(NOVEL.getId()))
+        );
+        resultActions.andExpect(status().isOk())
+                .andExpect(content().contentType("text/html;charset=UTF-8"))
+                .andExpect(redirectedUrl("/books"));
     }
 }
