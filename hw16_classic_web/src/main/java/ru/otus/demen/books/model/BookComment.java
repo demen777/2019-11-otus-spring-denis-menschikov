@@ -14,6 +14,7 @@ import javax.persistence.*;
 @Data
 @NoArgsConstructor
 @RequiredArgsConstructor
+@AllArgsConstructor
 @Entity
 public class BookComment {
     @Id
