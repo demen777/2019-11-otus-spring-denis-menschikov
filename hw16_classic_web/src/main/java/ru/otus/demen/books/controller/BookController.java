@@ -15,7 +15,7 @@ import java.util.List;
 public class BookController {
     private final BookService bookService;
 
-    @GetMapping("/books")
+    @GetMapping(path = {"/", "/books"})
     public String books(Model model) {
         List<Book> books = bookService.findAll();
         model.addAttribute("books", books);

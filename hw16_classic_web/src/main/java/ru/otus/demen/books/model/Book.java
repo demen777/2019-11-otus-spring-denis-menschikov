@@ -10,6 +10,7 @@ import java.util.Objects;
 @ToString
 @RequiredArgsConstructor
 @NoArgsConstructor
+@AllArgsConstructor
 @Entity
 public class Book {
     @Id
