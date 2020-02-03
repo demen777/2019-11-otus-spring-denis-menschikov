@@ -9,6 +9,5 @@ public interface BookService {
     List<Book> findBySurname(String surname);
     Book getById(long id);
     List<Book> findAll();
-    @SuppressWarnings("UnusedReturnValue")
-    Book update(Book book);
+    void update(long id, String name, long author_id, long genre_id);
 }

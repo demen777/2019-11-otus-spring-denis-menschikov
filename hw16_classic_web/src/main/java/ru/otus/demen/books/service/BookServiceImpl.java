@@ -33,10 +33,10 @@ public class BookServiceImpl implements BookService {
         try {
             Optional<Author> authorOptional = authorDao.findById(authorId);
             Author author = authorOptional.orElseThrow(
-                    () -> new NotFoundException(String.format("Не найден автор с id=%d", authorId)));
+                () -> new NotFoundException(String.format("Не найден автор с id=%d", authorId)));
             Optional<Genre> genreOptional = genreDao.findByName(genreName);
             Genre genre = genreOptional.orElseThrow(
-                    () -> new NotFoundException(String.format("Не найден жанр с именем %s", genreName)));
+                () -> new NotFoundException(String.format("Не найден жанр с именем %s", genreName)));
             Book book = new Book(name, author, genre);
             return bookDao.save(book);
         } catch (DataAccessException error) {
@@ -51,7 +51,7 @@ public class BookServiceImpl implements BookService {
             return bookDao.findByAuthorSurname(surname);
         } catch (DataAccessException error) {
             throw new DataAccessServiceException(
-                    String.format("Ошибка Dao во время поиска книг по фамилии %s", surname), error);
+                String.format("Ошибка Dao во время поиска книг по фамилии %s", surname), error);
         }
     }
 
@@ -78,12 +78,21 @@ public class BookServiceImpl implements BookService {
 
     @Override
     @Transactional
-    public Book update(Book book) {
+    public void update(long id, String name, long author_id, long genre_id) {
         try {
-            return bookDao.save(book);
-        }
-        catch (DataAccessException error) {
-            throw new DataAccessServiceException("Ошибка Dao во время изменения книги", error);
+            Book book = bookDao.findById(id)
+                .orElseThrow(() -> new NotFoundException(String.format("Не найдена книга с id=%d", id)));
+            Optional<Author> author = authorDao.findById(author_id);
+            book.setAuthor(author.orElseThrow(
+                () -> new NotFoundException(String.format("Не найден автор с id=%d", author_id))));
+            Optional<Genre> genre = genreDao.findById(genre_id);
+            book.setGenre(genre.orElseThrow(
+                () -> new NotFoundException(String.format("Не найден жанр с id=%d", genre_id))));
+            book.setName(name);
+            bookDao.save(book);
+        } catch (DataAccessException error) {
+            throw new DataAccessServiceException(
+                String.format("Ошибка Dao во время изменения книги с id=%d", id), error);
         }
     }
 }

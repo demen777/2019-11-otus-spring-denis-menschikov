@@ -5,10 +5,8 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.ResultActions;
-import org.springframework.web.context.WebApplicationContext;
 import ru.otus.demen.books.model.Author;
 import ru.otus.demen.books.model.Book;
 import ru.otus.demen.books.model.BookComment;
@@ -27,7 +25,7 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 
-@SpringBootTest
+@SpringBootTest(classes = ControllerTestConfiguration.class)
 @AutoConfigureMockMvc
 class BookControllerTest {
     private static final Genre NOVEL = new Genre(1L, "Роман");
@@ -40,20 +38,17 @@ class BookControllerTest {
     @Autowired
     MockMvc mockMvc;
 
-    @MockBean
+    @Autowired
     BookService bookService;
 
-    @MockBean
+    @Autowired
     BookCommentService bookCommentService;
 
-    @MockBean
+    @Autowired
     AuthorService authorService;
 
-    @MockBean
-    GenreService genreService;
-
     @Autowired
-    private WebApplicationContext context;
+    GenreService genreService;
 
     @Test
     @DisplayName("Успешное отображение списка книг по url /books")
@@ -113,13 +108,13 @@ class BookControllerTest {
     void editBookPost_changeName() throws Exception {
         ResultActions resultActions = mockMvc.perform(post("/book/edit?id=" + WAR_AND_PEACE.getId())
                 .param("name", ANNA_KARENINA.getName())
-                .param("author", "1")
-                .param("genre", "1")
+                .param("author", String.valueOf(WAR_AND_PEACE.getAuthor().getId()))
+                .param("genre", String.valueOf(WAR_AND_PEACE.getGenre().getId()))
         );
         resultActions.andExpect(status().is3xxRedirection())
                 .andExpect(redirectedUrl("/books"));
         verify(bookService, times(1))
-                .update(new Book(WAR_AND_PEACE.getId(), ANNA_KARENINA.getName(), WAR_AND_PEACE.getAuthor(),
-                        WAR_AND_PEACE.getGenre()));
+                .update(WAR_AND_PEACE.getId(), ANNA_KARENINA.getName(), WAR_AND_PEACE.getAuthor().getId(),
+                        WAR_AND_PEACE.getGenre().getId());
     }
 }

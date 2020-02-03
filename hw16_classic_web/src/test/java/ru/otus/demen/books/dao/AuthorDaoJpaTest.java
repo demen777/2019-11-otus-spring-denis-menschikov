@@ -1,6 +1,5 @@
 package ru.otus.demen.books.dao;
 
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -21,12 +20,14 @@ class AuthorDaoJpaTest {
     private static final long TOLSTOY_AUTHOR_ID = 1L;
     private static final String TOLSTOY_FIRST_NAME = "Лев";
     private static final String TOLSTOY_SURNAME = "Толстой";
-    private static final long WRONG_AUTHOR_ID = -1L;
-    private static final String DOSTOEVSKY_FIRST_NAME = "Федор";
-    private static final String DOSTOEVSKY_SURNAME = "Достоевский";
 
-    private Author newAuthor;
-    private Author tolstoyAuthor;
+    private static final long WRONG_AUTHOR_ID = -1L;
+    private static final String CHEKHOV_FIRST_NAME = "Антон";
+    private static final String CHEKHOV_SURNAME = "Чехов";
+
+    private Author newAuthor = new Author(CHEKHOV_FIRST_NAME, CHEKHOV_SURNAME);
+    private static final Author TOLSTOY = new Author(TOLSTOY_AUTHOR_ID, TOLSTOY_FIRST_NAME, TOLSTOY_SURNAME);
+    private static final Author DOSTOEVSKY = new Author(2L, "Федор", "Достоевский");
 
     @Autowired
     AuthorDao authorDao;
@@ -34,18 +35,11 @@ class AuthorDaoJpaTest {
     @Autowired
     private TestEntityManager em;
 
-    @BeforeEach
-    void setUp() {
-        tolstoyAuthor = new Author(TOLSTOY_FIRST_NAME, TOLSTOY_SURNAME);
-        tolstoyAuthor.setId(TOLSTOY_AUTHOR_ID);
-        newAuthor = new Author(DOSTOEVSKY_FIRST_NAME, DOSTOEVSKY_SURNAME);
-    }
-
     @Test
     @DisplayName("Успешный поиск методом findById")
     void findById_ok() {
         Optional<Author> author = authorDao.findById(TOLSTOY_AUTHOR_ID);
-        assertThat(author).isPresent().get().isEqualTo(tolstoyAuthor);
+        assertThat(author).isPresent().get().isEqualTo(TOLSTOY);
     }
 
     @Test
@@ -69,10 +63,8 @@ class AuthorDaoJpaTest {
     @Test
     @DisplayName("Успешное получение списка всех авторов")
     void getAll_ok() {
-        em.persist(newAuthor);
-        em.clear();
         Collection<Author> authors = authorDao.findAll();
-        assertThat(authors).containsExactlyInAnyOrderElementsOf(List.of(tolstoyAuthor, newAuthor));
+        assertThat(authors).containsExactlyInAnyOrderElementsOf(List.of(TOLSTOY, DOSTOEVSKY));
     }
 
     @Test
@@ -80,13 +72,13 @@ class AuthorDaoJpaTest {
     void findByNameAndSurname_ok() {
         Optional<Author> author = authorDao.findByFirstNameAndSurname(TOLSTOY_FIRST_NAME, TOLSTOY_SURNAME);
         assertThat(author).isPresent();
-        assertThat(author.get()).isEqualTo(tolstoyAuthor);
+        assertThat(author.get()).isEqualTo(TOLSTOY);
     }
 
     @Test
     @DisplayName("Поиск по имени и фамилии не нашел автора")
     void findByNameAndSurname_authorNotFound() {
-        Optional<Author> author = authorDao.findByFirstNameAndSurname(DOSTOEVSKY_FIRST_NAME, DOSTOEVSKY_SURNAME);
+        Optional<Author> author = authorDao.findByFirstNameAndSurname(CHEKHOV_FIRST_NAME, CHEKHOV_SURNAME);
         assertThat(author).isEmpty();
     }
 }

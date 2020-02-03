@@ -1,6 +1,5 @@
 package ru.otus.demen.books.dao;
 
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -18,9 +17,8 @@ import static org.assertj.core.api.Assertions.assertThat;
 @DataJpaTest
 @ComponentScan(basePackages = "ru.otus.demen.books.dao")
 class GenreDaoJpaTest {
-    private static final String NOVEL_GENRE_NAME = "Роман";
-    private static final long NOVEL_GENRE_ID = 1L;
-    private Genre novelGenre;
+    private static final Genre NOVEL = new Genre(1L, "Роман");
+    private static final Genre NOVELLA = new Genre(2L, "Повесть");
     private static final String NEW_GENRE_NAME = "Сказка";
     private static final String WRONG_NOVEL_GENRE_NAME = "Чугун";
 
@@ -30,19 +28,12 @@ class GenreDaoJpaTest {
     @Autowired
     private TestEntityManager em;
 
-    @BeforeEach
-    void setUp() {
-        novelGenre = new Genre(NOVEL_GENRE_NAME);
-        novelGenre.setId(NOVEL_GENRE_ID);
-    }
-
-
     @Test
     @DisplayName("Успешный поиск по имени")
     void findByName_ok() {
-        Optional<Genre> genre = genreDao.findByName(NOVEL_GENRE_NAME);
+        Optional<Genre> genre = genreDao.findByName(NOVEL.getName());
         assertThat(genre.isPresent()).isTrue();
-        assertThat(genre.get()).isEqualTo(novelGenre);
+        assertThat(genre.get()).isEqualTo(NOVEL);
     }
 
     @Test
@@ -66,6 +57,6 @@ class GenreDaoJpaTest {
     @DisplayName("Получение списка жанров")
     void getAll() {
         Collection<Genre> genres = genreDao.findAll();
-        assertThat(genres).containsExactlyInAnyOrderElementsOf(List.of(novelGenre));
+        assertThat(genres).containsExactlyInAnyOrderElementsOf(List.of(NOVEL, NOVELLA));
     }
 }

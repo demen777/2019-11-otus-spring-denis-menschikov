@@ -5,11 +5,9 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.view.RedirectView;
-import ru.otus.demen.books.model.Book;
 import ru.otus.demen.books.service.AuthorService;
 import ru.otus.demen.books.service.BookCommentService;
 import ru.otus.demen.books.service.BookService;
@@ -47,9 +45,11 @@ public class BookController {
     }
 
     @PostMapping("/book/edit")
-    public RedirectView editBookPost(@ModelAttribute Book book) {
-        log.info("editBookPost book={}", book);
-        bookService.update(book);
+    public RedirectView editBookPost(@RequestParam("id") long id, @RequestParam("name") String name,
+                                     @RequestParam("author") long author_id, @RequestParam("genre") long genre_id)
+    {
+        log.info("editBookPost id={} name={} author_id={} genre_id={}", id, name, author_id, genre_id);
+        bookService.update(id, name, author_id, genre_id);
         return new RedirectView("/books");
     }
 }
