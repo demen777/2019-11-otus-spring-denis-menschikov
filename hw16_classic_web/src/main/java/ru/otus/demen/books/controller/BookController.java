@@ -9,6 +9,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.view.RedirectView;
 import ru.otus.demen.books.controller.dto.mapper.AuthorDtoMapper;
+import ru.otus.demen.books.controller.dto.mapper.BookCommentDtoMapper;
 import ru.otus.demen.books.controller.dto.mapper.BookDtoMapper;
 import ru.otus.demen.books.controller.dto.mapper.GenreDtoMapper;
 import ru.otus.demen.books.model.Genre;
@@ -33,6 +34,7 @@ public class BookController {
     private final AuthorDtoMapper authorDtoMapper;
     private final GenreDtoMapper genreDtoMapper;
     private final BookDtoMapper bookDtoMapper;
+    private final BookCommentDtoMapper bookCommentDtoMapper;
 
     @GetMapping(path = {"/", "/books"})
     public String books(Model model) {
@@ -44,7 +46,8 @@ public class BookController {
     @GetMapping("/book/view")
     public String viewBook(@RequestParam("id") long id, Model model) {
         model.addAttribute("book", bookDtoMapper.bookDto(bookService.getById(id)));
-        model.addAttribute("bookComments", bookCommentService.getByBookId(id));
+        model.addAttribute("bookComments", bookCommentService.getByBookId(id)
+            .stream().map(bookCommentDtoMapper::toBookCommentDto).collect(Collectors.toList()));
         return "view_book";
     }
 
@@ -60,8 +63,7 @@ public class BookController {
 
     @PostMapping("/book/edit")
     public RedirectView editBookPost(@RequestParam("id") long id, @RequestParam("name") String name,
-                                     @RequestParam("author") long author_id, @RequestParam("genre") long genre_id)
-    {
+                                     @RequestParam("author") long author_id, @RequestParam("genre") long genre_id) {
         log.info("editBookPost id={} name={} author_id={} genre_id={}", id, name, author_id, genre_id);
         bookService.update(id, name, author_id, genre_id);
         return new RedirectView("/books");
