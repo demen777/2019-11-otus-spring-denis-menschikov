@@ -4,6 +4,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.dao.DataAccessException;
 import org.springframework.stereotype.Service;
 import ru.otus.demen.books.dao.AuthorDao;
+import ru.otus.demen.books.dao.BookCommentDao;
 import ru.otus.demen.books.dao.BookDao;
 import ru.otus.demen.books.dao.GenreDao;
 import ru.otus.demen.books.model.Author;
@@ -23,10 +24,11 @@ public class BookServiceImpl implements BookService {
     private final AuthorDao authorDao;
     private final GenreDao genreDao;
     private final BookDao bookDao;
+    private final BookCommentDao bookCommentDao;
 
     @Override
     @Transactional
-    public Book add(String name, long authorId, String genreName) {
+    public Book add(String name, long authorId, long genreId) {
         if (name == null || name.isEmpty()) {
             throw new IllegalParameterException("Имя книги должно быть не пустым");
         }
@@ -34,9 +36,9 @@ public class BookServiceImpl implements BookService {
             Optional<Author> authorOptional = authorDao.findById(authorId);
             Author author = authorOptional.orElseThrow(
                 () -> new NotFoundException(String.format("Не найден автор с id=%d", authorId)));
-            Optional<Genre> genreOptional = genreDao.findByName(genreName);
+            Optional<Genre> genreOptional = genreDao.findById(genreId);
             Genre genre = genreOptional.orElseThrow(
-                () -> new NotFoundException(String.format("Не найден жанр с именем %s", genreName)));
+                () -> new NotFoundException(String.format("Не найден жанр с id=%d", genreId)));
             Book book = new Book(name, author, genre);
             return bookDao.save(book);
         } catch (DataAccessException error) {
@@ -78,21 +80,34 @@ public class BookServiceImpl implements BookService {
 
     @Override
     @Transactional
-    public void update(long id, String name, long author_id, long genre_id) {
+    public void update(long id, String name, long authorId, long genreId) {
         try {
             Book book = bookDao.findById(id)
                 .orElseThrow(() -> new NotFoundException(String.format("Не найдена книга с id=%d", id)));
-            Optional<Author> author = authorDao.findById(author_id);
+            Optional<Author> author = authorDao.findById(authorId);
             book.setAuthor(author.orElseThrow(
-                () -> new NotFoundException(String.format("Не найден автор с id=%d", author_id))));
-            Optional<Genre> genre = genreDao.findById(genre_id);
+                () -> new NotFoundException(String.format("Не найден автор с id=%d", authorId))));
+            Optional<Genre> genre = genreDao.findById(genreId);
             book.setGenre(genre.orElseThrow(
-                () -> new NotFoundException(String.format("Не найден жанр с id=%d", genre_id))));
+                () -> new NotFoundException(String.format("Не найден жанр с id=%d", genreId))));
             book.setName(name);
             bookDao.save(book);
         } catch (DataAccessException error) {
             throw new DataAccessServiceException(
                 String.format("Ошибка Dao во время изменения книги с id=%d", id), error);
+        }
+    }
+
+    @Override
+    @Transactional
+    public void deleteById(long id) {
+        try {
+            bookCommentDao.deleteByBookId(id);
+            bookDao.deleteById(id);
+        }
+        catch (DataAccessException error) {
+            throw new DataAccessServiceException(
+                    String.format("Ошибка Dao во время удаления книги с id=%d", id), error);
         }
     }
 }

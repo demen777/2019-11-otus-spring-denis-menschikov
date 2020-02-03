@@ -2,35 +2,26 @@
 <html lang="en" xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
-    <title>Изменение информации о книге</title>
+    <title>Добавление информации о книге</title>
     <link href="../static/css/base.css" th:href="@{/css/base.css}" rel="stylesheet"/>
     <link href="../static/css/table.css" th:href="@{/css/table.css}" rel="stylesheet"/>
 </head>
 <body>
 <div th:replace="~{menu::menu}">Menu</div>
 <header>
-    <h3 th:text="${'Изменение информации о книге &quot;' + book.name + '&quot;'}">Изменение информации о книге</h3>
+    <h3 th:text="${'Добавление информации о книге'}">Добавление информации о книге</h3>
 </header>
-<div class="actions">
-    <a class="action" href="add_book.html" th:href="@{/book/new}">Добавить новую</a>
-    <a class="action" href="view_book.html" th:href="@{/book/view(id=${book.id})}">Просмотреть</a>
-    <a href="javascript:void(0)" th:onclick="confirmDeleteBook([[${book.id}]])">Удалить</a>
-</div>
-<form action="#" th:action="@{/book/edit(id=${book.id})}" th:object="${book}" method="post">
+<form action="#" th:action="@{/book/add}" method="post">
     <table class="paleblue">
         <tbody>
         <tr>
-            <td class="header">ID</td>
-            <td th:text="*{id}">1</td>
-        </tr>
-        <tr>
             <td class="header">Наименование</td>
-            <td><input type="text" th:field="*{name}"></td>
+            <td><input type="text" name="name"></td>
         </tr>
         <tr>
             <td class="header">Автор</td>
             <td>
-                <select th:field="*{author}">
+                <select name="author">
                     <option th:each="curAuthor : ${authors}"
                             th:value="${curAuthor.id}"
                             th:text="${curAuthor.getName()}">Лев Толстой
@@ -41,7 +32,7 @@
         <tr>
             <td class="header">Жанр</td>
             <td>
-                <select th:field="*{genre}">
+                <select name="genre">
                     <option th:each="curGenre : ${genres}"
                             th:value="${curGenre.id}"
                             th:text="${curGenre.name}">Лев Толстой
@@ -52,9 +43,8 @@
         </tbody>
     </table>
     <div class="buttons">
-        <input type="submit" value="Сохранить"/>
+        <input type="submit" value="Добавить"/>
     </div>
 </form>
 </body>
-<script src="../static/js/confirmDeleteBook.js" th:src="@{/js/confirmDeleteBook.js}"></script>
 </html>

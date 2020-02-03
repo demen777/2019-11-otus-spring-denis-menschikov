@@ -57,6 +57,7 @@ public class BookCommentServiceImpl implements BookCommentService {
     }
 
     @Override
+    @Transactional
     public Collection<BookComment> getByBookId(long bookId) {
         try {
             getBook(bookId);

@@ -10,7 +10,7 @@
 <div th:replace="~{menu::menu}">Menu</div>
 <header><h3>Список книг</h3></header>
 <div class="actions">
-    <a class="action" href="add_book.html" th:href="@{/book/new}">Добавить новую</a>
+    <a class="action" href="add_book.html" th:href="@{/book/add}">Добавить новую</a>
 </div>
 <table class="paleblue">
     <thead>
@@ -31,10 +31,11 @@
         <td>
             <a href="view_book.html" th:href="@{/book/view(id=${book.id})}">Просмотр</a>
             <a href="edit_book.html" th:href="@{/book/edit(id=${book.id})}">Изменить</a>
-            <a href="delete_book.html" th:href="@{/book/delete(id=${book.id})}">Удалить</a>
+            <a href="javascript:void(0)" th:onclick="confirmDeleteBook([[${book.id}]])">Удалить</a>
         </td>
     </tr>
     </tbody>
 </table>
 </body>
+<script src="../static/js/confirmDeleteBook.js" th:src="@{/js/confirmDeleteBook.js}"></script>
 </html>

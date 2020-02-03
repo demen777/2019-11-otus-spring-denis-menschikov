@@ -15,7 +15,7 @@
 <div class="actions">
     <a class="action" href="add_book.html" th:href="@{/book/new}">Добавить новую</a>
     <a class="action" href="edit_book.html" th:href="@{/book/edit(id=${book.id})}">Изменить</a>
-    <a class="action" href="delete_book.html" th:href="@{/book/delete(id=${book.id})}">Удалить</a>
+    <a href="javascript:void(0)" th:onclick="confirmDeleteBook([[${book.id}]])">Удалить</a>
 </div>
 <table class="paleblue">
     <tbody>
@@ -66,4 +66,5 @@
     </div>
 </form>
 </body>
+<script src="../static/js/confirmDeleteBook.js" th:src="@{/js/confirmDeleteBook.js}"></script>
 </html>

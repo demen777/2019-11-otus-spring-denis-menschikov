@@ -11,7 +11,6 @@ public interface BookDao extends JpaRepository<Book, Long> {
     @EntityGraph(value = "Book[author,genre]")
     List<Book> findByAuthorSurname(String surname);
 
-    @SuppressWarnings("NullableProblems")
     @EntityGraph(value = "Book[author,genre]")
     @Override
     List<Book> findAll();

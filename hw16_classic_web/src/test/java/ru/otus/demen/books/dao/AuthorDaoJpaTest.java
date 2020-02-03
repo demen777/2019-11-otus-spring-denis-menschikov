@@ -25,7 +25,7 @@ class AuthorDaoJpaTest {
     private static final String CHEKHOV_FIRST_NAME = "Антон";
     private static final String CHEKHOV_SURNAME = "Чехов";
 
-    private Author newAuthor = new Author(CHEKHOV_FIRST_NAME, CHEKHOV_SURNAME);
+    private final Author newAuthor = new Author(CHEKHOV_FIRST_NAME, CHEKHOV_SURNAME);
     private static final Author TOLSTOY = new Author(TOLSTOY_AUTHOR_ID, TOLSTOY_FIRST_NAME, TOLSTOY_SURNAME);
     private static final Author DOSTOEVSKY = new Author(2L, "Федор", "Достоевский");
 

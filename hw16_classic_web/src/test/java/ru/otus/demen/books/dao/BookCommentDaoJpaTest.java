@@ -78,4 +78,16 @@ class BookCommentDaoJpaTest {
         em.clear();
         assertThat(bookCommentDao.findByBookId(WAR_AND_PEACE_ID)).containsExactlyInAnyOrder(comment1, comment2);
     }
+
+    @Test
+    @DisplayName("Удаление комментариев по id книги")
+    void deleteByBookId() {
+        BookComment comment1 = addWarAndPeaceComment();
+        BookComment comment2 = new BookComment("Объемная книга", warAndPeaceWithId);
+        em.persist(comment2);
+        em.clear();
+        assertThat(bookCommentDao.findByBookId(WAR_AND_PEACE_ID)).hasSize(2);
+        bookCommentDao.deleteByBookId(WAR_AND_PEACE_ID);
+        assertThat(bookCommentDao.findByBookId(WAR_AND_PEACE_ID)).isEmpty();
+    }
 }

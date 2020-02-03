@@ -17,11 +17,14 @@ import ru.otus.demen.books.service.exception.DataAccessServiceException;
 import ru.otus.demen.books.service.exception.IllegalParameterException;
 import ru.otus.demen.books.service.exception.NotFoundException;
 
-import java.util.*;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.List;
+import java.util.Optional;
 
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.mockito.Mockito.when;
-import static org.assertj.core.api.Assertions.assertThat;
 
 
 @SpringBootTest(classes = ServiceTestConfiguration.class)
@@ -87,17 +90,17 @@ class BookServiceImplTest {
     @DisplayName("Успешное добавление книги")
     void add_ok() {
         when(authorDao.findById(TOLSTOY_AUTHOR_ID)).thenReturn(Optional.of(tolstoyAuthor));
-        when(genreDao.findByName(NOVEL_GENRE_NAME)).thenReturn(Optional.of(novelGenre));
+        when(genreDao.findById(NOVEL_GENRE_ID)).thenReturn(Optional.of(novelGenre));
         Book book = new Book(WAR_AND_PEACE_NAME, tolstoyAuthor, novelGenre);
         when(bookDao.save(book)).thenReturn(warAndPeaceWithId);
-        Book bookFromService = bookService.add(WAR_AND_PEACE_NAME, TOLSTOY_AUTHOR_ID, NOVEL_GENRE_NAME);
+        Book bookFromService = bookService.add(WAR_AND_PEACE_NAME, TOLSTOY_AUTHOR_ID, NOVEL_GENRE_ID);
         assertThat(bookFromService).isEqualTo(warAndPeaceWithId);
     }
 
     @Test
     @DisplayName("При добавлении книги с пустым именем выбрасывается исключение")
     void add_emptyName() {
-        assertThatThrownBy(() -> bookService.add("", TOLSTOY_AUTHOR_ID, NOVEL_GENRE_NAME))
+        assertThatThrownBy(() -> bookService.add("", TOLSTOY_AUTHOR_ID, NOVEL_GENRE_ID))
                 .isInstanceOf(IllegalParameterException.class).hasMessageStartingWith("Имя книги должно быть не пустым");
     }
 
@@ -105,10 +108,10 @@ class BookServiceImplTest {
     @DisplayName("При добавлении книги произошло DataAccessException исключение в BookDao")
     void add_bookDaoThrowDataAccessException() {
         when(authorDao.findById(TOLSTOY_AUTHOR_ID)).thenReturn(Optional.of(tolstoyAuthor));
-        when(genreDao.findByName(NOVEL_GENRE_NAME)).thenReturn(Optional.of(novelGenre));
+        when(genreDao.findById(NOVEL_GENRE_ID)).thenReturn(Optional.of(novelGenre));
         Book book = new Book(WAR_AND_PEACE_NAME, tolstoyAuthor, novelGenre);
         when(bookDao.save(book)).thenThrow(new DataIntegrityViolationException("DataIntegrityViolationException!!!"));
-        assertThatThrownBy(() -> bookService.add(WAR_AND_PEACE_NAME, TOLSTOY_AUTHOR_ID, NOVEL_GENRE_NAME))
+        assertThatThrownBy(() -> bookService.add(WAR_AND_PEACE_NAME, TOLSTOY_AUTHOR_ID, NOVEL_GENRE_ID))
                 .isInstanceOf(DataAccessServiceException.class).hasMessageContaining(ERR_MSG_DAO_ERROR);
     }
 

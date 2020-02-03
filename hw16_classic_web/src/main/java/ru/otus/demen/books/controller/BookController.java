@@ -74,9 +74,28 @@ public class BookController {
 
     @PostMapping("/book/edit")
     public RedirectView editBookPost(@RequestParam("id") long id, @RequestParam("name") String name,
-                                     @RequestParam("author") long author_id, @RequestParam("genre") long genre_id) {
-        log.info("editBookPost id={} name={} author_id={} genre_id={}", id, name, author_id, genre_id);
-        bookService.update(id, name, author_id, genre_id);
+                                     @RequestParam("author") long authorId, @RequestParam("genre") long genreId) {
+        log.info("editBookPost id={} name={} author_id={} genre_id={}", id, name, authorId, genreId);
+        bookService.update(id, name, authorId, genreId);
+        return new RedirectView("/books");
+    }
+
+    @GetMapping("/book/add")
+    public ModelAndView addBookGet() {
+        ModelAndView modelAndView = new ModelAndView("add_book");
+        modelAndView.addObject("authors",
+                authorService.getAll().stream().map(authorDtoMapper::toAuthorDto).collect(Collectors.toList()));
+        modelAndView.addObject("genres",
+                genreService.getAll().stream().map(genreDtoMapper::toGenreDto).collect(Collectors.toList()));
+        return modelAndView;
+    }
+
+    @PostMapping("/book/add")
+    public RedirectView addBookPost(@RequestParam("name") String name,
+                                     @RequestParam("author") long authorId, @RequestParam("genre") long genreId)
+    {
+        log.info("addBookPost name={} author_id={} genre_id={}", name, authorId, genreId);
+        bookService.add(name, authorId, genreId);
         return new RedirectView("/books");
     }
 
@@ -85,5 +104,12 @@ public class BookController {
     {
         bookCommentService.deleteById(commentId);
         return fillModelAndReturnView(bookId);
+    }
+
+    @GetMapping("/book/delete")
+    public RedirectView deleteBook(@RequestParam("id") long id)
+    {
+        bookService.deleteById(id);
+        return new RedirectView("/books");
     }
 }

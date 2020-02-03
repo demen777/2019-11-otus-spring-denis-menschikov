@@ -15,6 +15,7 @@ import ru.otus.demen.books.service.AuthorService;
 import ru.otus.demen.books.service.BookCommentService;
 import ru.otus.demen.books.service.BookService;
 import ru.otus.demen.books.service.GenreService;
+import ru.otus.demen.books.service.exception.IllegalParameterException;
 
 import java.util.List;
 
@@ -34,6 +35,7 @@ class BookControllerTest {
     private static final Book ANNA_KARENINA = new Book(2L, "Анна Каренина", TOLSTOY, NOVEL);
     public static final BookComment WAR_AND_PEACE_COMMENT
             = new BookComment(1L, "Объемная книга", WAR_AND_PEACE);
+    private static final String BOOK_MUST_BE_NOT_EMPTY_MSG = "Имя книги должно быть не пустым";
 
     @Autowired
     MockMvc mockMvc;
@@ -131,5 +133,68 @@ class BookControllerTest {
         verify(bookService, times(1))
                 .update(WAR_AND_PEACE.getId(), ANNA_KARENINA.getName(), WAR_AND_PEACE.getAuthor().getId(),
                         WAR_AND_PEACE.getGenre().getId());
+    }
+
+    @Test
+    @DisplayName("Успешное отображение формы для ввода новой книги")
+    void addBookGet_ok() throws Exception {
+        when(authorService.getAll()).thenReturn(List.of(TOLSTOY));
+        when(genreService.getAll()).thenReturn(List.of(NOVEL));
+        ResultActions resultActions = mockMvc.perform(get("/book/add"));
+        resultActions.andExpect(status().isOk())
+                .andExpect(content().contentType("text/html;charset=UTF-8"));
+    }
+
+    @Test
+    @DisplayName("Успешный ввод новой книги")
+    void addBookPost_ok() throws Exception {
+        ResultActions resultActions = mockMvc.perform(post("/book/add")
+                .param("name", ANNA_KARENINA.getName())
+                .param("author", String.valueOf(WAR_AND_PEACE.getAuthor().getId()))
+                .param("genre", String.valueOf(WAR_AND_PEACE.getGenre().getId()))
+        );
+        resultActions.andExpect(status().is3xxRedirection())
+                .andExpect(redirectedUrl("/books"));
+        verify(bookService, times(1))
+                .add(ANNA_KARENINA.getName(), WAR_AND_PEACE.getAuthor().getId(),
+                        WAR_AND_PEACE.getGenre().getId());
+    }
+
+    @Test
+    @DisplayName("Ввод новой книги с пустым наименованием")
+    void addBookPost_emptyName() throws Exception {
+        when(bookService.add("", WAR_AND_PEACE.getAuthor().getId(), WAR_AND_PEACE.getGenre().getId()))
+                .thenThrow(new IllegalParameterException(BOOK_MUST_BE_NOT_EMPTY_MSG));
+        ResultActions resultActions = mockMvc.perform(post("/book/add")
+                .param("name", "")
+                .param("author", String.valueOf(WAR_AND_PEACE.getAuthor().getId()))
+                .param("genre", String.valueOf(WAR_AND_PEACE.getGenre().getId()))
+        );
+        resultActions.andExpect(status().isOk())
+                .andExpect(content().string(containsString(BOOK_MUST_BE_NOT_EMPTY_MSG)));
+    }
+
+    @Test
+    @DisplayName("Удаление комментария успешно")
+    void deleteComment_ok() throws Exception {
+        when(bookService.getById(WAR_AND_PEACE.getId())).thenReturn(WAR_AND_PEACE);
+        ResultActions resultActions = mockMvc.perform(get(
+                "/book/delete-comment?book_id=" + WAR_AND_PEACE.getId()
+                        + "&comment_id=" + WAR_AND_PEACE_COMMENT.getId()));
+        resultActions.andExpect(status().isOk())
+                .andExpect(content().contentType("text/html;charset=UTF-8"))
+                .andExpect(content().string(containsString(WAR_AND_PEACE.getName())));
+        verify(bookCommentService, times(1)).deleteById(WAR_AND_PEACE_COMMENT.getId());
+    }
+
+    @Test
+    @DisplayName("Удаление книги")
+    void deleteBook_ok() throws Exception {
+        when(bookService.getById(WAR_AND_PEACE.getId())).thenReturn(WAR_AND_PEACE);
+        ResultActions resultActions = mockMvc.perform(get(
+                "/book/delete?id=" + WAR_AND_PEACE.getId()));
+        resultActions.andExpect(status().is3xxRedirection())
+                .andExpect(redirectedUrl("/books"));
+        verify(bookService, times(1)).deleteById(WAR_AND_PEACE.getId());
     }
 }
