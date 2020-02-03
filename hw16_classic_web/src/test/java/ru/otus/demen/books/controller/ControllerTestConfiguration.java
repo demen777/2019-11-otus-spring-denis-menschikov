@@ -10,7 +10,7 @@ import ru.otus.demen.books.service.GenreService;
 
 
 @TestConfiguration
-@ComponentScan("ru.otus.demen.books.controller")
+@ComponentScan(basePackages = {"ru.otus.demen.books.controller", "ru.otus.demen.books.controller.dto.mapper"})
 public class ControllerTestConfiguration {
     @MockBean
     BookService bookService;

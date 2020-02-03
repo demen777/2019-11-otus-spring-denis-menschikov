@@ -22,6 +22,4 @@ public class Author {
 
     @NonNull
     private String surname;
-
-    public String getName() { return firstName + " " + surname; }
 }
