@@ -13,7 +13,6 @@
 </header>
 
 <div class="actions">
-    <a class="action" href="add_book_comment.html" th:href="@{/book-comment/new}">Добавить комментарий</a>
     <a class="action" href="add_book.html" th:href="@{/book/new}">Добавить новую</a>
     <a class="action" href="edit_book.html" th:href="@{/book/edit(id=${book.id})}">Изменить</a>
     <a class="action" href="delete_book.html" th:href="@{/book/delete(id=${book.id})}">Удалить</a>
@@ -50,12 +49,21 @@
     <tbody>
     <tr th:each="bookComment: ${bookComments}">
         <td th:text="${bookComment.id}">1</td>
-        <td th:text="${bookComment.text}">Большая книга</td>
         <td>
-            <a href="delete_book_comment.html" th:href="@{/book-comment/delete(id=${bookComment.id})}">Удалить</a>
+            <pre th:text="${bookComment.text}">Большая книга</pre>
+        </td>
+        <td>
+            <a href="delete_book_comment.html"
+               th:href="@{/book/delete-comment(book_id=${book.id},comment_id=${bookComment.id})}">Удалить</a>
         </td>
     </tr>
     </tbody>
 </table>
+<form action="#" th:action="@{/book/view(id=${book.id})}" method="post">
+    <textarea name="comment_text" style="margin-top: 16px" cols="100" rows="12"></textarea>
+    <div class="buttons">
+        <input type="submit" value="Добавить комментарий"/>
+    </div>
+</form>
 </body>
 </html>

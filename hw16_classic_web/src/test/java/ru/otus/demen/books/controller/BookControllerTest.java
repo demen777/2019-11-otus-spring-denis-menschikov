@@ -85,6 +85,21 @@ class BookControllerTest {
     }
 
     @Test
+    @DisplayName("Успешное добавление комментария")
+    void viewBookPost_ok() throws Exception {
+        when(bookService.getById(WAR_AND_PEACE.getId())).thenReturn(WAR_AND_PEACE);
+        when(bookCommentService.getByBookId(WAR_AND_PEACE.getId())).thenReturn(List.of(WAR_AND_PEACE_COMMENT));
+        ResultActions resultActions = mockMvc.perform(post("/book/view?id=" + WAR_AND_PEACE.getId())
+                .param("comment_text", WAR_AND_PEACE_COMMENT.getText()));
+        resultActions.andExpect(status().isOk())
+                .andExpect(content().contentType("text/html;charset=UTF-8"))
+                .andExpect(content().string(containsString(WAR_AND_PEACE.getName())))
+                .andExpect(content().string(containsString(WAR_AND_PEACE_COMMENT.getText())));
+        verify(bookCommentService, times(1))
+                .add(WAR_AND_PEACE.getId(), WAR_AND_PEACE_COMMENT.getText());
+    }
+
+    @Test
     @DisplayName("Для отображения книги не передан id")
     void viewBook_no_id() throws Exception {
         ResultActions resultActions = mockMvc.perform(get("/book/view"));
