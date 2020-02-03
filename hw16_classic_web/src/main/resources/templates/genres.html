@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Список жанров</title>
+    <link href="../static/css/base.css" th:href="@{/css/base.css}" rel="stylesheet"/>
+    <link href="../static/css/table.css" th:href="@{/css/table.css}" rel="stylesheet"/>
+</head>
+<body>
+<div th:replace="~{menu::menu}">Menu</div>
+<header><h3>Список жанров</h3></header>
+<table class="paleblue">
+    <thead>
+    <tr>
+        <th>ID</th>
+        <th>Наименование</th>
+    </tr>
+    </thead>
+    <tbody>
+    <tr th:each="genre: ${genres}">
+        <td th:text="${genre.id}">1</td>
+        <td th:text="${genre.name}">Лев</td>
+    </tr>
+    </tbody>
+</table>
+</body>
+</html>
