@@ -9,6 +9,9 @@
 <body>
 <div th:replace="~{menu::menu}">Menu</div>
 <header><h3>Список авторов</h3></header>
+<div class="actions">
+    <a class="action" href="add_author.html" th:href="@{/author/add}">Добавить нового</a>
+</div>
 <table class="paleblue">
     <thead>
     <tr>
