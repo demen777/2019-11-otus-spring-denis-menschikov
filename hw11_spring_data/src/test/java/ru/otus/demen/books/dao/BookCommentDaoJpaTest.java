@@ -27,6 +27,7 @@ class BookCommentDaoJpaTest {
     private static final long WAR_AND_PEACE_ID = 1L;
     private static final String WAR_AND_PEACE_NAME = "Война и мир";
     private static final String COMMENT_TEXT = "Хорошая книга";
+    private static final int ONE_SELECT_EXPECTED = 1;
 
     private BookComment warAndPeaceCommentWithoutId;
     private Book warAndPeaceWithId;
@@ -85,6 +86,6 @@ class BookCommentDaoJpaTest {
         em.clear();
         statistics.clear();
         assertThat(bookCommentDao.findByBookId(WAR_AND_PEACE_ID)).containsExactlyInAnyOrder(comment1, comment2);
-        assertThat(statistics.getPrepareStatementCount()).isEqualTo(1);
+        assertThat(statistics.getPrepareStatementCount()).isEqualTo(ONE_SELECT_EXPECTED);
     }
 }
