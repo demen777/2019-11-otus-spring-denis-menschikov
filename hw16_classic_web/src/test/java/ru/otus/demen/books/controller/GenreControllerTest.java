@@ -9,19 +9,23 @@ import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.ResultActions;
 import ru.otus.demen.books.model.Genre;
 import ru.otus.demen.books.service.GenreService;
+import ru.otus.demen.books.service.exception.AlreadyExistsException;
+import ru.otus.demen.books.service.exception.IllegalParameterException;
 
 import java.util.List;
 
 import static org.hamcrest.core.StringContains.containsString;
-import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 @SpringBootTest(classes = ControllerTestConfiguration.class)
 @AutoConfigureMockMvc
 class GenreControllerTest {
     private static final Genre NOVEL = new Genre(1L, "Роман");
+    public static final String NAME_MUST_BE_NOT_EMPTY_MSG = "Имя жанра должно быть непустым";
+    public static final String NAME_ALREADY_EXISTS = "Жанр с именем " + NOVEL.getName() + " уже есть в БД";
 
     @Autowired
     MockMvc mockMvc;
@@ -37,5 +41,49 @@ class GenreControllerTest {
         resultActions.andExpect(status().isOk())
                 .andExpect(content().contentType("text/html;charset=UTF-8"))
                 .andExpect(content().string(containsString(NOVEL.getName())));
+    }
+
+    @Test
+    @DisplayName("Успешное отображение формы для ввода нового жанра")
+    void addGenreGet_ok() throws Exception {
+        ResultActions resultActions = mockMvc.perform(get("/genre/add"));
+        resultActions.andExpect(status().isOk())
+            .andExpect(content().contentType("text/html;charset=UTF-8"));
+    }
+
+    @Test
+    @DisplayName("Успешный submit формы для ввода нового жанра")
+    void addGenrePost_ok() throws Exception {
+        ResultActions resultActions = mockMvc.perform(post("/genre/add")
+            .param("name", NOVEL.getName())
+        );
+        resultActions.andExpect(status().is3xxRedirection())
+            .andExpect(redirectedUrl("/genres"));
+        verify(genreService, times(1))
+            .add(NOVEL.getName());
+    }
+
+    @Test
+    @DisplayName("Ввод нового жанра с пустым наименованием")
+    void addGenrePost_emptyName() throws Exception {
+        when(genreService.add(""))
+            .thenThrow(new IllegalParameterException(NAME_MUST_BE_NOT_EMPTY_MSG));
+        ResultActions resultActions = mockMvc.perform(post("/genre/add")
+            .param("name", "")
+        );
+        resultActions.andExpect(status().isOk())
+            .andExpect(content().string(containsString(NAME_MUST_BE_NOT_EMPTY_MSG)));
+    }
+
+    @Test
+    @DisplayName("Ввод нового жанра с наименованием которое уже есть в БД")
+    void addGenrePost_alreadyExists() throws Exception {
+        when(genreService.add(NOVEL.getName()))
+            .thenThrow(new AlreadyExistsException(NAME_ALREADY_EXISTS));
+        ResultActions resultActions = mockMvc.perform(post("/genre/add")
+            .param("name", NOVEL.getName())
+        );
+        resultActions.andExpect(status().isOk())
+            .andExpect(content().string(containsString(NAME_ALREADY_EXISTS)));
     }
 }

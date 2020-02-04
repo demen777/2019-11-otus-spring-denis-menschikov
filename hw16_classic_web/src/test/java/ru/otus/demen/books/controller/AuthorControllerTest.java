@@ -51,7 +51,7 @@ class AuthorControllerTest {
     }
 
     @Test
-    @DisplayName("Успешное submit формы для ввода нового автора")
+    @DisplayName("Успешный submit формы для ввода нового автора")
     void addAuthorPost_ok() throws Exception {
         ResultActions resultActions = mockMvc.perform(post("/author/add")
             .param("firstName", TOLSTOY.getFirstName())
