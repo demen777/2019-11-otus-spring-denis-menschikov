@@ -3,10 +3,11 @@ package ru.otus.demen.books.controller;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
-import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
+import org.springframework.context.annotation.Import;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.ResultActions;
+import ru.otus.demen.books.controller.dto.mapper.AuthorDtoMapper;
 import ru.otus.demen.books.model.Author;
 import ru.otus.demen.books.service.AuthorService;
 import ru.otus.demen.books.service.exception.IllegalParameterException;
@@ -19,8 +20,8 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
-@SpringBootTest(classes = ControllerTestConfiguration.class)
-@AutoConfigureMockMvc
+@WebMvcTest(AuthorController.class)
+@Import(ControllerTestConfiguration.class)
 class AuthorControllerTest {
     private static final Author TOLSTOY = new Author(1L, "Лев", "Толстой");
     public static final String FIRSTNAME_MUST_BE_NOT_EMPTY_MSG = "Имя не должно быть пустым";
@@ -32,27 +33,33 @@ class AuthorControllerTest {
     @Autowired
     AuthorService authorService;
 
+    @Autowired
+    AuthorDtoMapper authorDtoMapper;
+
     @Test
     @DisplayName("Успешное отображение списка авторов")
-    void authors_ok() throws Exception {
+    void getAuthorList_ok() throws Exception {
         when(authorService.getAll()).thenReturn(List.of(TOLSTOY));
         ResultActions resultActions = mockMvc.perform(get("/authors"));
         resultActions.andExpect(status().isOk())
-                .andExpect(content().contentType("text/html;charset=UTF-8"))
-                .andExpect(content().string(containsString(TOLSTOY.getSurname())));
+            .andExpect(content().contentType("text/html;charset=UTF-8"))
+            .andExpect(model().attributeExists("authors"))
+            .andExpect(content().string(containsString(TOLSTOY.getSurname())))
+            .andExpect(view().name("authors"));
     }
 
     @Test
     @DisplayName("Успешное отображение формы для ввода нового автора")
-    void addAuthorGet_ok() throws Exception {
+    void getFormForNewAuthor_ok() throws Exception {
         ResultActions resultActions = mockMvc.perform(get("/author/add"));
         resultActions.andExpect(status().isOk())
-            .andExpect(content().contentType("text/html;charset=UTF-8"));
+            .andExpect(content().contentType("text/html;charset=UTF-8"))
+            .andExpect(view().name("add_author"));
     }
 
     @Test
     @DisplayName("Успешный submit формы для ввода нового автора")
-    void addAuthorPost_ok() throws Exception {
+    void addAuthor_ok() throws Exception {
         ResultActions resultActions = mockMvc.perform(post("/author/add")
             .param("firstName", TOLSTOY.getFirstName())
             .param("surname", TOLSTOY.getSurname())
@@ -65,7 +72,7 @@ class AuthorControllerTest {
 
     @Test
     @DisplayName("Ввод нового автора с пустым именем")
-    void addAuthorPost_emptyFirstName() throws Exception {
+    void addAuthor_emptyFirstName() throws Exception {
         when(authorService.add("", TOLSTOY.getSurname()))
             .thenThrow(new IllegalParameterException(FIRSTNAME_MUST_BE_NOT_EMPTY_MSG));
         ResultActions resultActions = mockMvc.perform(post("/author/add")
@@ -73,12 +80,13 @@ class AuthorControllerTest {
             .param("surname", TOLSTOY.getSurname())
         );
         resultActions.andExpect(status().isOk())
-            .andExpect(content().string(containsString(FIRSTNAME_MUST_BE_NOT_EMPTY_MSG)));
+            .andExpect(content().string(containsString(FIRSTNAME_MUST_BE_NOT_EMPTY_MSG)))
+            .andExpect(view().name("client_error"));
     }
 
     @Test
     @DisplayName("Ввод нового автора с пустой фамилией")
-    void addAuthorPost_emptySurname() throws Exception {
+    void addAuthor_emptySurname() throws Exception {
         when(authorService.add(TOLSTOY.getFirstName(), ""))
             .thenThrow(new IllegalParameterException(SURNAME_MUST_BE_NOT_EMPTY_MSG));
         ResultActions resultActions = mockMvc.perform(post("/author/add")
@@ -86,6 +94,7 @@ class AuthorControllerTest {
             .param("surname", "")
         );
         resultActions.andExpect(status().isOk())
-            .andExpect(content().string(containsString(SURNAME_MUST_BE_NOT_EMPTY_MSG)));
+            .andExpect(content().string(containsString(SURNAME_MUST_BE_NOT_EMPTY_MSG)))
+            .andExpect(view().name("client_error"));
     }
 }

@@ -8,10 +8,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.view.RedirectView;
-import ru.otus.demen.books.controller.dto.mapper.AuthorDtoMapper;
-import ru.otus.demen.books.controller.dto.mapper.BookCommentDtoMapper;
-import ru.otus.demen.books.controller.dto.mapper.BookDtoMapper;
-import ru.otus.demen.books.controller.dto.mapper.GenreDtoMapper;
+import ru.otus.demen.books.controller.dto.mapper.*;
 import ru.otus.demen.books.service.AuthorService;
 import ru.otus.demen.books.service.BookCommentService;
 import ru.otus.demen.books.service.BookService;
@@ -28,26 +25,23 @@ public class BookController {
     private final BookCommentService bookCommentService;
     private final AuthorService authorService;
     private final GenreService genreService;
-    private final AuthorDtoMapper authorDtoMapper;
-    private final GenreDtoMapper genreDtoMapper;
-    private final BookDtoMapper bookDtoMapper;
-    private final BookCommentDtoMapper bookCommentDtoMapper;
+    private final BookMappersFacade bookMappers;
 
     @GetMapping(path = {"/", "/books"})
-    public ModelAndView books() {
+    public ModelAndView getBookList() {
         ModelAndView modelAndView = new ModelAndView("books");
         modelAndView.addObject("books",
-            bookService.findAll().stream().map(bookDtoMapper::bookDto).collect(Collectors.toList()));
+            bookService.findAll().stream().map(bookMappers::bookDto).collect(Collectors.toList()));
         return modelAndView;
     }
 
     @GetMapping("/book/view")
-    public ModelAndView viewBookGet(@RequestParam("id") long id) {
+    public ModelAndView getBook(@RequestParam("id") long id) {
         return fillModelAndReturnView(id);
     }
 
     @PostMapping("/book/view")
-    public ModelAndView viewBookPost(@RequestParam("id") long id, @RequestParam("comment_text") String commentText)
+    public ModelAndView addBookComment(@RequestParam("id") long id, @RequestParam("comment_text") String commentText)
     {
         bookCommentService.add(id, commentText);
         return fillModelAndReturnView(id);
@@ -55,44 +49,44 @@ public class BookController {
 
     private ModelAndView fillModelAndReturnView(@RequestParam("id") long id) {
         ModelAndView modelAndView = new ModelAndView("view_book");
-        modelAndView.addObject("book", bookDtoMapper.bookDto(bookService.getById(id)));
+        modelAndView.addObject("book", bookMappers.bookDto(bookService.getById(id)));
         modelAndView.addObject("bookComments", bookCommentService.getByBookId(id)
-                .stream().map(bookCommentDtoMapper::toBookCommentDto).collect(Collectors.toList()));
+                .stream().map(bookMappers::toBookCommentDto).collect(Collectors.toList()));
         return modelAndView;
     }
 
     @GetMapping("/book/edit")
-    public ModelAndView editBookGet(@RequestParam("id") long id) {
+    public ModelAndView getBookForEdit(@RequestParam("id") long id) {
         ModelAndView modelAndView = new ModelAndView("edit_book");
-        modelAndView.addObject("book", bookDtoMapper.bookDto(bookService.getById(id)));
+        modelAndView.addObject("book", bookMappers.bookDto(bookService.getById(id)));
         modelAndView.addObject("authors",
-            authorService.getAll().stream().map(authorDtoMapper::toAuthorDto).collect(Collectors.toList()));
+            authorService.getAll().stream().map(bookMappers::toAuthorDto).collect(Collectors.toList()));
         modelAndView.addObject("genres",
-            genreService.getAll().stream().map(genreDtoMapper::toGenreDto).collect(Collectors.toList()));
+            genreService.getAll().stream().map(bookMappers::toGenreDto).collect(Collectors.toList()));
         return modelAndView;
     }
 
     @PostMapping("/book/edit")
-    public RedirectView editBookPost(@RequestParam("id") long id, @RequestParam("name") String name,
-                                     @RequestParam("author") long authorId, @RequestParam("genre") long genreId) {
+    public RedirectView editBook(@RequestParam("id") long id, @RequestParam("name") String name,
+                                 @RequestParam("author") long authorId, @RequestParam("genre") long genreId) {
         log.info("editBookPost id={} name={} author_id={} genre_id={}", id, name, authorId, genreId);
         bookService.update(id, name, authorId, genreId);
         return new RedirectView("/books");
     }
 
     @GetMapping("/book/add")
-    public ModelAndView addBookGet() {
+    public ModelAndView getFormForNewBook() {
         ModelAndView modelAndView = new ModelAndView("add_book");
         modelAndView.addObject("authors",
-                authorService.getAll().stream().map(authorDtoMapper::toAuthorDto).collect(Collectors.toList()));
+                authorService.getAll().stream().map(bookMappers::toAuthorDto).collect(Collectors.toList()));
         modelAndView.addObject("genres",
-                genreService.getAll().stream().map(genreDtoMapper::toGenreDto).collect(Collectors.toList()));
+                genreService.getAll().stream().map(bookMappers::toGenreDto).collect(Collectors.toList()));
         return modelAndView;
     }
 
     @PostMapping("/book/add")
-    public RedirectView addBookPost(@RequestParam("name") String name,
-                                     @RequestParam("author") long authorId, @RequestParam("genre") long genreId)
+    public RedirectView addBook(@RequestParam("name") String name,
+                                @RequestParam("author") long authorId, @RequestParam("genre") long genreId)
     {
         log.info("addBookPost name={} author_id={} genre_id={}", name, authorId, genreId);
         bookService.add(name, authorId, genreId);

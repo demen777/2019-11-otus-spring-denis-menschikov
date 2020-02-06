@@ -22,7 +22,7 @@ public class GenreController {
     private final GenreDtoMapper genreDtoMapper;
 
     @GetMapping("/genres")
-    public ModelAndView authors() {
+    public ModelAndView getGenreList() {
         ModelAndView modelAndView = new ModelAndView("genres");
         modelAndView.addObject("genres",
             genreService.getAll().stream().map(genreDtoMapper::toGenreDto).collect(Collectors.toList()));
@@ -30,12 +30,12 @@ public class GenreController {
     }
 
     @GetMapping("/genre/add")
-    public ModelAndView addGenreGet() {
+    public ModelAndView getFormForNewGenre() {
         return new ModelAndView("add_genre");
     }
 
     @PostMapping("/genre/add")
-    public RedirectView addGenrePost(@RequestParam("name") String name)
+    public RedirectView addGenre(@RequestParam("name") String name)
     {
         log.info("addGenrePost name={}", name);
         genreService.add(name);

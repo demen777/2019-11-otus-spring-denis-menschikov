@@ -22,7 +22,7 @@ public class AuthorController {
     private final AuthorDtoMapper authorDtoMapper;
 
     @GetMapping("/authors")
-    public ModelAndView authors() {
+    public ModelAndView getAuthorList() {
         ModelAndView modelAndView = new ModelAndView("authors");
         modelAndView.addObject("authors",
             authorService.getAll().stream().map(authorDtoMapper::toAuthorDto).collect(Collectors.toList()));
@@ -30,13 +30,13 @@ public class AuthorController {
     }
 
     @GetMapping("/author/add")
-    public ModelAndView addAuthorGet() {
+    public ModelAndView getFormForNewAuthor() {
         return new ModelAndView("add_author");
     }
 
     @PostMapping("/author/add")
-    public RedirectView addAuthorPost(@RequestParam("firstName") String firstName,
-                                      @RequestParam("surname") String surname)
+    public RedirectView addAuthor(@RequestParam("firstName") String firstName,
+                                  @RequestParam("surname") String surname)
     {
         log.info("addAuthorPost firstName={} surname={}", firstName, surname);
         authorService.add(firstName, surname);
