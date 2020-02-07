@@ -1,18 +1,28 @@
 import React from "react";
+import {NavLink} from "react-router-dom";
 
 export default class Genres extends React.Component {
     render() {
         return (
             <div>
-                <h2>GENRES</h2>
-                <p>Cras facilisis urna ornare ex volutpat, et
-                    convallis erat elementum. Ut aliquam, ipsum vitae
-                    gravida suscipit, metus dui bibendum est, eget rhoncus nibh
-                    metus nec massa. Maecenas hendrerit laoreet augue
-                    nec molestie. Cum sociis natoque penatibus et magnis
-                    dis parturient montes, nascetur ridiculus mus.</p>
-
-                <p>Duis a turpis sed lacus dapibus elementum sed eu lectus.</p>
+                <div className="btn-group" role="group" aria-label="Список действий">
+                    <NavLink className="btn btn-secondary" to="/genre/add">Добавить</NavLink>
+                </div>
+                <h4>Список жанров</h4>
+                <table className="table table-striped">
+                    <thead>
+                    <tr>
+                        <th>ID</th>
+                        <th>Наименование</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <tr>
+                        <td>1</td>
+                        <td>Лев</td>
+                    </tr>
+                    </tbody>
+                </table>
             </div>
         );
     }
