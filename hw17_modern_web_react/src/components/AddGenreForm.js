@@ -1,18 +1,24 @@
 import React from "react";
+import {GenreService} from "../services/GenreService";
 
 export default class AddGenreForm extends React.Component {
-    state = {
-        genreName: ''
+    constructor(props) {
+        super(props);
+        this.genreService = new GenreService();
+        this.state = {
+            genreName: ''
+        }
     }
 
     addGenre = (event) => {
-        event.preventDefault()
-        console.log(event.target.value)
-        console.log(this.state.genreName)
-    }
+        event.preventDefault();
+        console.log(event.target.value);
+        console.log(this.state.genreName);
+        this.genreService.addGenre(this.state.genreName);
+    };
 
     render() {
-        const {genreName} = this.state
+        const {genreName} = this.state;
         return (
             <div>
                 <h4>Добавление информации о жанре</h4>
@@ -30,7 +36,7 @@ export default class AddGenreForm extends React.Component {
     }
 
     handleChange = event => {
-        const {name, value} = event.target
+        const {name, value} = event.target;
         this.setState({[name]: value})
     };
 }

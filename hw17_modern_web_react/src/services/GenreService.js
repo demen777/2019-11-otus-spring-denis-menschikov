@@ -7,7 +7,7 @@ export class GenreService {
     }
 
     async getAll() {
-        return fetch(this.config.GENRE_GET_ALL_URL)
+        return fetch(this.config.GENRES_URL)
             .then(response => {
                 if (!response.ok) {
                     this.handleResponseError(response)
@@ -20,6 +20,28 @@ export class GenreService {
                 }
             )
             .catch(error => this.handleError(error))
+    }
+
+    async addGenre(genreName) {
+        console.log("GenreService.addGenre():");
+        console.log(genreName);
+        const genre = {name: genreName};
+        return fetch(this.config.ADD_GENRE_URL, {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json"
+            },
+            body: JSON.stringify(genre)
+        })
+            .then(response => {
+                if (!response.ok) {
+                    this.handleResponseError(response);
+                }
+                return response.json();
+            })
+            .catch(error => {
+                this.handleError(error);
+            });
     }
 
     handleResponseError(response) {

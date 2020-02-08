@@ -1,4 +1,4 @@
-import React from "react";
+import React, {Fragment} from "react";
 import {NavLink} from "react-router-dom";
 import {GenreService} from "../services/GenreService";
 
@@ -17,7 +17,7 @@ export default class Genres extends React.Component {
 
     getGenres() {
         this.genreService.getAll().then(genres => {
-                if(genres !== undefined) {
+                if (genres !== undefined) {
                     this.setState({genres: genres});
                 }
             }
@@ -26,14 +26,8 @@ export default class Genres extends React.Component {
 
     render() {
         const {genres} = this.state;
-        const listGenres = genres.map((genre) =>
-            <tr key={genre.id}>
-                <td>{genre.id}</td>
-                <td>{genre.name}</td>
-            </tr>
-        );
         return (
-            <div>
+            <Fragment>
                 <div className="btn-group" role="group" aria-label="Список действий">
                     <NavLink className="btn btn-secondary" to="/genre/add">Добавить</NavLink>
                 </div>
@@ -46,10 +40,15 @@ export default class Genres extends React.Component {
                     </tr>
                     </thead>
                     <tbody>
-                    {listGenres}
+                    {genres.map((genre) =>
+                    <tr key={genre.id}>
+                        <td>{genre.id}</td>
+                        <td>{genre.name}</td>
+                    </tr>
+                    )}
                     </tbody>
                 </table>
-            </div>
+            </Fragment>
         );
     }
 }

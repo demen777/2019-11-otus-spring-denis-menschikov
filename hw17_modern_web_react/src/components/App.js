@@ -2,7 +2,7 @@ import React from 'react';
 import {
     Route,
     NavLink,
-    HashRouter, Redirect
+    Redirect, BrowserRouter
 } from "react-router-dom";
 import Books from "./Books";
 import Authors from "./Authors";
@@ -13,7 +13,7 @@ import 'bootstrap/dist/css/bootstrap.css'
 export default class App extends React.Component {
     render() {
         return (
-            <HashRouter>
+            <BrowserRouter>
                 <div className="App">
                     <nav className="nav nav-pills">
                         <NavLink className="nav-link" to="/books">Книги</NavLink>
@@ -30,7 +30,7 @@ export default class App extends React.Component {
                         <Route path="/genre/add" component={AddGenreForm}/>
                     </div>
                 </div>
-            </HashRouter>
+            </BrowserRouter>
         );
     }
 }
