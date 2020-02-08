@@ -6,8 +6,8 @@ export async function handleResponseError(response) {
         alert(error_type + "\n" + message);
     } else {
         console.log(response);
-        throw new Error("HTTP error, status = " + response.status);
     }
+    throw new Error("HTTP error, status = " + response.status);
 }
 
 export function handleError(error) {

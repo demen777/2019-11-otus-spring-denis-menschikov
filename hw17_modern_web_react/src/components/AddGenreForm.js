@@ -1,5 +1,6 @@
 import React from "react";
 import {GenreService} from "../services/GenreService";
+import {handleError} from "../services/ErrorHandlers";
 
 export default class AddGenreForm extends React.Component {
     constructor(props) {
@@ -10,11 +11,19 @@ export default class AddGenreForm extends React.Component {
         }
     }
 
-    addGenre = (event) => {
+    addGenre = event => {
         event.preventDefault();
         console.log(event.target.value);
         console.log(this.state.genreName);
-        this.genreService.addGenre(this.state.genreName);
+        const jsonPromise = this.genreService.addGenre(this.state.genreName);
+        jsonPromise.then(newGenre => {
+                console.log("---" + newGenre);
+                if (newGenre !== undefined) {
+                    console.log(newGenre);
+                    window.location.href = "/genres";
+                }
+            }
+        ).catch(error => handleError(error));
     };
 
     render() {

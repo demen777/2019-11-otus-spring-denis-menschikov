@@ -23,27 +23,33 @@ export class GenreService {
             .catch(error => this.handleError(error))
     }
 
+    checkStatus(response) {
+        if (!response.ok) {
+            return handleResponseError(response);
+        }
+        else {
+            return Promise.resolve(response);
+        }
+    }
+
     async addGenre(genreName) {
         console.log("GenreService.addGenre():");
         console.log(genreName);
         const genre = {name: genreName};
-        return fetch(this.config.ADD_GENRE_URL, {
+        const response = await fetch(this.config.ADD_GENRE_URL, {
             method: "POST",
             headers: {
                 "Content-Type": "application/json"
             },
             body: JSON.stringify(genre)
         })
-            .then(response => {
-                if (!response.ok) {
-                    handleResponseError(response);
-                }
-                else {
-                    return response.json();
-                }
-            })
-            .catch(error => {
-                handleError(error);
-            });
+            .then(this.checkStatus)
+            .catch(error => handleError(error));
+        if (!response.ok) {
+            await handleResponseError(response);
+        }
+        else {
+            return response.json();
+        }
     }
 }
