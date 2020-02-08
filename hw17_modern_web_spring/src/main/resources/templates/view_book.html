@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Информация о книге</title>
+    <link href="../static/css/base.css" th:href="@{/css/base.css}" rel="stylesheet"/>
+    <link href="../static/css/table.css" th:href="@{/css/table.css}" rel="stylesheet"/>
+</head>
+<body>
+<div th:replace="~{menu::menu}">Menu</div>
+<header>
+    <h3 th:text="${'Информация о книге &quot;' + book.name + '&quot;'}">Информация о книге</h3>
+</header>
+
+<div class="actions">
+    <a class="action" href="add_book.html" th:href="@{/book/new}">Добавить новую</a>
+    <a class="action" href="edit_book.html" th:href="@{/book/edit(id=${book.id})}">Изменить</a>
+    <a href="javascript:void(0)" th:onclick="confirmDeleteBook([[${book.id}]])">Удалить</a>
+</div>
+<table class="paleblue">
+    <tbody>
+    <tr>
+        <td class="header">ID</td>
+        <td th:text="${book.id}">1</td>
+    </tr>
+    <tr>
+        <td class="header">Наименование</td>
+        <td th:text="${book.name}">Война и мир</td>
+    </tr>
+    <tr>
+        <td class="header">Автор</td>
+        <td th:text="${book.author.getName()}">Лев Толстой</td>
+    </tr>
+    <tr>
+        <td class="header">Жанр</td>
+        <td th:text="${book.genre.name}">Роман</td>
+    </tr>
+    </tbody>
+</table>
+<h3>Комментарии</h3>
+<table class="paleblue">
+    <thead>
+    <tr>
+        <th>ID</th>
+        <th>Содержание</th>
+        <th>Действия</th>
+    </tr>
+    </thead>
+    <tbody>
+    <tr th:each="bookComment: ${bookComments}">
+        <td th:text="${bookComment.id}">1</td>
+        <td>
+            <pre th:text="${bookComment.text}">Большая книга</pre>
+        </td>
+        <td>
+            <a href="delete_book_comment.html"
+               th:href="@{/book/delete-comment(book_id=${book.id},comment_id=${bookComment.id})}">Удалить</a>
+        </td>
+    </tr>
+    </tbody>
+</table>
+<form action="#" th:action="@{/book/view(id=${book.id})}" method="post">
+    <textarea name="comment_text" style="margin-top: 16px" cols="100" rows="12"></textarea>
+    <div class="buttons">
+        <input type="submit" value="Добавить комментарий"/>
+    </div>
+</form>
+</body>
+<script src="../static/js/confirmDeleteBook.js" th:src="@{/js/confirmDeleteBook.js}"></script>
+</html>
