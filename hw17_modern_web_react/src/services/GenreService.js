@@ -1,4 +1,5 @@
 import {Configuration} from "./Configuration";
+import {handleError, handleResponseError} from "./ErrorHandlers";
 
 export class GenreService {
 
@@ -35,20 +36,14 @@ export class GenreService {
         })
             .then(response => {
                 if (!response.ok) {
-                    this.handleResponseError(response);
+                    handleResponseError(response);
                 }
-                return response.json();
+                else {
+                    return response.json();
+                }
             })
             .catch(error => {
-                this.handleError(error);
+                handleError(error);
             });
-    }
-
-    handleResponseError(response) {
-        throw new Error("HTTP error, status = " + response.status);
-    }
-
-    handleError(error) {
-        console.log(error.message);
     }
 }
