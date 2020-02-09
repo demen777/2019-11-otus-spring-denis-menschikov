@@ -2,23 +2,23 @@ package ru.otus.demen.books.controller;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.view.RedirectView;
+import ru.otus.demen.books.controller.dto.BookDto;
 import ru.otus.demen.books.controller.dto.mapper.*;
 import ru.otus.demen.books.service.AuthorService;
 import ru.otus.demen.books.service.BookCommentService;
 import ru.otus.demen.books.service.BookService;
 import ru.otus.demen.books.service.GenreService;
 
+import javax.websocket.server.PathParam;
+import java.util.List;
 import java.util.stream.Collectors;
 
 @SuppressWarnings("SameReturnValue")
 @Slf4j
-@Controller
+@RestController
 @RequiredArgsConstructor
 public class BookController {
     private final BookService bookService;
@@ -27,12 +27,9 @@ public class BookController {
     private final GenreService genreService;
     private final BookMappersFacade bookMappers;
 
-    @GetMapping(path = {"/", "/books"})
-    public ModelAndView getBookList() {
-        ModelAndView modelAndView = new ModelAndView("books");
-        modelAndView.addObject("books",
-            bookService.findAll().stream().map(bookMappers::bookDto).collect(Collectors.toList()));
-        return modelAndView;
+    @GetMapping(path = "/api/books")
+    public List<BookDto> getBookList() {
+        return bookService.findAll().stream().map(bookMappers::bookDto).collect(Collectors.toList());
     }
 
     @GetMapping("/book/view")
@@ -100,10 +97,10 @@ public class BookController {
         return fillModelAndReturnView(bookId);
     }
 
-    @GetMapping("/book/delete")
-    public RedirectView deleteBook(@RequestParam("id") long id)
+    @DeleteMapping("/api/book/delete/{id}")
+    public ResultOk deleteBook(@PathParam("id") long id)
     {
         bookService.deleteById(id);
-        return new RedirectView("/books");
+        return ResultOk.INSTANCE;
     }
 }

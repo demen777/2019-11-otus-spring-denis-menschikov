@@ -1,6 +1,6 @@
 import React from "react";
 import {GenreService} from "../services/GenreService";
-import {handleError} from "../services/ErrorHandlers";
+import {wrapError} from "../utils/ResponseError";
 
 export default class AddGenreForm extends React.Component {
     constructor(props) {
@@ -23,7 +23,7 @@ export default class AddGenreForm extends React.Component {
                     window.location.href = "/genres";
                 }
             }
-        ).catch(error => handleError(error));
+        ).catch(error => alert(error.message));
     };
 
     render() {

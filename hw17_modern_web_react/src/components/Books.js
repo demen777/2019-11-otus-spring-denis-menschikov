@@ -1,19 +1,76 @@
-import React from "react";
+import React, {Fragment} from "react";
+import {BookService} from "../services/BookService";
+import {Link, NavLink} from "react-router-dom";
+import {removeById} from "../utils/Misc";
 
 export default class Books extends React.Component {
-    render() {
-        return (
-            <div>
-                <h2>BOOKS</h2>
-                <p>Cras facilisis urna ornare ex volutpat, et
-                    convallis erat elementum. Ut aliquam, ipsum vitae
-                    gravida suscipit, metus dui bibendum est, eget rhoncus nibh
-                    metus nec massa. Maecenas hendrerit laoreet augue
-                    nec molestie. Cum sociis natoque penatibus et magnis
-                    dis parturient montes, nascetur ridiculus mus.</p>
+    constructor(props) {
+        super(props);
+        this.bookService = new BookService();
+        this.state = {
+            books: []
+        }
+    }
 
-                <p>Duis a turpis sed lacus dapibus elementum sed eu lectus.</p>
-            </div>
+    componentDidMount = () => {
+        this.getBooks();
+    };
+
+    getBooks() {
+        this.bookService.getAll()
+            .then(books => {
+                if (books !== undefined) {
+                    this.setState({books: books});
+                }
+            })
+            .catch(error => console.log(error));
+    }
+
+    deleteBook = bookId => {
+        if (window.confirm("Вы действительно хотите удалить книгу с id=" + bookId)) {
+            this.bookService.deleteBook(bookId)
+                .then(() => {
+                    this.state.books = removeById(this.state.books, bookId)
+                })
+                .catch(error => console.log(error));
+        }
+    };
+
+    render() {
+        const {books} = this.state;
+        return (
+            <Fragment>
+                <div className="btn-group" role="group" aria-label="Список действий">
+                    <NavLink className="btn btn-secondary" to="/book/add">Добавить</NavLink>
+                </div>
+                <h4>Список книг</h4>
+                <table className="table table-striped">
+                    <thead>
+                    <tr>
+                        <th>ID</th>
+                        <th>Название</th>
+                        <th>Автор</th>
+                        <th>Жанр</th>
+                        <th>Действия</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    {books.map((book) =>
+                        <tr key={book.id}>
+                            <td>{book.id}</td>
+                            <td>{book.name}</td>
+                            <td>{book.author.firstName + " " + book.author.surname}</td>
+                            <td>{book.genre.name}</td>
+                            <td>
+                                <Link to="/book/view/{book.id}">Просмотр</Link>
+                                <Link to="/book/edit/{book.id}">Изменить</Link>
+                                <a href="#" onClick={() => this.deleteBook(book.id)}>Удалить</a>
+                            </td>
+                        </tr>
+                    )}
+                    </tbody>
+                </table>
+            </Fragment>
         );
     }
 }

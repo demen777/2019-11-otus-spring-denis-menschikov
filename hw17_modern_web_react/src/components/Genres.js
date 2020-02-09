@@ -16,12 +16,14 @@ export default class Genres extends React.Component {
     };
 
     getGenres() {
-        this.genreService.getAll().then(genres => {
+        this.genreService.getAll()
+            .then(genres => {
+                console.log(genres);
                 if (genres !== undefined) {
                     this.setState({genres: genres});
                 }
-            }
-        );
+            })
+            .catch(error => console.log(error));
     }
 
     render() {
@@ -41,10 +43,10 @@ export default class Genres extends React.Component {
                     </thead>
                     <tbody>
                     {genres.map((genre) =>
-                    <tr key={genre.id}>
-                        <td>{genre.id}</td>
-                        <td>{genre.name}</td>
-                    </tr>
+                        <tr key={genre.id}>
+                            <td>{genre.id}</td>
+                            <td>{genre.name}</td>
+                        </tr>
                     )}
                     </tbody>
                 </table>
