@@ -30,7 +30,9 @@ export default class Books extends React.Component {
         if (window.confirm("Вы действительно хотите удалить книгу с id=" + bookId)) {
             this.bookService.deleteBook(bookId)
                 .then(() => {
-                    this.state.books = removeById(this.state.books, bookId)
+                    const newBookList = removeById(this.state.books, bookId);
+                    console.log(newBookList);
+                    this.setState({books: newBookList});
                 })
                 .catch(error => console.log(error));
         }
@@ -63,8 +65,13 @@ export default class Books extends React.Component {
                             <td>{book.genre.name}</td>
                             <td>
                                 <Link to="/book/view/{book.id}">Просмотр</Link>
-                                <Link to="/book/edit/{book.id}">Изменить</Link>
-                                <a href="#" onClick={() => this.deleteBook(book.id)}>Удалить</a>
+                                <Link to={
+                                    {
+                                        pathname: "/book/edit/" + book.id,
+                                        book: book
+                                    }
+                                }>Изменить</Link>
+                                <Link to="" onClick={() => this.deleteBook(book.id)}>Удалить</Link>
                             </td>
                         </tr>
                     )}

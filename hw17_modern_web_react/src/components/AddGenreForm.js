@@ -1,6 +1,5 @@
 import React from "react";
 import {GenreService} from "../services/GenreService";
-import {wrapError} from "../utils/ResponseError";
 
 export default class AddGenreForm extends React.Component {
     constructor(props) {

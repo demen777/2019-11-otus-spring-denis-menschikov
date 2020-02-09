@@ -27,7 +27,7 @@ public class BookMappersFacade {
         return bookCommentDtoMapper.toBookCommentDto(bookComment);
     }
 
-    public BookDto bookDto(Book book) {
+    public BookDto toBookDto(Book book) {
         return bookDtoMapper.bookDto(book);
     }
 
