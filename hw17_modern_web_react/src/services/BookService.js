@@ -24,7 +24,7 @@ export class BookService {
     }
 
     checkStatus(response) {
-        if (response.ok || response.status === 404) {
+        if (response.ok) {
             return true;
         } else {
             throw new HttpResponseError(response);
@@ -55,6 +55,16 @@ export class BookService {
         })
             .then(getResponseAndJson)
             .then(checkResponseAndJson);
+    }
+
+    async deleteBookComment(bookCommentId) {
+        console.log("BookService.deleteBookComment bookCommentId=" + bookCommentId);
+        return fetch(this.config.DELETE_BOOK_COMMENT_URL + bookCommentId, {
+            method: "DELETE",
+            headers: {
+                "Content-Type": "application/json"
+            }
+        }).then(this.checkStatus);
     }
 
     async addBook(book) {

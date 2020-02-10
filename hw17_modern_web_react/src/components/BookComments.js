@@ -1,5 +1,7 @@
 import React from "react";
 import {BookService} from "../services/BookService";
+import {Link} from "react-router-dom";
+import {removeById} from "../utils/Misc";
 
 export default class BookComments extends React.Component {
     constructor(props) {
@@ -39,6 +41,7 @@ export default class BookComments extends React.Component {
                         <tr>
                             <th>ID</th>
                             <th>Текст комментария</th>
+                            <th>Действия</th>
                         </tr>
                         </thead>
                         <tbody>
@@ -46,6 +49,9 @@ export default class BookComments extends React.Component {
                             <tr key={bookComment.id}>
                                 <td>{bookComment.id}</td>
                                 <td><pre>{bookComment.text}</pre></td>
+                                <td>
+                                    <Link to="" onClick={event => this.deleteBookComment(event, bookComment.id)}>Удалить</Link>
+                                </td>
                             </tr>
                         )}
                         </tbody>
@@ -79,8 +85,20 @@ export default class BookComments extends React.Component {
                 if (newBookComment !== undefined) {
                     // noinspection JSCheckFunctionSignatures
                     this.setState({bookComments: this.state.bookComments.concat(newBookComment)})
+                    this.setState({newCommentText: ""})
                 }
             }
         ).catch(error => alert(error.message));
+    };
+
+    deleteBookComment = (event, bookCommentId) => {
+        event.preventDefault();
+        this.bookService.deleteBookComment(bookCommentId)
+            .then(() => {
+                const newBookCommentList = removeById(this.state.bookComments, bookCommentId);
+                console.log(newBookCommentList);
+                this.setState({bookComments: newBookCommentList});
+            })
+            .catch(error => console.log(error));
     };
 }

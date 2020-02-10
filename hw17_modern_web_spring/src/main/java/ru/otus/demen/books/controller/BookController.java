@@ -63,10 +63,10 @@ public class BookController {
                 bookService.add(bookInputDto.getName(), bookInputDto.getAuthorId(), bookInputDto.getGenreId()));
     }
 
-    @GetMapping("/book/delete-comment")
-    public ResultOk deleteComment(@RequestParam("book_id") long bookId, @RequestParam("comment_id") long commentId)
+    @DeleteMapping("/api/book/comment/delete/{bookCommentId}")
+    public ResultOk deleteComment(@PathVariable("bookCommentId") long bookCommentId)
     {
-        bookCommentService.deleteById(commentId);
+        bookCommentService.deleteById(bookCommentId);
         return ResultOk.INSTANCE;
     }
 

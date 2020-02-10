@@ -10,4 +10,5 @@ export class Configuration {
     EDIT_BOOK_URL = this.BASE_URL + "/book/edit/";
     BOOK_COMMENTS_URL  = this.BASE_URL + "/book/{bookId}/comments";
     ADD_BOOK_COMMENT_URL= this.BASE_URL + "/book/{bookId}/comment/add";
+    DELETE_BOOK_COMMENT_URL = this.BASE_URL + "/book/comment/delete/";;
 }
