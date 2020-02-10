@@ -24,12 +24,37 @@ export class BookService {
     }
 
     checkStatus(response) {
-        if(response.ok || response.status === 404) {
+        if (response.ok || response.status === 404) {
             return true;
-        }
-        else {
+        } else {
             throw new HttpResponseError(response);
         }
+    }
+
+    async getBookComments(bookId) {
+        console.log("BookService.getBookComments bookId=" + bookId);
+        const url = this.config.BOOK_COMMENTS_URL.replace("{bookId}", bookId);
+        return fetch(url, {
+            method: "GET",
+            headers: {
+                "Content-Type": "application/json"
+            }
+        }).then(getResponseAndJson)
+            .then(checkResponseAndJson);
+    }
+
+    async addBookComment(bookId, commentText) {
+        console.log("BookService.addBookComment bookId=" + bookId + " commentText=" + commentText);
+        const url = this.config.ADD_BOOK_COMMENT_URL.replace("{bookId}", bookId);
+        return fetch(url, {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json"
+            },
+            body: JSON.stringify({text: commentText})
+        })
+            .then(getResponseAndJson)
+            .then(checkResponseAndJson);
     }
 
     async addBook(book) {

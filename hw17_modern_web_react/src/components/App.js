@@ -11,6 +11,7 @@ import AddGenreForm from "./AddGenreForm";
 import 'bootstrap/dist/css/bootstrap.css'
 import AddBookForm from "./AddBookForm";
 import EditBookForm from "./EditBookForm";
+import ViewBook from "./ViewBook";
 
 export default class App extends React.Component {
     render() {
@@ -29,6 +30,7 @@ export default class App extends React.Component {
                         <Route path="/books" component={Books}/>
                         <Route path="/book/add" component={AddBookForm}/>
                         <Route path="/book/edit/" component={EditBookForm}/>
+                        <Route path="/book/view/" component={ViewBook}/>
                         <Route path="/authors" component={Authors}/>
                         <Route path="/genres" component={Genres}/>
                         <Route path="/genre/add" component={AddGenreForm}/>

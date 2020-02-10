@@ -64,7 +64,13 @@ export default class Books extends React.Component {
                             <td>{book.author.firstName + " " + book.author.surname}</td>
                             <td>{book.genre.name}</td>
                             <td>
-                                <Link to="/book/view/{book.id}">Просмотр</Link>
+                                <Link to={
+                                    {
+                                        pathname: "/book/view/" + book.id,
+                                        book: book
+                                    }
+                                }>
+                                    Просмотр</Link>
                                 <Link to={
                                     {
                                         pathname: "/book/edit/" + book.id,

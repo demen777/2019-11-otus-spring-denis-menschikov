@@ -71,7 +71,6 @@ export default class AddBookForm extends React.Component {
 
     render() {
         const {book, genres, authors} = this.state;
-        // noinspection JSUnresolvedVariable
         return (
             <div>
                 <h4>Добавление информации о книге</h4>

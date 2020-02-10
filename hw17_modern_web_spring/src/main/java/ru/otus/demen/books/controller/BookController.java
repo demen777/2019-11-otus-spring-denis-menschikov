@@ -5,9 +5,11 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.view.RedirectView;
+import ru.otus.demen.books.controller.dto.BookCommentDto;
 import ru.otus.demen.books.controller.dto.BookDto;
 import ru.otus.demen.books.controller.dto.BookInputDto;
 import ru.otus.demen.books.controller.dto.mapper.*;
+import ru.otus.demen.books.model.BookComment;
 import ru.otus.demen.books.service.AuthorService;
 import ru.otus.demen.books.service.BookCommentService;
 import ru.otus.demen.books.service.BookService;
@@ -32,24 +34,17 @@ public class BookController {
         return bookService.findAll().stream().map(bookMappers::toBookDto).collect(Collectors.toList());
     }
 
-    @GetMapping("/book/view")
-    public ModelAndView getBook(@RequestParam("id") long id) {
-        return fillModelAndReturnView(id);
+    @GetMapping("/api/book/{bookId}/comments")
+    public List<BookCommentDto> getBookComments(@PathVariable("bookId") long bookId) {
+        return bookCommentService.getByBookId(bookId)
+                .stream().map(bookMappers::toBookCommentDto).collect(Collectors.toList());
     }
 
-    @PostMapping("/book/view")
-    public ModelAndView addBookComment(@RequestParam("id") long id, @RequestParam("comment_text") String commentText)
+    @PostMapping("/api/book/{bookId}/comment/add")
+    public BookCommentDto addBookComment(@PathVariable("bookId") long bookId, @RequestBody BookCommentDto bookCommentDto)
     {
-        bookCommentService.add(id, commentText);
-        return fillModelAndReturnView(id);
-    }
-
-    private ModelAndView fillModelAndReturnView(@RequestParam("id") long id) {
-        ModelAndView modelAndView = new ModelAndView("view_book");
-        modelAndView.addObject("book", bookMappers.toBookDto(bookService.getById(id)));
-        modelAndView.addObject("bookComments", bookCommentService.getByBookId(id)
-                .stream().map(bookMappers::toBookCommentDto).collect(Collectors.toList()));
-        return modelAndView;
+        BookComment bookComment = bookCommentService.add(bookId, bookCommentDto.getText());
+        return bookMappers.toBookCommentDto(bookComment);
     }
 
     @PutMapping("/api/book/edit/{id}")
@@ -69,10 +64,10 @@ public class BookController {
     }
 
     @GetMapping("/book/delete-comment")
-    public ModelAndView deleteComment(@RequestParam("book_id") long bookId, @RequestParam("comment_id") long commentId)
+    public ResultOk deleteComment(@RequestParam("book_id") long bookId, @RequestParam("comment_id") long commentId)
     {
         bookCommentService.deleteById(commentId);
-        return fillModelAndReturnView(bookId);
+        return ResultOk.INSTANCE;
     }
 
     @DeleteMapping("/api/book/delete/{id}")
