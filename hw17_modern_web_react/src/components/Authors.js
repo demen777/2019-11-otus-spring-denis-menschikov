@@ -1,19 +1,56 @@
-import React from "react";
+import React, {Fragment} from "react";
+import {NavLink} from "react-router-dom";
+import {AuthorService} from "../services/AuthorService";
 
 export default class Authors extends React.Component {
-    render() {
-        return (
-            <div>
-                <h2>AUTHORS</h2>
-                <p>Cras facilisis urna ornare ex volutpat, et
-                    convallis erat elementum. Ut aliquam, ipsum vitae
-                    gravida suscipit, metus dui bibendum est, eget rhoncus nibh
-                    metus nec massa. Maecenas hendrerit laoreet augue
-                    nec molestie. Cum sociis natoque penatibus et magnis
-                    dis parturient montes, nascetur ridiculus mus.</p>
+    constructor(props) {
+        super(props);
+        this.authorService = new AuthorService();
+        this.state = {
+            authors: []
+        }
+    }
 
-                <p>Duis a turpis sed lacus dapibus elementum sed eu lectus.</p>
-            </div>
+    componentDidMount = () => {
+        this.getAuthors();
+    };
+
+    getAuthors() {
+        this.authorService.getAll()
+            .then(authors => {
+                console.log(authors);
+                if (authors !== undefined) {
+                    this.setState({authors: authors});
+                }
+            })
+            .catch(error => console.log(error));
+    }
+
+    render() {
+        const {authors} = this.state;
+        return (
+            <Fragment>
+                <div className="btn-group" role="group" aria-label="Список действий">
+                    <NavLink className="btn btn-secondary" to="/author/add">Добавить</NavLink>
+                </div>
+                <h4>Список авторов</h4>
+                <table className="table table-striped">
+                    <thead>
+                    <tr>
+                        <th>ID</th>
+                        <th>ФИО</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    {authors.map((author) =>
+                        <tr key={author.id}>
+                            <td>{author.id}</td>
+                            <td>{author.name}</td>
+                        </tr>
+                    )}
+                    </tbody>
+                </table>
+            </Fragment>
         );
     }
 }

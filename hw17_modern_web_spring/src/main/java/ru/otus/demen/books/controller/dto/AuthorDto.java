@@ -1,14 +1,19 @@
 package ru.otus.demen.books.controller.dto;
 
-import lombok.Builder;
-import lombok.Value;
+import lombok.*;
 
-@Value
-@Builder
+@Setter
+@Getter
+@AllArgsConstructor
+@NoArgsConstructor
+@ToString
+@EqualsAndHashCode
 public class AuthorDto {
-    private final long id;
-    private final String firstName;
-    private final String surname;
+    private long id;
+    @NonNull
+    private String firstName;
+    @NonNull
+    private String surname;
 
     public String getName() { return firstName + " " + surname; }
 }

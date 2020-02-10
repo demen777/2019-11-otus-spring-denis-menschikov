@@ -83,14 +83,14 @@ export default class AddBookForm extends React.Component {
                         <label>Жанр
                             <select name="genreId" value={book.genreId} onChange={this.handleChange}>
                                 {genres.map((genre) =>
-                                    <option value={genre.id}>{genre.name}</option>
+                                    <option key={genre.id} value={genre.id}>{genre.name}</option>
                                 )}
                             </select>
                         </label>
                         <label>Автор
                             <select name="authorId" value={book.authorId} onChange={this.handleChange}>
                                 {authors.map((author) =>
-                                    <option value={author.id}>{author.firstName + " " + author.surname}</option>
+                                    <option key={author.id} value={author.id}>{author.name}</option>
                                 )}
                             </select>
                         </label>

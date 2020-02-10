@@ -26,7 +26,8 @@ export default class Books extends React.Component {
             .catch(error => console.log(error));
     }
 
-    deleteBook = bookId => {
+    deleteBook = (event, bookId) => {
+        event.preventDefault();
         if (window.confirm("Вы действительно хотите удалить книгу с id=" + bookId)) {
             this.bookService.deleteBook(bookId)
                 .then(() => {
@@ -61,7 +62,7 @@ export default class Books extends React.Component {
                         <tr key={book.id}>
                             <td>{book.id}</td>
                             <td>{book.name}</td>
-                            <td>{book.author.firstName + " " + book.author.surname}</td>
+                            <td>{book.author.name}</td>
                             <td>{book.genre.name}</td>
                             <td>
                                 <Link to={
@@ -77,7 +78,7 @@ export default class Books extends React.Component {
                                         book: book
                                     }
                                 }>Изменить</Link>
-                                <Link to="" onClick={() => this.deleteBook(book.id)}>Удалить</Link>
+                                <Link to="" onClick={event => this.deleteBook(event, book.id)}>Удалить</Link>
                             </td>
                         </tr>
                     )}

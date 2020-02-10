@@ -84,7 +84,7 @@ export default class BookComments extends React.Component {
                 console.log("---" + newBookComment);
                 if (newBookComment !== undefined) {
                     // noinspection JSCheckFunctionSignatures
-                    this.setState({bookComments: this.state.bookComments.concat(newBookComment)})
+                    this.setState({bookComments: this.state.bookComments.concat(newBookComment)});
                     this.setState({newCommentText: ""})
                 }
             }

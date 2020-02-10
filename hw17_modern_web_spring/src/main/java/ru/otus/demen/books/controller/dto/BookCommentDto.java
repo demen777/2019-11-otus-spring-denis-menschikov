@@ -1,11 +1,15 @@
 package ru.otus.demen.books.controller.dto;
 
-import lombok.Builder;
-import lombok.Value;
+import lombok.*;
 
-@Value
-@Builder
+@Setter
+@Getter
+@AllArgsConstructor
+@NoArgsConstructor
+@ToString
+@EqualsAndHashCode
 public class BookCommentDto {
-    private final long id;
-    private final String text;
+    private long id;
+    @NonNull
+    private String text;
 }

@@ -3,8 +3,6 @@ package ru.otus.demen.books.controller;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.servlet.ModelAndView;
-import org.springframework.web.servlet.view.RedirectView;
 import ru.otus.demen.books.controller.dto.BookCommentDto;
 import ru.otus.demen.books.controller.dto.BookDto;
 import ru.otus.demen.books.controller.dto.BookInputDto;

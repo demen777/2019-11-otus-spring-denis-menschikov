@@ -87,7 +87,7 @@ export default class EditBookForm extends React.Component {
                         <label>Автор
                             <select name="authorId" value={book.authorId} onChange={this.handleChange}>
                                 {authors.map((author) =>
-                                    <option key={author.id} value={author.id}>{author.firstName + " " + author.surname}</option>
+                                    <option key={author.id} value={author.id}>{author.name}</option>
                                 )}
                             </select>
                         </label>

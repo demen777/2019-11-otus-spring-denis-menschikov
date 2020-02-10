@@ -28,7 +28,7 @@ export default class ViewBook extends React.Component {
                             <span>{book.genre.name}</span>
                         </label>
                         <label>Автор
-                            <span>{book.author.firstName + " " + book.author.surname}</span>
+                            <span>{book.author.name}</span>
                         </label>
                     </div>
                 </div>
