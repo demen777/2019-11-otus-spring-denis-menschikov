@@ -1,7 +1,6 @@
 import React from 'react';
 import {
     Route,
-    NavLink,
     Redirect, BrowserRouter
 } from "react-router-dom";
 import Books from "./Books";
@@ -13,17 +12,13 @@ import AddBookForm from "./AddBookForm";
 import EditBookForm from "./EditBookForm";
 import ViewBook from "./ViewBook";
 import AddAuthorForm from "./AddAuthorForm";
+import Navigation from "./Navigation";
 
 export default class App extends React.Component {
     render() {
         return (
             <BrowserRouter>
-                <div className="App">
-                    <nav className="nav nav-pills">
-                        <NavLink className="nav-link" to="/books">Книги</NavLink>
-                        <NavLink className="nav-link" to="/authors">Авторы</NavLink>
-                        <NavLink className="nav-link" to="/genres">Жанры</NavLink>
-                    </nav>
+                    <Navigation/>
                     <div className="content">
                         <Route exact path="/">
                             <Redirect to="/books"/>
@@ -37,7 +32,6 @@ export default class App extends React.Component {
                         <Route path="/genres" component={Genres}/>
                         <Route path="/genre/add" component={AddGenreForm}/>
                     </div>
-                </div>
             </BrowserRouter>
         );
     }
