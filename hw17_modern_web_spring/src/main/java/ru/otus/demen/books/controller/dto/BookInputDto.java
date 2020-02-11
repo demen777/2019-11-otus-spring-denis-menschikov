@@ -1,10 +1,18 @@
 package ru.otus.demen.books.controller.dto;
 
-import lombok.Value;
+import lombok.*;
 
-@Value
+@Setter
+@Getter
+@AllArgsConstructor
+@NoArgsConstructor
+@ToString
+@EqualsAndHashCode
 public class BookInputDto {
-    private final String name;
-    private final long authorId;
-    private final long genreId;
+    @NonNull
+    private String name;
+    @NonNull
+    private long authorId;
+    @NonNull
+    private long genreId;
 }
