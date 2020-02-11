@@ -7,17 +7,18 @@ export default class EditBookForm extends React.Component {
     constructor(props) {
         super(props);
         console.log(props);
-        const book = props.location.book;
+        const bookId = props.match.params.bookId;
         this.bookService = new BookService();
         this.genreService = new GenreService();
         this.authorService = new AuthorService();
         // noinspection JSUnresolvedVariable
         this.state = {
-            bookId: book.id,
-            book:{
-                name: book.name,
-                authorId: book.author.id,
-                genreId: book.genre.id
+            bookId: bookId,
+            book: {
+                id: bookId,
+                name: "",
+                authorId: 0,
+                genreId: 0
             },
             genres: [],
             authors: []
@@ -25,9 +26,28 @@ export default class EditBookForm extends React.Component {
     }
 
     componentDidMount = () => {
+        this.getBook(this.state.bookId);
         this.getGenres();
         this.getAuthors();
     };
+
+    getBook(bookId) {
+        this.bookService.getBook(bookId)
+            .then(book => {
+                console.log(book);
+                if (book !== undefined) {
+                    this.setState({
+                        book: {
+                            id: bookId,
+                            name: book.name,
+                            authorId: book.author.id,
+                            genreId: book.genre.id
+                        }
+                    });
+                }
+            })
+            .catch(error => console.log(error));
+    }
 
     getGenres() {
         this.genreService.getAll()
@@ -102,6 +122,7 @@ export default class EditBookForm extends React.Component {
     handleChange = event => {
         const {name, value} = event.target;
         this.setState({
-            book:{...this.state.book, [name]: value}});
+            book: {...this.state.book, [name]: value}
+        });
     };
 }

@@ -8,7 +8,8 @@ export class Configuration {
     ADD_AUTHOR_URL = this.BASE_URL + "/author/add";
     ADD_BOOK_URL = this.BASE_URL + "/book/add";
     EDIT_BOOK_URL = this.BASE_URL + "/book/edit/";
-    BOOK_COMMENTS_URL  = this.BASE_URL + "/book/{bookId}/comments";
-    ADD_BOOK_COMMENT_URL= this.BASE_URL + "/book/{bookId}/comment/add";
+    BOOK_COMMENTS_URL = this.BASE_URL + "/book/{bookId}/comments";
+    ADD_BOOK_COMMENT_URL = this.BASE_URL + "/book/{bookId}/comment/add";
     DELETE_BOOK_COMMENT_URL = this.BASE_URL + "/book/comment/delete/";
+    BOOK_URL = this.BASE_URL + "/book/";
 }

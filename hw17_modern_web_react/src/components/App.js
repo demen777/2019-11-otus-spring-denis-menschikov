@@ -25,8 +25,8 @@ export default class App extends React.Component {
                         </Route>
                         <Route path="/books" component={Books}/>
                         <Route path="/book/add" component={AddBookForm}/>
-                        <Route path="/book/edit/" component={EditBookForm}/>
-                        <Route path="/book/view/" component={ViewBook}/>
+                        <Route path="/book/edit/:bookId" component={EditBookForm}/>
+                        <Route path="/book/view/:bookId" component={ViewBook}/>
                         <Route path="/authors" component={Authors}/>
                         <Route path="/author/add" component={AddAuthorForm}/>
                         <Route path="/genres" component={Genres}/>

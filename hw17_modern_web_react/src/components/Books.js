@@ -2,7 +2,7 @@ import React, {Fragment} from "react";
 import {BookService} from "../services/BookService";
 import {Link} from "react-router-dom";
 import {removeById} from "../utils/Misc";
-import ActionList from "./ActionList";
+import ActionList from "./ActionList/ActionList";
 
 export default class Books extends React.Component {
     constructor(props) {
@@ -65,19 +65,8 @@ export default class Books extends React.Component {
                             <td>{book.author.name}</td>
                             <td>{book.genre.name}</td>
                             <td>
-                                <Link to={
-                                    {
-                                        pathname: "/book/view/" + book.id,
-                                        book: book
-                                    }
-                                }>
-                                    Просмотр</Link>
-                                <Link to={
-                                    {
-                                        pathname: "/book/edit/" + book.id,
-                                        book: book
-                                    }
-                                }>Изменить</Link>
+                                <Link to={"/book/view/" + book.id}>Просмотр</Link>
+                                <Link to={"/book/edit/" + book.id}>Изменить</Link>
                                 <Link to="" onClick={event => this.deleteBook(event, book.id)}>Удалить</Link>
                             </td>
                         </tr>

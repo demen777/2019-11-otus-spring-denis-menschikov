@@ -67,6 +67,13 @@ export class BookService {
         }).then(this.checkStatus);
     }
 
+    async getBook(bookId) {
+        console.log("BookService.getBook book=" + bookId);
+        return fetch(this.config.BOOK_URL + bookId)
+            .then(getResponseAndJson)
+            .then(checkResponseAndJson);
+    }
+
     async addBook(book) {
         console.log("BookService.addBook book=" + book);
         return fetch(this.config.ADD_BOOK_URL, {
@@ -81,7 +88,7 @@ export class BookService {
     }
 
     async editBook(bookId, book) {
-        console.log("BookService.addBook bookId=" + bookId + " bookId=" + bookId);
+        console.log("BookService.editBook bookId=" + bookId + " book=" + book);
         return fetch(this.config.EDIT_BOOK_URL + bookId, {
             method: "PUT",
             headers: {

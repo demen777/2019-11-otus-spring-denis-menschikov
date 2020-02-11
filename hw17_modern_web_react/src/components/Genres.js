@@ -1,6 +1,6 @@
 import React, {Fragment} from "react";
 import {GenreService} from "../services/GenreService";
-import ActionList from "./ActionList";
+import ActionList from "./ActionList/ActionList";
 
 export default class Genres extends React.Component {
     constructor(props) {

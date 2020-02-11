@@ -1,6 +1,6 @@
 import React, {Fragment} from "react";
 import {AuthorService} from "../services/AuthorService";
-import ActionList from "./ActionList";
+import ActionList from "./ActionList/ActionList";
 
 export default class Authors extends React.Component {
     constructor(props) {

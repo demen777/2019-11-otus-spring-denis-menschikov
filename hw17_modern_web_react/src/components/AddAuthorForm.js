@@ -39,6 +39,8 @@ export default class AddGenreForm extends React.Component {
                             <input name="firstName" className="form-control" placeholder="Enter firstName" value={author.firstName}
                                    onChange={this.handleChange}/>
                         </label>
+                    </div>
+                    <div className="form-group">
                         <label>Фамилия
                             <input name="surname" className="form-control" placeholder="Enter surname" value={author.surname}
                                    onChange={this.handleChange}/>

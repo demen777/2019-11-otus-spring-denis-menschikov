@@ -1,39 +1,61 @@
 import React, {Fragment} from "react";
 import BookComments from "./BookComments";
+import AttributeRow from "./AttributeRow";
+import {BookService} from "../services/BookService";
 
 export default class ViewBook extends React.Component {
     constructor(props) {
         super(props);
-        console.log(props);
-        const book = props.location.book;
+        console.log("ViewBook constructor bookId=" + props.match.params.bookId);
+        this.bookService = new BookService();
+        const bookId = props.match.params.bookId;
         this.state = {
-            book: book
+            bookId: bookId,
+            book: {
+                name: "",
+                author: {
+                    name: ""
+                },
+                genre: {
+                    name: ""
+                }
+            }
         }
+
+    }
+
+    componentDidMount = () => {
+        this.getBook(this.state.bookId);
+    };
+
+    getBook(bookId) {
+        this.bookService.getBook(bookId)
+            .then(book => {
+                console.log(book);
+                if (book !== undefined) {
+                    this.setState({book: book});
+                }
+            })
+            .catch(error => console.log(error));
     }
 
     render() {
-        const {book} = this.state;
+        const book = this.state.book;
         // noinspection JSUnresolvedVariable
         return (
             <Fragment>
-                <div>
+                <div className="jumbotron-fluid">
                     <h4>Информация о книге</h4>
-                    <div className="form-group">
-                        <label>ID
-                            <span>{book.id}</span>
-                        </label>
-                        <label>Наименование
-                            <span>{book.name}</span>
-                        </label>
-                        <label>Жанр
-                            <span>{book.genre.name}</span>
-                        </label>
-                        <label>Автор
-                            <span>{book.author.name}</span>
-                        </label>
-                    </div>
+                    <table className="table table-striped table-bordered">
+                        <tbody>
+                        <AttributeRow name="ID" value={this.state.bookId}/>
+                        <AttributeRow name="Наименование" value={book.name}/>
+                        <AttributeRow name="Жанр" value={book.genre.name}/>
+                        <AttributeRow name="Автор" value={book.author.name}/>
+                        </tbody>
+                    </table>
                 </div>
-                <BookComments bookId={book.id}/>
+                <BookComments bookId={this.state.bookId}/>
             </Fragment>
         );
     }
