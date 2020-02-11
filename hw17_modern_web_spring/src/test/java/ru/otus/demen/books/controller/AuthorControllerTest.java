@@ -37,64 +37,56 @@ class AuthorControllerTest {
     AuthorDtoMapper authorDtoMapper;
 
     @Test
-    @DisplayName("Успешное отображение списка авторов")
+    @DisplayName("Успешное выдача списка авторов")
     void getAuthorList_ok() throws Exception {
         when(authorService.getAll()).thenReturn(List.of(TOLSTOY));
-        ResultActions resultActions = mockMvc.perform(get("/authors"));
+        ResultActions resultActions = mockMvc.perform(get("/api/authors"));
         resultActions.andExpect(status().isOk())
-            .andExpect(content().contentType("text/html;charset=UTF-8"))
-            .andExpect(model().attributeExists("authors"))
-            .andExpect(content().string(containsString(TOLSTOY.getSurname())))
-            .andExpect(view().name("authors"));
+            .andExpect(content().contentType("application/json;charset=UTF-8"))
+            .andExpect(content().string(containsString(TOLSTOY.getSurname())));
     }
 
     @Test
-    @DisplayName("Успешное отображение формы для ввода нового автора")
-    void getFormForNewAuthor_ok() throws Exception {
-        ResultActions resultActions = mockMvc.perform(get("/author/add"));
-        resultActions.andExpect(status().isOk())
-            .andExpect(content().contentType("text/html;charset=UTF-8"))
-            .andExpect(view().name("add_author"));
-    }
-
-    @Test
-    @DisplayName("Успешный submit формы для ввода нового автора")
+    @DisplayName("Успешное добавление нового автора")
     void addAuthor_ok() throws Exception {
-        ResultActions resultActions = mockMvc.perform(post("/author/add")
-            .param("firstName", TOLSTOY.getFirstName())
-            .param("surname", TOLSTOY.getSurname())
+        when(authorService.add("Лев", "Толстой")).thenReturn(TOLSTOY);
+        String inputJson = "{\"firstName\": \"Лев\", \"surname\": \"Толстой\"}";
+        ResultActions resultActions = mockMvc.perform(post("/api/author/add")
+                .content(inputJson)
+                .contentType("application/json")
         );
-        resultActions.andExpect(status().is3xxRedirection())
-            .andExpect(redirectedUrl("/authors"));
-        verify(authorService, times(1))
-            .add(TOLSTOY.getFirstName(), TOLSTOY.getSurname());
+        resultActions.andExpect(status().isOk())
+                .andExpect(content().contentType("application/json;charset=UTF-8"))
+                .andExpect(content().json(inputJson));
     }
 
     @Test
     @DisplayName("Ввод нового автора с пустым именем")
     void addAuthor_emptyFirstName() throws Exception {
-        when(authorService.add("", TOLSTOY.getSurname()))
-            .thenThrow(new IllegalParameterException(FIRSTNAME_MUST_BE_NOT_EMPTY_MSG));
-        ResultActions resultActions = mockMvc.perform(post("/author/add")
-            .param("firstName", "")
-            .param("surname", TOLSTOY.getSurname())
+        when(authorService.add("", "Толстой"))
+                .thenThrow(new IllegalParameterException(FIRSTNAME_MUST_BE_NOT_EMPTY_MSG));
+        String inputJson = "{\"firstName\": \"\", \"surname\": \"Толстой\"}";
+        ResultActions resultActions = mockMvc.perform(post("/api/author/add")
+                .content(inputJson)
+                .contentType("application/json")
         );
-        resultActions.andExpect(status().isOk())
-            .andExpect(content().string(containsString(FIRSTNAME_MUST_BE_NOT_EMPTY_MSG)))
-            .andExpect(view().name("client_error"));
+        resultActions.andExpect(status().is4xxClientError())
+                .andExpect(content().contentType("application/json;charset=UTF-8"))
+                .andExpect(content().string(containsString(FIRSTNAME_MUST_BE_NOT_EMPTY_MSG)));
     }
 
     @Test
     @DisplayName("Ввод нового автора с пустой фамилией")
     void addAuthor_emptySurname() throws Exception {
-        when(authorService.add(TOLSTOY.getFirstName(), ""))
-            .thenThrow(new IllegalParameterException(SURNAME_MUST_BE_NOT_EMPTY_MSG));
-        ResultActions resultActions = mockMvc.perform(post("/author/add")
-            .param("firstName", TOLSTOY.getFirstName())
-            .param("surname", "")
+        when(authorService.add("Лев", ""))
+                .thenThrow(new IllegalParameterException(SURNAME_MUST_BE_NOT_EMPTY_MSG));
+        String inputJson = "{\"firstName\": \"Лев\", \"surname\": \"\"}";
+        ResultActions resultActions = mockMvc.perform(post("/api/author/add")
+                .content(inputJson)
+                .contentType("application/json")
         );
-        resultActions.andExpect(status().isOk())
-            .andExpect(content().string(containsString(SURNAME_MUST_BE_NOT_EMPTY_MSG)))
-            .andExpect(view().name("client_error"));
+        resultActions.andExpect(status().is4xxClientError())
+                .andExpect(content().contentType("application/json;charset=UTF-8"))
+                .andExpect(content().string(containsString(SURNAME_MUST_BE_NOT_EMPTY_MSG)));
     }
 }

@@ -53,7 +53,7 @@ class BookControllerTest {
     GenreService genreService;
 
     @Test
-    @DisplayName("Успешное отображение списка книг по url /books")
+    @DisplayName("Успешная выдача списка книг")
     void getBookList_ok() throws Exception {
         when(bookService.findAll()).thenReturn(List.of(WAR_AND_PEACE, ANNA_KARENINA));
         ResultActions resultActions = mockMvc.perform(get("/books"));
@@ -67,13 +67,6 @@ class BookControllerTest {
             .andExpect(content().string(containsString(ANNA_KARENINA.getName())))
             .andExpect(model().attributeExists("books"))
             .andExpect(view().name("books"));
-    }
-
-    @Test
-    @DisplayName("Успешное отображение списка книг по url /")
-    void getBookList_ok_by_root_url() throws Exception {
-        when(bookService.findAll()).thenReturn(List.of(WAR_AND_PEACE, ANNA_KARENINA));
-        expectBooks(mockMvc.perform(get("/")));
     }
 
     @Test
@@ -114,20 +107,6 @@ class BookControllerTest {
     }
 
     @Test
-    @DisplayName("Успешное отображение книги для редактирования")
-    void getBookForEdit_ok() throws Exception {
-        when(bookService.getById(WAR_AND_PEACE.getId())).thenReturn(WAR_AND_PEACE);
-        when(authorService.getAll()).thenReturn(List.of(TOLSTOY));
-        when(genreService.getAll()).thenReturn(List.of(NOVEL));
-        ResultActions resultActions = mockMvc.perform(get("/book/edit?id=" + WAR_AND_PEACE.getId()));
-        resultActions.andExpect(status().isOk())
-            .andExpect(content().contentType("text/html;charset=UTF-8"))
-            .andExpect(content().string(containsString(WAR_AND_PEACE.getName())))
-            .andExpect(model().attributeExists("book", "authors", "genres"))
-            .andExpect(view().name("edit_book"));
-    }
-
-    @Test
     @DisplayName("Успешное изменение наименования книги")
     void editBook_changeName() throws Exception {
         ResultActions resultActions = mockMvc.perform(post("/book/edit?id=" + WAR_AND_PEACE.getId())
@@ -140,18 +119,6 @@ class BookControllerTest {
         verify(bookService, times(1))
             .update(WAR_AND_PEACE.getId(), ANNA_KARENINA.getName(), WAR_AND_PEACE.getAuthor().getId(),
                 WAR_AND_PEACE.getGenre().getId());
-    }
-
-    @Test
-    @DisplayName("Успешное отображение формы для ввода новой книги")
-    void getFormForNewBook_ok() throws Exception {
-        when(authorService.getAll()).thenReturn(List.of(TOLSTOY));
-        when(genreService.getAll()).thenReturn(List.of(NOVEL));
-        ResultActions resultActions = mockMvc.perform(get("/book/add"));
-        resultActions.andExpect(status().isOk())
-            .andExpect(content().contentType("text/html;charset=UTF-8"))
-            .andExpect(model().attributeExists("authors", "genres"))
-            .andExpect(view().name("add_book"));
     }
 
     @Test

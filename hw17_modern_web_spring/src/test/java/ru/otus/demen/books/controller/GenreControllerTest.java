@@ -9,7 +9,6 @@ import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.ResultActions;
 import ru.otus.demen.books.model.Genre;
 import ru.otus.demen.books.service.GenreService;
-import ru.otus.demen.books.service.exception.AlreadyExistsException;
 import ru.otus.demen.books.service.exception.IllegalParameterException;
 
 import java.util.List;
@@ -25,7 +24,6 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 class GenreControllerTest {
     private static final Genre NOVEL = new Genre(1L, "Роман");
     public static final String NAME_MUST_BE_NOT_EMPTY_MSG = "Имя жанра должно быть непустым";
-    public static final String NAME_ALREADY_EXISTS = "Жанр с именем " + NOVEL.getName() + " уже есть в БД";
 
     @Autowired
     MockMvc mockMvc;
@@ -34,61 +32,41 @@ class GenreControllerTest {
     GenreService genreService;
 
     @Test
-    @DisplayName("Успешное отображение списка жанров")
+    @DisplayName("Успешная выдача списка жанров")
     void getAuthorList_ok() throws Exception {
         when(genreService.getAll()).thenReturn(List.of(NOVEL));
-        ResultActions resultActions = mockMvc.perform(get("/genres"));
+        ResultActions resultActions = mockMvc.perform(get("/api/genres"));
         resultActions.andExpect(status().isOk())
-            .andExpect(content().contentType("text/html;charset=UTF-8"))
-            .andExpect(content().string(containsString(NOVEL.getName())))
-            .andExpect(model().attributeExists("genres"))
-            .andExpect(view().name("genres"));
+                .andExpect(content().contentType("application/json;charset=UTF-8"))
+                .andExpect(content().string(containsString(NOVEL.getName())));
     }
 
     @Test
-    @DisplayName("Успешное отображение формы для ввода нового жанра")
-    void getFormForNewAuthor_ok() throws Exception {
-        ResultActions resultActions = mockMvc.perform(get("/genre/add"));
-        resultActions.andExpect(status().isOk())
-            .andExpect(content().contentType("text/html;charset=UTF-8"))
-            .andExpect(view().name("add_genre"));
-    }
-
-    @Test
-    @DisplayName("Успешный submit формы для ввода нового жанра")
+    @DisplayName("Успешное добавление нового жанра")
     void addGenre_ok() throws Exception {
-        ResultActions resultActions = mockMvc.perform(post("/genre/add")
-            .param("name", NOVEL.getName())
+        when(genreService.add("Роман")).thenReturn(NOVEL);
+        String inputJson = "{\"name\": \"Роман\"}";
+        ResultActions resultActions = mockMvc.perform(post("/api/genre/add")
+                .content(inputJson)
+                .contentType("application/json")
         );
-        resultActions.andExpect(status().is3xxRedirection())
-            .andExpect(redirectedUrl("/genres"));
-        verify(genreService, times(1))
-            .add(NOVEL.getName());
+        resultActions.andExpect(status().isOk())
+                .andExpect(content().contentType("application/json;charset=UTF-8"))
+                .andExpect(content().json(inputJson));
     }
 
     @Test
     @DisplayName("Ввод нового жанра с пустым наименованием")
     void addGenre_emptyName() throws Exception {
         when(genreService.add(""))
-            .thenThrow(new IllegalParameterException(NAME_MUST_BE_NOT_EMPTY_MSG));
-        ResultActions resultActions = mockMvc.perform(post("/genre/add")
-            .param("name", "")
+                .thenThrow(new IllegalParameterException(NAME_MUST_BE_NOT_EMPTY_MSG));
+        String inputJson = "{\"name\": \"\"}";
+        ResultActions resultActions = mockMvc.perform(post("/api/genre/add")
+                .content(inputJson)
+                .contentType("application/json")
         );
-        resultActions.andExpect(status().isOk())
-            .andExpect(content().string(containsString(NAME_MUST_BE_NOT_EMPTY_MSG)))
-            .andExpect(view().name("client_error"));
-    }
-
-    @Test
-    @DisplayName("Ввод нового жанра с наименованием которое уже есть в БД")
-    void addGenre_alreadyExists() throws Exception {
-        when(genreService.add(NOVEL.getName()))
-            .thenThrow(new AlreadyExistsException(NAME_ALREADY_EXISTS));
-        ResultActions resultActions = mockMvc.perform(post("/genre/add")
-            .param("name", NOVEL.getName())
-        );
-        resultActions.andExpect(status().isOk())
-            .andExpect(content().string(containsString(NAME_ALREADY_EXISTS)))
-            .andExpect(view().name("client_error"));
+        resultActions.andExpect(status().is4xxClientError())
+                .andExpect(content().contentType("application/json;charset=UTF-8"))
+                .andExpect(content().string(containsString(NAME_MUST_BE_NOT_EMPTY_MSG)));
     }
 }

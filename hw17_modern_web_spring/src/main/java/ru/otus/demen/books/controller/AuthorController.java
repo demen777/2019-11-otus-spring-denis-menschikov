@@ -18,7 +18,7 @@ public class AuthorController {
     private final AuthorService authorService;
     private final AuthorDtoMapper authorDtoMapper;
 
-    @GetMapping("/api/authors")
+    @GetMapping(path = "/api/authors")
     public List<AuthorDto> getAuthorList() {
         return
             authorService.getAll().stream().map(authorDtoMapper::toAuthorDto).collect(Collectors.toList());
