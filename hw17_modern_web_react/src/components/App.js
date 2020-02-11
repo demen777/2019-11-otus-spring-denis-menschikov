@@ -7,7 +7,6 @@ import Books from "./Books";
 import Authors from "./Authors";
 import Genres from "./Genres";
 import AddGenreForm from "./AddGenreForm";
-import 'bootstrap/dist/css/bootstrap.css'
 import AddBookForm from "./AddBookForm";
 import EditBookForm from "./EditBookForm";
 import ViewBook from "./ViewBook";
@@ -19,7 +18,7 @@ export default class App extends React.Component {
         return (
             <BrowserRouter>
                     <Navigation/>
-                    <div className="content">
+                    <div>
                         <Route exact path="/">
                             <Redirect to="/books"/>
                         </Route>

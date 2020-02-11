@@ -2,7 +2,7 @@ import React, {Fragment} from "react";
 import {BookService} from "../services/BookService";
 import {Link} from "react-router-dom";
 import {removeById} from "../utils/Misc";
-import ActionList from "./ActionList/ActionList";
+import ActionList from "./ActionList";
 
 export default class Books extends React.Component {
     constructor(props) {
@@ -45,9 +45,9 @@ export default class Books extends React.Component {
         // noinspection JSUnresolvedVariable
         return (
             <Fragment>
-                <ActionList actions={[{url:"/book/add", text: "Добавить"}]}/>
                 <h4>Список книг</h4>
-                <table className="table table-striped">
+                <ActionList actions={[{url:"/book/add", text: "Добавить"}]}/>
+                <table className="paleblue">
                     <thead>
                     <tr>
                         <th>ID</th>
@@ -65,9 +65,9 @@ export default class Books extends React.Component {
                             <td>{book.author.name}</td>
                             <td>{book.genre.name}</td>
                             <td>
-                                <Link to={"/book/view/" + book.id}>Просмотр</Link>
-                                <Link to={"/book/edit/" + book.id}>Изменить</Link>
-                                <Link to="" onClick={event => this.deleteBook(event, book.id)}>Удалить</Link>
+                                <Link className="actionInTable" to={"/book/view/" + book.id}>Просмотр</Link>
+                                <Link className="actionInTable" to={"/book/edit/" + book.id}>Изменить</Link>
+                                <Link className="actionInTable" to="" onClick={event => this.deleteBook(event, book.id)}>Удалить</Link>
                             </td>
                         </tr>
                     )}

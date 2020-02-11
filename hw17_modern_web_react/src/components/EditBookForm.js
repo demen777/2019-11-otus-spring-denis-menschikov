@@ -91,29 +91,43 @@ export default class EditBookForm extends React.Component {
             <div>
                 <h4>Изменение информации о книге</h4>
                 <form onSubmit={this.editBook}>
-                    <div className="form-group">
-                        <label>ID<span>{bookId}</span>
-                        </label>
-                        <label>Наименование
-                            <input name="name" className="form-control" placeholder="Enter name" value={book.name}
-                                   onChange={this.handleChange}/>
-                        </label>
-                        <label>Жанр
-                            <select name="genreId" value={book.genreId} onChange={this.handleChange}>
-                                {genres.map((genre) =>
-                                    <option key={genre.id} value={genre.id}>{genre.name}</option>
-                                )}
-                            </select>
-                        </label>
-                        <label>Автор
-                            <select name="authorId" value={book.authorId} onChange={this.handleChange}>
-                                {authors.map((author) =>
-                                    <option key={author.id} value={author.id}>{author.name}</option>
-                                )}
-                            </select>
-                        </label>
+                    <table className="paleblue">
+                        <tbody>
+                        <tr>
+                            <td className="header">ID</td>
+                            <td>{bookId}</td>
+                        </tr>
+                        <tr>
+                            <td className="header">Наименование</td>
+                            <td><input name="name" className="form-control" placeholder="Enter name"
+                                       value={book.name}
+                                       onChange={this.handleChange}/></td>
+                        </tr>
+                        <tr>
+                            <td className="header">Автор</td>
+                            <td>
+                                <select name="authorId" value={book.authorId} onChange={this.handleChange}>
+                                    {authors.map((author) =>
+                                        <option key={author.id} value={author.id}>{author.name}</option>
+                                    )}
+                                </select>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td className="header">Жанр</td>
+                            <td>
+                                <select name="genreId" value={book.genreId} onChange={this.handleChange}>
+                                    {genres.map((genre) =>
+                                        <option key={genre.id} value={genre.id}>{genre.name}</option>
+                                    )}
+                                </select>
+                            </td>
+                        </tr>
+                        </tbody>
+                    </table>
+                    <div className="buttons">
+                        <button type="submit">Изменить</button>
                     </div>
-                    <button type="submit" className="btn btn-primary">Изменить</button>
                 </form>
             </div>
         );

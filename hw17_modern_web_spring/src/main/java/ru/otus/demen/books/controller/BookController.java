@@ -32,6 +32,12 @@ public class BookController {
         return bookService.findAll().stream().map(bookMappers::toBookDto).collect(Collectors.toList());
     }
 
+    @GetMapping("/api/book/{bookId}")
+    public BookDto getBook(@PathVariable("bookId") long bookId) {
+        log.info("getBook bookId={}", bookId);
+        return bookMappers.toBookDto(bookService.getById(bookId));
+    }
+
     @GetMapping("/api/book/{bookId}/comments")
     public List<BookCommentDto> getBookComments(@PathVariable("bookId") long bookId) {
         return bookCommentService.getByBookId(bookId)

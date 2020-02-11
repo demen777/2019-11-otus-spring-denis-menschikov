@@ -1,6 +1,6 @@
 import React, {Fragment} from "react";
 import {AuthorService} from "../services/AuthorService";
-import ActionList from "./ActionList/ActionList";
+import ActionList from "./ActionList";
 
 export default class Authors extends React.Component {
     constructor(props) {
@@ -30,9 +30,9 @@ export default class Authors extends React.Component {
         const {authors} = this.state;
         return (
             <Fragment>
-                <ActionList actions={[{url:"/author/add", text: "Добавить"}]}/>
                 <h4>Список авторов</h4>
-                <table className="table table-striped">
+                <ActionList actions={[{url:"/author/add", text: "Добавить"}]}/>
+                <table className="paleblue">
                     <thead>
                     <tr>
                         <th>ID</th>

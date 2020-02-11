@@ -35,37 +35,38 @@ export default class BookComments extends React.Component {
         return (
             <div>
                 <h4>Комментарии</h4>
-                <div className="form-group">
-                    <table className="table table-striped">
-                        <thead>
-                        <tr>
-                            <th>ID</th>
-                            <th>Текст комментария</th>
-                            <th>Действия</th>
+                <table className="paleblue">
+                    <thead>
+                    <tr>
+                        <th>ID</th>
+                        <th>Текст комментария</th>
+                        <th>Действия</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    {bookComments.map((bookComment) =>
+                        <tr key={bookComment.id}>
+                            <td>{bookComment.id}</td>
+                            <td>
+                                <pre>{bookComment.text}</pre>
+                            </td>
+                            <td>
+                                <Link to=""
+                                      onClick={event => this.deleteBookComment(event, bookComment.id)}>Удалить</Link>
+                            </td>
                         </tr>
-                        </thead>
-                        <tbody>
-                        {bookComments.map((bookComment) =>
-                            <tr key={bookComment.id}>
-                                <td>{bookComment.id}</td>
-                                <td><pre>{bookComment.text}</pre></td>
-                                <td>
-                                    <Link to="" onClick={event => this.deleteBookComment(event, bookComment.id)}>Удалить</Link>
-                                </td>
-                            </tr>
-                        )}
-                        </tbody>
-                    </table>
-                    <form onSubmit={this.addBookComment}>
-                        <div className="form-group">
-                                <textarea name="newCommentText" cols="100" rows="12"
+                    )}
+                    </tbody>
+                </table>
+                <form onSubmit={this.addBookComment}>
+                    <div className="form-group">
+                                <textarea name="newCommentText" className="commentTextArea" cols="100" rows="12"
                                           value={newCommentText} onChange={this.handleCommentTextChange}/>
-                            <div className="buttons">
-                                <button type="submit" className="btn btn-primary">Добавить</button>
-                            </div>
+                        <div className="buttons">
+                            <button type="submit">Добавить</button>
                         </div>
-                    </form>
-                </div>
+                    </div>
+                </form>
             </div>
         );
     }

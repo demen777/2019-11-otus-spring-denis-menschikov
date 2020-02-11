@@ -44,9 +44,8 @@ export default class ViewBook extends React.Component {
         // noinspection JSUnresolvedVariable
         return (
             <Fragment>
-                <div className="jumbotron-fluid">
                     <h4>Информация о книге</h4>
-                    <table className="table table-striped table-bordered">
+                    <table className="paleblue">
                         <tbody>
                         <AttributeRow name="ID" value={this.state.bookId}/>
                         <AttributeRow name="Наименование" value={book.name}/>
@@ -54,7 +53,6 @@ export default class ViewBook extends React.Component {
                         <AttributeRow name="Автор" value={book.author.name}/>
                         </tbody>
                     </table>
-                </div>
                 <BookComments bookId={this.state.bookId}/>
             </Fragment>
         );

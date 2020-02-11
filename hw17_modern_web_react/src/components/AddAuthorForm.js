@@ -34,19 +34,23 @@ export default class AddGenreForm extends React.Component {
             <div>
                 <h4>Добавление информации об авторе</h4>
                 <form onSubmit={this.addAuthor}>
-                    <div className="form-group">
-                        <label>Имя
-                            <input name="firstName" className="form-control" placeholder="Enter firstName" value={author.firstName}
-                                   onChange={this.handleChange}/>
-                        </label>
+                    <table className="paleblue">
+                        <tbody>
+                        <tr>
+                            <td className="header">Имя</td>
+                            <td><input name="firstName" placeholder="Enter firstName" value={author.firstName}
+                                       onChange={this.handleChange}/></td>
+                        </tr>
+                        <tr>
+                            <td className="header">Фамилия</td>
+                            <td><input name="surname" placeholder="Enter surname" value={author.surname}
+                                       onChange={this.handleChange}/></td>
+                        </tr>
+                        </tbody>
+                    </table>
+                    <div className="buttons">
+                        <button type="submit">Добавить</button>
                     </div>
-                    <div className="form-group">
-                        <label>Фамилия
-                            <input name="surname" className="form-control" placeholder="Enter surname" value={author.surname}
-                                   onChange={this.handleChange}/>
-                        </label>
-                    </div>
-                    <button type="submit" className="btn btn-primary">Добавить</button>
                 </form>
             </div>
         );
@@ -55,6 +59,7 @@ export default class AddGenreForm extends React.Component {
     handleChange = event => {
         const {name, value} = event.target;
         this.setState({
-            author:{...this.state.author, [name]: value}});
+            author: {...this.state.author, [name]: value}
+        });
     };
 }

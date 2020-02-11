@@ -31,13 +31,19 @@ export default class AddGenreForm extends React.Component {
             <div>
                 <h4>Добавление информации о жанре</h4>
                 <form onSubmit={this.addGenre}>
-                    <div className="form-group">
-                        <label>Наименование
-                            <input name="genreName" className="form-control" placeholder="Enter name" value={genreName}
-                                   onChange={this.handleChange}/>
-                        </label>
+                    <table className="paleblue">
+                        <tbody>
+                        <tr>
+                            <td className="header">Наименование</td>
+                            <td><input name="genreName" placeholder="Enter name" value={genreName}
+                                       onChange={this.handleChange}/></td>
+                        </tr>
+                        </tbody>
+                    </table>
+                    <div className="buttons">
+                        <button type="submit">Добавить</button>
                     </div>
-                    <button type="submit" className="btn btn-primary">Добавить</button>
+
                 </form>
             </div>
         );

@@ -1,6 +1,6 @@
 import React, {Fragment} from "react";
 import {GenreService} from "../services/GenreService";
-import ActionList from "./ActionList/ActionList";
+import ActionList from "./ActionList";
 
 export default class Genres extends React.Component {
     constructor(props) {
@@ -30,9 +30,9 @@ export default class Genres extends React.Component {
         const {genres} = this.state;
         return (
             <Fragment>
-                <ActionList actions={[{url:"/genre/add", text: "Добавить"}]}/>
                 <h4>Список жанров</h4>
-                <table className="table table-striped">
+                <ActionList actions={[{url:"/genre/add", text: "Добавить"}]}/>
+                <table className="paleblue">
                     <thead>
                     <tr>
                         <th>ID</th>

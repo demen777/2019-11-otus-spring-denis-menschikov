@@ -10,7 +10,7 @@ export default class AddBookForm extends React.Component {
         this.genreService = new GenreService();
         this.authorService = new AuthorService();
         this.state = {
-            book:{
+            book: {
                 name: "",
                 authorId: 1,
                 genreId: 1
@@ -22,14 +22,16 @@ export default class AddBookForm extends React.Component {
 
     componentDidMount = () => {
         this.getGenres();
-        if(this.state.genres.length > 0) {
+        if (this.state.genres.length > 0) {
             this.setState({
-                book:{...this.state.book, genreId: this.state.genres[0].id}})
+                book: {...this.state.book, genreId: this.state.genres[0].id}
+            })
         }
         this.getAuthors();
-        if(this.state.authors.length > 0) {
+        if (this.state.authors.length > 0) {
             this.setState({
-                book:{...this.state.book, authorId: this.state.authors[0].id}})
+                book: {...this.state.book, authorId: this.state.authors[0].id}
+            })
         }
     };
 
@@ -75,27 +77,38 @@ export default class AddBookForm extends React.Component {
             <div>
                 <h4>Добавление информации о книге</h4>
                 <form onSubmit={this.addBook}>
-                    <div className="form-group">
-                        <label>Наименование
-                            <input name="name" className="form-control" placeholder="Enter name" value={book.name}
-                                   onChange={this.handleChange}/>
-                        </label>
-                        <label>Жанр
-                            <select name="genreId" value={book.genreId} onChange={this.handleChange}>
-                                {genres.map((genre) =>
-                                    <option key={genre.id} value={genre.id}>{genre.name}</option>
-                                )}
-                            </select>
-                        </label>
-                        <label>Автор
-                            <select name="authorId" value={book.authorId} onChange={this.handleChange}>
-                                {authors.map((author) =>
-                                    <option key={author.id} value={author.id}>{author.name}</option>
-                                )}
-                            </select>
-                        </label>
+                    <table className="paleblue">
+                        <tbody>
+                        <tr>
+                            <td className="header">Наименование</td>
+                            <td><input name="name" placeholder="Enter name" value={book.name}
+                                       onChange={this.handleChange}/></td>
+                        </tr>
+                        <tr>
+                            <td className="header">Автор</td>
+                            <td>
+                                <select name="authorId" value={book.authorId} onChange={this.handleChange}>
+                                    {authors.map((author) =>
+                                        <option key={author.id} value={author.id}>{author.name}</option>
+                                    )}
+                                </select>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td className="header">Жанр</td>
+                            <td>
+                                <select name="genreId" value={book.genreId} onChange={this.handleChange}>
+                                    {genres.map((genre) =>
+                                        <option key={genre.id} value={genre.id}>{genre.name}</option>
+                                    )}
+                                </select>
+                            </td>
+                        </tr>
+                        </tbody>
+                    </table>
+                    <div className="buttons">
+                        <button type="submit">Добавить</button>
                     </div>
-                    <button type="submit" className="btn btn-primary">Добавить</button>
                 </form>
             </div>
         );
@@ -104,6 +117,7 @@ export default class AddBookForm extends React.Component {
     handleChange = event => {
         const {name, value} = event.target;
         this.setState({
-            book:{...this.state.book, [name]: value}});
+            book: {...this.state.book, [name]: value}
+        });
     };
 }
