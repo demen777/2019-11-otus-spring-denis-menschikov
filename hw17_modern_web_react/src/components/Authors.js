@@ -1,6 +1,6 @@
 import React, {Fragment} from "react";
-import {NavLink} from "react-router-dom";
 import {AuthorService} from "../services/AuthorService";
+import ActionList from "./ActionList";
 
 export default class Authors extends React.Component {
     constructor(props) {
@@ -30,9 +30,7 @@ export default class Authors extends React.Component {
         const {authors} = this.state;
         return (
             <Fragment>
-                <div className="btn-group" role="group" aria-label="Список действий">
-                    <NavLink className="btn btn-secondary" to="/author/add">Добавить</NavLink>
-                </div>
+                <ActionList actions={[{url:"/author/add", text: "Добавить"}]}/>
                 <h4>Список авторов</h4>
                 <table className="table table-striped">
                     <thead>

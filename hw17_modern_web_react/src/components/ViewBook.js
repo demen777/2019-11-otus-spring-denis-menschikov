@@ -13,6 +13,7 @@ export default class ViewBook extends React.Component {
 
     render() {
         const {book} = this.state;
+        // noinspection JSUnresolvedVariable
         return (
             <Fragment>
                 <div>

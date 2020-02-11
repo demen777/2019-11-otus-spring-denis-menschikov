@@ -11,6 +11,7 @@ export default class EditBookForm extends React.Component {
         this.bookService = new BookService();
         this.genreService = new GenreService();
         this.authorService = new AuthorService();
+        // noinspection JSUnresolvedVariable
         this.state = {
             bookId: book.id,
             book:{

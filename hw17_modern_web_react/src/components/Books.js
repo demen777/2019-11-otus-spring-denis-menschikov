@@ -1,7 +1,8 @@
 import React, {Fragment} from "react";
 import {BookService} from "../services/BookService";
-import {Link, NavLink} from "react-router-dom";
+import {Link} from "react-router-dom";
 import {removeById} from "../utils/Misc";
+import ActionList from "./ActionList";
 
 export default class Books extends React.Component {
     constructor(props) {
@@ -41,11 +42,10 @@ export default class Books extends React.Component {
 
     render() {
         const {books} = this.state;
+        // noinspection JSUnresolvedVariable
         return (
             <Fragment>
-                <div className="btn-group" role="group" aria-label="Список действий">
-                    <NavLink className="btn btn-secondary" to="/book/add">Добавить</NavLink>
-                </div>
+                <ActionList actions={[{url:"/book/add", text: "Добавить"}]}/>
                 <h4>Список книг</h4>
                 <table className="table table-striped">
                     <thead>
