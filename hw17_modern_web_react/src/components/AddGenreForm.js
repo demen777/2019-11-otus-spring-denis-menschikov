@@ -1,11 +1,13 @@
 import React from "react";
 import {GenreService} from "../services/GenreService";
+import {Redirect} from "react-router-dom";
 
 export default class AddGenreForm extends React.Component {
     constructor(props) {
         super(props);
         this.genreService = new GenreService();
         this.state = {
+            redirect: false,
             genreName: ''
         }
     }
@@ -19,13 +21,16 @@ export default class AddGenreForm extends React.Component {
                 console.log("---" + newGenre);
                 if (newGenre !== undefined) {
                     console.log(newGenre);
-                    window.location.href = "/genres";
+                    this.setState({redirect: true});
                 }
             }
         ).catch(error => alert(error.message));
     };
 
     render() {
+        if (this.state.redirect) {
+            return <Redirect push to="/genres" />;
+        }
         const {genreName} = this.state;
         return (
             <div>

@@ -2,6 +2,7 @@ import React from "react";
 import {BookService} from "../services/BookService";
 import {GenreService} from "../services/GenreService";
 import {AuthorService} from "../services/AuthorService";
+import {Redirect} from "react-router-dom";
 
 export default class AddBookForm extends React.Component {
     constructor(props) {
@@ -10,6 +11,7 @@ export default class AddBookForm extends React.Component {
         this.genreService = new GenreService();
         this.authorService = new AuthorService();
         this.state = {
+            redirect: false,
             book: {
                 name: "",
                 authorId: 1,
@@ -65,13 +67,16 @@ export default class AddBookForm extends React.Component {
                 console.log("---" + newBook);
                 if (newBook !== undefined) {
                     console.log(newBook);
-                    window.location.href = "/books";
+                    this.setState({redirect: true});
                 }
             }
         ).catch(error => alert(error.message));
     };
 
     render() {
+        if (this.state.redirect) {
+            return <Redirect push to="/books" />;
+        }
         const {book, genres, authors} = this.state;
         return (
             <div>

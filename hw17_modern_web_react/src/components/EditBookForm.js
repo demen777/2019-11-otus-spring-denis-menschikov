@@ -2,6 +2,7 @@ import React from "react";
 import {BookService} from "../services/BookService";
 import {GenreService} from "../services/GenreService";
 import {AuthorService} from "../services/AuthorService";
+import {Redirect} from "react-router-dom";
 
 export default class EditBookForm extends React.Component {
     constructor(props) {
@@ -13,6 +14,7 @@ export default class EditBookForm extends React.Component {
         this.authorService = new AuthorService();
         // noinspection JSUnresolvedVariable
         this.state = {
+            redirect: false,
             bookId: bookId,
             book: {
                 id: bookId,
@@ -79,13 +81,16 @@ export default class EditBookForm extends React.Component {
                 console.log("---" + editedBook);
                 if (editedBook !== undefined) {
                     console.log(editedBook);
-                    window.location.href = "/books";
+                    this.setState({redirect: true});
                 }
             }
         ).catch(error => alert(error.message));
     };
 
     render() {
+        if (this.state.redirect) {
+            return <Redirect push to="/books" />;
+        }
         const {bookId, book, genres, authors} = this.state;
         return (
             <div>

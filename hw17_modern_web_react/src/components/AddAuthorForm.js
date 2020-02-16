@@ -1,11 +1,13 @@
 import React from "react";
 import {AuthorService} from "../services/AuthorService";
+import {Redirect} from "react-router-dom";
 
 export default class AddGenreForm extends React.Component {
     constructor(props) {
         super(props);
         this.authorService = new AuthorService();
         this.state = {
+            redirect: false,
             author: {
                 firstName: "",
                 surname: ""
@@ -22,13 +24,16 @@ export default class AddGenreForm extends React.Component {
                 console.log("---" + newAuthor);
                 if (newAuthor !== undefined) {
                     console.log(newAuthor);
-                    window.location.href = "/authors";
+                    this.setState({redirect: true});
                 }
             }
         ).catch(error => alert(error.message));
     };
 
     render() {
+        if (this.state.redirect) {
+            return <Redirect push to="/authors" />;
+        }
         const {author} = this.state;
         return (
             <div>
