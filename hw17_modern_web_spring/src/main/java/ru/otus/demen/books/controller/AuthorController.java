@@ -24,7 +24,7 @@ public class AuthorController {
             authorService.getAll().stream().map(authorDtoMapper::toAuthorDto).collect(Collectors.toList());
     }
 
-    @PostMapping("/api/author/add")
+    @PostMapping("/api/author")
     public AuthorDto addAuthor(@RequestBody AuthorDto authorDto)
     {
         log.info("addAuthor authorDto={}", authorDto);

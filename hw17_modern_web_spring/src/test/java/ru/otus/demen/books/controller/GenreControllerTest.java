@@ -46,7 +46,7 @@ class GenreControllerTest {
     void addGenre_ok() throws Exception {
         when(genreService.add("Роман")).thenReturn(NOVEL);
         String inputJson = "{\"name\": \"Роман\"}";
-        ResultActions resultActions = mockMvc.perform(post("/api/genre/add")
+        ResultActions resultActions = mockMvc.perform(post("/api/genre")
                 .content(inputJson)
                 .contentType("application/json")
         );
@@ -61,7 +61,7 @@ class GenreControllerTest {
         when(genreService.add(""))
                 .thenThrow(new IllegalParameterException(NAME_MUST_BE_NOT_EMPTY_MSG));
         String inputJson = "{\"name\": \"\"}";
-        ResultActions resultActions = mockMvc.perform(post("/api/genre/add")
+        ResultActions resultActions = mockMvc.perform(post("/api/genre")
                 .content(inputJson)
                 .contentType("application/json")
         );

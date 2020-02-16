@@ -8,10 +8,8 @@ import ru.otus.demen.books.controller.dto.BookDto;
 import ru.otus.demen.books.controller.dto.BookInputDto;
 import ru.otus.demen.books.controller.dto.mapper.*;
 import ru.otus.demen.books.model.BookComment;
-import ru.otus.demen.books.service.AuthorService;
 import ru.otus.demen.books.service.BookCommentService;
 import ru.otus.demen.books.service.BookService;
-import ru.otus.demen.books.service.GenreService;
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -23,8 +21,6 @@ import java.util.stream.Collectors;
 public class BookController {
     private final BookService bookService;
     private final BookCommentService bookCommentService;
-    private final AuthorService authorService;
-    private final GenreService genreService;
     private final BookMappersFacade bookMappers;
 
     @GetMapping(path = "/api/books")
@@ -44,14 +40,14 @@ public class BookController {
                 .stream().map(bookMappers::toBookCommentDto).collect(Collectors.toList());
     }
 
-    @PostMapping("/api/book/{bookId}/comment/add")
+    @PostMapping("/api/book/{bookId}/comment")
     public BookCommentDto addBookComment(@PathVariable("bookId") long bookId, @RequestBody BookCommentDto bookCommentDto)
     {
         BookComment bookComment = bookCommentService.add(bookId, bookCommentDto.getText());
         return bookMappers.toBookCommentDto(bookComment);
     }
 
-    @PutMapping("/api/book/edit/{id}")
+    @PutMapping("/api/book/{id}")
     public ResultOk editBook(@PathVariable("id") long id, @RequestBody BookInputDto bookInputDto) {
         log.info("editBook id={} bookInputDto={}", id, bookInputDto);
         bookService.update(id, bookInputDto.getName(), bookInputDto.getAuthorId(), bookInputDto.getGenreId());
@@ -59,7 +55,7 @@ public class BookController {
     }
 
 
-    @PostMapping("/api/book/add")
+    @PostMapping("/api/book")
     public BookDto addBook(@RequestBody BookInputDto bookInputDto)
     {
         log.info("addBook bookInputDto={}", bookInputDto);
@@ -67,14 +63,14 @@ public class BookController {
                 bookService.add(bookInputDto.getName(), bookInputDto.getAuthorId(), bookInputDto.getGenreId()));
     }
 
-    @DeleteMapping("/api/book/comment/delete/{bookCommentId}")
+    @DeleteMapping("/api/book/comment/{bookCommentId}")
     public ResultOk deleteComment(@PathVariable("bookCommentId") long bookCommentId)
     {
         bookCommentService.deleteById(bookCommentId);
         return ResultOk.INSTANCE;
     }
 
-    @DeleteMapping("/api/book/delete/{id}")
+    @DeleteMapping("/api/book/{id}")
     public ResultOk deleteBook(@PathVariable("id") long id)
     {
         bookService.deleteById(id);

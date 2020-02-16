@@ -51,7 +51,7 @@ class AuthorControllerTest {
     void addAuthor_ok() throws Exception {
         when(authorService.add("Лев", "Толстой")).thenReturn(TOLSTOY);
         String inputJson = "{\"firstName\": \"Лев\", \"surname\": \"Толстой\"}";
-        ResultActions resultActions = mockMvc.perform(post("/api/author/add")
+        ResultActions resultActions = mockMvc.perform(post("/api/author")
                 .content(inputJson)
                 .contentType("application/json")
         );
@@ -66,7 +66,7 @@ class AuthorControllerTest {
         when(authorService.add("", "Толстой"))
                 .thenThrow(new IllegalParameterException(FIRSTNAME_MUST_BE_NOT_EMPTY_MSG));
         String inputJson = "{\"firstName\": \"\", \"surname\": \"Толстой\"}";
-        ResultActions resultActions = mockMvc.perform(post("/api/author/add")
+        ResultActions resultActions = mockMvc.perform(post("/api/author")
                 .content(inputJson)
                 .contentType("application/json")
         );
@@ -81,7 +81,7 @@ class AuthorControllerTest {
         when(authorService.add("Лев", ""))
                 .thenThrow(new IllegalParameterException(SURNAME_MUST_BE_NOT_EMPTY_MSG));
         String inputJson = "{\"firstName\": \"Лев\", \"surname\": \"\"}";
-        ResultActions resultActions = mockMvc.perform(post("/api/author/add")
+        ResultActions resultActions = mockMvc.perform(post("/api/author")
                 .content(inputJson)
                 .contentType("application/json")
         );

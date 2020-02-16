@@ -69,7 +69,7 @@ class BookControllerTest {
         when(bookCommentService.add(WAR_AND_PEACE.getId(), WAR_AND_PEACE_COMMENT.getText()))
                 .thenReturn(WAR_AND_PEACE_COMMENT);
         String inputJson = String.format("{\"text\": \"%s\"}", WAR_AND_PEACE_COMMENT.getText());
-        String inputUrl = String.format("/api/book/%d/comment/add", WAR_AND_PEACE.getId());
+        String inputUrl = String.format("/api/book/%d/comment", WAR_AND_PEACE.getId());
         ResultActions resultActions = mockMvc.perform(post(inputUrl)
                 .content(inputJson)
                 .contentType("application/json"));
@@ -86,7 +86,7 @@ class BookControllerTest {
         String inputJson = String.format("{\"name\": \"%s\", \"authorId\": \"%d\", \"genreId\": \"%d\"}",
                 ANNA_KARENINA.getName(), WAR_AND_PEACE.getAuthor().getId(),
                 WAR_AND_PEACE.getGenre().getId());
-        ResultActions resultActions = mockMvc.perform(post("/api/book/add")
+        ResultActions resultActions = mockMvc.perform(post("/api/book")
                 .content(inputJson)
                 .contentType("application/json"));
         resultActions.andExpect(status().isOk())
@@ -98,7 +98,7 @@ class BookControllerTest {
     @DisplayName("Удаление комментария успешно")
     void deleteComment_ok() throws Exception {
         ResultActions resultActions = mockMvc.perform(delete(
-                "/api/book/comment/delete/{bookCommentId}", WAR_AND_PEACE_COMMENT.getId()));
+                "/api/book/comment/{bookCommentId}", WAR_AND_PEACE_COMMENT.getId()));
         resultActions.andExpect(status().isOk())
                 .andExpect(content().contentType("application/json;charset=UTF-8"))
                 .andExpect(content().json(RESULT_OK_JSON));
@@ -109,7 +109,7 @@ class BookControllerTest {
     @DisplayName("Удаление книги успешно")
     void deleteBook_ok() throws Exception {
         ResultActions resultActions = mockMvc.perform(delete(
-                "/api/book/delete/{bookId}", WAR_AND_PEACE.getId()));
+                "/api/book/{bookId}", WAR_AND_PEACE.getId()));
         resultActions.andExpect(status().isOk())
                 .andExpect(content().contentType("application/json;charset=UTF-8"))
                 .andExpect(content().json(RESULT_OK_JSON));

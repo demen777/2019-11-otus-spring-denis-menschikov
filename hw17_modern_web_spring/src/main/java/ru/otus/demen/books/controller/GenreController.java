@@ -23,7 +23,7 @@ public class GenreController {
         return genreService.getAll().stream().map(genreDtoMapper::toGenreDto).collect(Collectors.toList());
     }
 
-    @PostMapping("/api/genre/add")
+    @PostMapping("/api/genre")
     public GenreDto addGenrePost(@RequestBody GenreDto genreDto)
     {
         log.info("addGenrePost genreDto={}", genreDto);
