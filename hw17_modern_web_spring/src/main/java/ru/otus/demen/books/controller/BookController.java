@@ -19,9 +19,12 @@ import java.util.stream.Collectors;
 @RestController
 @RequiredArgsConstructor
 public class BookController {
+    private static final String PRODUCED_CONTENT_TYPE = "application/json;charset=UTF-8";
     private final BookService bookService;
     private final BookCommentService bookCommentService;
     private final BookMappersFacade bookMappers;
+    //language=JSON
+    public static final String RESULT_OK = "{\"result\": \"OK\"}";
 
     @GetMapping(path = "/api/books")
     public List<BookDto> getBookList() {
@@ -47,11 +50,11 @@ public class BookController {
         return bookMappers.toBookCommentDto(bookComment);
     }
 
-    @PutMapping("/api/book/{id}")
-    public ResultOk editBook(@PathVariable("id") long id, @RequestBody BookInputDto bookInputDto) {
+    @PutMapping(path = "/api/book/{id}", produces = PRODUCED_CONTENT_TYPE)
+    public String editBook(@PathVariable("id") long id, @RequestBody BookInputDto bookInputDto) {
         log.info("editBook id={} bookInputDto={}", id, bookInputDto);
         bookService.update(id, bookInputDto.getName(), bookInputDto.getAuthorId(), bookInputDto.getGenreId());
-        return ResultOk.INSTANCE;
+        return RESULT_OK;
     }
 
 
@@ -63,17 +66,17 @@ public class BookController {
                 bookService.add(bookInputDto.getName(), bookInputDto.getAuthorId(), bookInputDto.getGenreId()));
     }
 
-    @DeleteMapping("/api/book/comment/{bookCommentId}")
-    public ResultOk deleteComment(@PathVariable("bookCommentId") long bookCommentId)
+    @DeleteMapping(path = "/api/book/comment/{bookCommentId}", produces = PRODUCED_CONTENT_TYPE)
+    public String deleteComment(@PathVariable("bookCommentId") long bookCommentId)
     {
         bookCommentService.deleteById(bookCommentId);
-        return ResultOk.INSTANCE;
+        return RESULT_OK;
     }
 
-    @DeleteMapping("/api/book/{id}")
-    public ResultOk deleteBook(@PathVariable("id") long id)
+    @DeleteMapping(value = "/api/book/{id}", produces = PRODUCED_CONTENT_TYPE)
+    public String deleteBook(@PathVariable("id") long id)
     {
         bookService.deleteById(id);
-        return ResultOk.INSTANCE;
+        return RESULT_OK;
     }
 }

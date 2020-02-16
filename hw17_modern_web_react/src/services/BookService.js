@@ -15,7 +15,8 @@ export class BookService {
 
     async deleteBook(bookId) {
         console.log("BookService.deleteBook bookId=" + bookId);
-        return fetch(this.config.DELETE_BOOK_URL + bookId, {
+        const url = this.config.DELETE_BOOK_URL.replace("{bookId}", bookId);
+        return fetch(url, {
             method: "DELETE",
             headers: {
                 "Content-Type": "application/json"
@@ -59,7 +60,8 @@ export class BookService {
 
     async deleteBookComment(bookCommentId) {
         console.log("BookService.deleteBookComment bookCommentId=" + bookCommentId);
-        return fetch(this.config.DELETE_BOOK_COMMENT_URL + bookCommentId, {
+        const url = this.config.DELETE_BOOK_COMMENT_URL.replace("{bookCommentId}", bookCommentId);
+        return fetch(url, {
             method: "DELETE",
             headers: {
                 "Content-Type": "application/json"
@@ -69,7 +71,8 @@ export class BookService {
 
     async getBook(bookId) {
         console.log("BookService.getBook book=" + bookId);
-        return fetch(this.config.BOOK_URL + bookId)
+        const url = this.config.BOOK_URL.replace("{bookId}", bookId);
+        return fetch(url)
             .then(getResponseAndJson)
             .then(checkResponseAndJson);
     }
@@ -89,7 +92,8 @@ export class BookService {
 
     async editBook(bookId, book) {
         console.log("BookService.editBook bookId=" + bookId + " book=" + book);
-        return fetch(this.config.EDIT_BOOK_URL + bookId, {
+        const url = this.config.EDIT_BOOK_URL.replace("{bookId}", bookId);
+        return fetch(url, {
             method: "PUT",
             headers: {
                 "Content-Type": "application/json"
