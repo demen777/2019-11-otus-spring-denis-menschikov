@@ -59,7 +59,7 @@ class BookDaoMongoTest extends BaseDaoMongoTest {
     @Test
     @DisplayName("Успешное добавление новой книги")
     void save_ok() {
-        Book book = bookDao.save(new Book(ANNA_KARENINA_NAME, tolstoyAuthor, novelGenre));
+        Book book = bookDao.save(new Book(ANNA_KARENINA_NAME, tolstoyAuthor, novelGenre)).block();
         Book bookFromDb = mongoTemplate.findById(book.getId(), Book.class);
         assertThat(bookFromDb).isNotNull();
         assertThat(bookFromDb).isEqualTo(book);
@@ -68,14 +68,14 @@ class BookDaoMongoTest extends BaseDaoMongoTest {
     @Test
     @DisplayName("Поиск по фамилии возвращает список книг")
     void findBySurname_ok() {
-        Collection<Book> books = bookDao.findByAuthorSurname(TOLSTOY_SURNAME);
+        Collection<Book> books = bookDao.findByAuthorSurname(TOLSTOY_SURNAME).collectList().block();
         assertThat(books).containsExactlyInAnyOrderElementsOf(List.of(warAndPeace));
     }
 
     @Test
     @DisplayName("Поиск по id возратил книгу")
     void findById_ok() {
-        Optional<Book> book = bookDao.findById(warAndPeace.getId());
+        Optional<Book> book = bookDao.findById(warAndPeace.getId()).blockOptional();
         assertThat(book.isPresent()).isTrue();
         assertThat(book.get()).isEqualTo(warAndPeace);
     }
@@ -83,7 +83,7 @@ class BookDaoMongoTest extends BaseDaoMongoTest {
     @Test
     @DisplayName("Поиск по id не нашел книгу")
     void findById_notFound() {
-        Optional<Book> book = bookDao.findById(NO_EXIST_OBJECT_ID);
+        Optional<Book> book = bookDao.findById(NO_EXIST_OBJECT_ID).blockOptional();
         assertThat(book).isEmpty();
     }
 

@@ -2,6 +2,7 @@ package ru.otus.demen.books.controller;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.*;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
@@ -10,19 +11,14 @@ import ru.otus.demen.books.controller.dto.BookDto;
 import ru.otus.demen.books.controller.dto.BookInputDto;
 import ru.otus.demen.books.controller.dto.mapper.*;
 import ru.otus.demen.books.model.Book;
-import ru.otus.demen.books.model.BookComment;
 import ru.otus.demen.books.service.BookCommentService;
 import ru.otus.demen.books.service.BookService;
-
-import java.util.List;
-import java.util.stream.Collectors;
 
 @SuppressWarnings("SameReturnValue")
 @Slf4j
 @RestController
 @RequiredArgsConstructor
 public class BookController {
-    private static final String PRODUCED_CONTENT_TYPE = "application/json;charset=UTF-8";
     private final BookService bookService;
     private final BookCommentService bookCommentService;
     private final BookMappersFacade bookMappers;
@@ -52,7 +48,7 @@ public class BookController {
         return bookCommentService.add(bookId, bookCommentDto.getText()).map(bookMappers::toBookCommentDto);
     }
 
-    @PutMapping(path = "/api/book/{id}", produces = PRODUCED_CONTENT_TYPE)
+    @PutMapping(path = "/api/book/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
     public Mono<String> editBook(@PathVariable("id") String id, @RequestBody BookInputDto bookInputDto) {
         log.info("editBook id={} bookInputDto={}", id, bookInputDto);
         return bookService.update(id, bookInputDto.getName(), bookInputDto.getAuthorId(), bookInputDto.getGenreId())
@@ -67,12 +63,12 @@ public class BookController {
             .map(bookMappers::toBookDto);
     }
 
-    @DeleteMapping(path = "/api/book/comment/{bookCommentId}", produces = PRODUCED_CONTENT_TYPE)
+    @DeleteMapping(path = "/api/book/comment/{bookCommentId}", produces = MediaType.APPLICATION_JSON_VALUE)
     public Mono<String> deleteComment(@PathVariable("bookCommentId") String bookCommentId) {
         return bookCommentService.deleteById(bookCommentId).thenReturn(RESULT_OK);
     }
 
-    @DeleteMapping(value = "/api/book/{id}", produces = PRODUCED_CONTENT_TYPE)
+    @DeleteMapping(value = "/api/book/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
     public Mono<String> deleteBook(@PathVariable("id") String id) {
         return bookService.deleteById(id).thenReturn(RESULT_OK);
     }

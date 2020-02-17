@@ -9,7 +9,7 @@ import lombok.*;
 @ToString
 @EqualsAndHashCode
 public class AuthorDto {
-    private long id;
+    private String id;
     @NonNull
     private String firstName;
     @NonNull

@@ -7,6 +7,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.dao.DataAccessResourceFailureException;
 import org.springframework.dao.DataIntegrityViolationException;
+import reactor.core.publisher.Flux;
+import reactor.core.publisher.Mono;
 import ru.otus.demen.books.dao.AuthorDao;
 import ru.otus.demen.books.dao.BookDao;
 import ru.otus.demen.books.dao.GenreDao;
@@ -70,15 +72,15 @@ class BookServiceImplTest {
     @Test
     @DisplayName("Успешное получение книги по id")
     void getById_ok() {
-        when(bookDao.findById(WAR_AND_PEACE_ID)).thenReturn(Optional.of(warAndPeaceWithId));
-        Book book = bookService.getById(WAR_AND_PEACE_ID);
+        when(bookDao.findById(WAR_AND_PEACE_ID)).thenReturn(Mono.just(warAndPeaceWithId));
+        Book book = bookService.getById(WAR_AND_PEACE_ID).block();
         assertThat(book).isEqualTo(warAndPeaceWithId);
     }
 
     @Test
     @DisplayName("Книга по id не найдена")
     void getById_notFound() {
-        when(bookDao.findById(ANNA_KARENINA_ID)).thenReturn(Optional.empty());
+        when(bookDao.findById(ANNA_KARENINA_ID)).thenReturn(Mono.empty());
         assertThatThrownBy(() -> bookService.getById(ANNA_KARENINA_ID)).isInstanceOf(NotFoundException.class)
                 .hasMessageStartingWith("Не найдена книга с id=");
     }
@@ -86,11 +88,11 @@ class BookServiceImplTest {
     @Test
     @DisplayName("Успешное добавление книги")
     void add_ok() {
-        when(authorDao.findById(TOLSTOY_AUTHOR_ID)).thenReturn(Optional.of(tolstoyAuthor));
-        when(genreDao.findByName(NOVEL_GENRE_NAME)).thenReturn(Optional.of(novelGenre));
+        when(authorDao.findById(TOLSTOY_AUTHOR_ID)).thenReturn(Mono.just(tolstoyAuthor));
+        when(genreDao.findByName(NOVEL_GENRE_NAME)).thenReturn(Mono.just(novelGenre));
         Book book = new Book(WAR_AND_PEACE_NAME, tolstoyAuthor, novelGenre);
-        when(bookDao.save(book)).thenReturn(warAndPeaceWithId);
-        Book bookFromService = bookService.add(WAR_AND_PEACE_NAME, TOLSTOY_AUTHOR_ID, NOVEL_GENRE_NAME);
+        when(bookDao.save(book)).thenReturn(Mono.just(warAndPeaceWithId));
+        Book bookFromService = bookService.add(WAR_AND_PEACE_NAME, TOLSTOY_AUTHOR_ID, NOVEL_GENRE_NAME).block();
         assertThat(bookFromService).isEqualTo(warAndPeaceWithId);
     }
 
@@ -104,8 +106,8 @@ class BookServiceImplTest {
     @Test
     @DisplayName("При добавлении книги произошло DataAccessException исключение в BookDao")
     void add_bookDaoThrowDataAccessException() {
-        when(authorDao.findById(TOLSTOY_AUTHOR_ID)).thenReturn(Optional.of(tolstoyAuthor));
-        when(genreDao.findByName(NOVEL_GENRE_NAME)).thenReturn(Optional.of(novelGenre));
+        when(authorDao.findById(TOLSTOY_AUTHOR_ID)).thenReturn(Mono.just(tolstoyAuthor));
+        when(genreDao.findByName(NOVEL_GENRE_NAME)).thenReturn(Mono.just(novelGenre));
         Book book = new Book(WAR_AND_PEACE_NAME, tolstoyAuthor, novelGenre);
         when(bookDao.save(book)).thenThrow(new DataIntegrityViolationException("DataIntegrityViolationException!!!"));
         assertThatThrownBy(() -> bookService.add(WAR_AND_PEACE_NAME, TOLSTOY_AUTHOR_ID, NOVEL_GENRE_NAME))
@@ -116,8 +118,8 @@ class BookServiceImplTest {
     @DisplayName("Успешное получение списка книг по фамилии автора")
     void findBySurname_ok() {
         List<Book> expectedBooks = Arrays.asList(warAndPeaceWithId, annaKareninaWithId);
-        when(bookDao.findByAuthorSurname(TOLSTOY_SURNAME)).thenReturn(expectedBooks);
-        List<Book> books = bookService.findBySurname(TOLSTOY_SURNAME);
+        when(bookDao.findByAuthorSurname(TOLSTOY_SURNAME)).thenReturn(Flux.fromIterable(expectedBooks));
+        List<Book> books = bookService.findBySurname(TOLSTOY_SURNAME).collectList().block();
         assertThat(books).containsExactlyInAnyOrderElementsOf(expectedBooks);
     }
 
@@ -125,8 +127,8 @@ class BookServiceImplTest {
     @DisplayName("Получение пустого списка книг по фамилии автора")
     void findBySurname_emptyList() {
         List<Book> expectedBooks = Collections.emptyList();
-        when(bookDao.findByAuthorSurname(TOLSTOY_SURNAME)).thenReturn(expectedBooks);
-        List<Book> books = bookService.findBySurname(TOLSTOY_SURNAME);
+        when(bookDao.findByAuthorSurname(TOLSTOY_SURNAME)).thenReturn(Flux.fromIterable(expectedBooks));
+        List<Book> books = bookService.findBySurname(TOLSTOY_SURNAME).collectList().block();
         assertThat(books).containsExactlyInAnyOrderElementsOf(expectedBooks);
     }
 

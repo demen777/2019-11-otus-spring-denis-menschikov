@@ -1,60 +1,68 @@
 package ru.otus.demen.books.controller;
 
+import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
+import org.springframework.boot.test.autoconfigure.web.reactive.WebFluxTest;
 import org.springframework.context.annotation.Import;
-import org.springframework.test.web.servlet.MockMvc;
-import org.springframework.test.web.servlet.ResultActions;
+import org.springframework.http.MediaType;
+import org.springframework.test.web.reactive.server.WebTestClient;
+import org.springframework.web.reactive.function.BodyInserters;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 import ru.otus.demen.books.model.Genre;
 import ru.otus.demen.books.service.GenreService;
 import ru.otus.demen.books.service.exception.IllegalParameterException;
 
-import java.util.List;
-
-import static org.hamcrest.core.StringContains.containsString;
 import static org.mockito.Mockito.*;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
+import static ru.otus.demen.books.controller.ControllerTestUtils.createApiExceptionJson;
 
-@WebMvcTest(GenreController.class)
+@WebFluxTest(AuthorController.class)
 @Import(ControllerTestConfiguration.class)
 class GenreControllerTest {
-    private static final Genre NOVEL = new Genre("Роман");
+    private static Genre novel = new Genre("Роман");
+    public static final String NOVEL_ID = "1";
     public static final String NAME_MUST_BE_NOT_EMPTY_MSG = "Имя жанра должно быть непустым";
 
     @Autowired
-    MockMvc mockMvc;
+    WebTestClient webTestClient;
 
     @Autowired
     GenreService genreService;
 
+    @BeforeAll
+    static void beforeAll() {
+        novel.setId(NOVEL_ID);
+    }
+
     @Test
     @DisplayName("Успешная выдача списка жанров")
     void getAuthorList_ok() throws Exception {
-        when(genreService.getAll()).thenReturn(Flux.just(NOVEL));
-        ResultActions resultActions = mockMvc.perform(get("/api/genres"));
-        resultActions.andExpect(status().isOk())
-                .andExpect(content().contentType("application/json;charset=UTF-8"))
-                .andExpect(content().string(containsString(NOVEL.getName())));
+        when(genreService.getAll()).thenReturn(Flux.just(novel));
+        String outputJson = String.format("[{\"id\": \"%s\", \"name\": \"Роман\"}]", NOVEL_ID);
+        webTestClient.get()
+                .uri("/api/genres")
+                .exchange()
+                .expectStatus().isOk()
+                .expectHeader().contentType(MediaType.APPLICATION_JSON)
+                .expectBody().json(outputJson);
     }
 
     @Test
     @DisplayName("Успешное добавление нового жанра")
     void addGenre_ok() throws Exception {
-        when(genreService.add("Роман")).thenReturn(Mono.just(NOVEL));
+        when(genreService.add("Роман")).thenReturn(Mono.just(novel));
         String inputJson = "{\"name\": \"Роман\"}";
-        ResultActions resultActions = mockMvc.perform(post("/api/genre")
-                .content(inputJson)
-                .contentType("application/json")
-        );
-        resultActions.andExpect(status().isOk())
-                .andExpect(content().contentType("application/json;charset=UTF-8"))
-                .andExpect(content().json(inputJson));
+        String outputJson = String.format("{\"id\": \"%s\", \"name\": \"Роман\"}", NOVEL_ID);
+        webTestClient.post()
+                .uri("/api/genre")
+                .contentType(MediaType.APPLICATION_JSON)
+                .body(BodyInserters.fromValue(inputJson))
+                .exchange()
+                .expectStatus().isOk()
+                .expectHeader().contentType(MediaType.APPLICATION_JSON)
+                .expectBody().json(outputJson);
     }
 
     @Test
@@ -63,12 +71,15 @@ class GenreControllerTest {
         when(genreService.add(""))
                 .thenThrow(new IllegalParameterException(NAME_MUST_BE_NOT_EMPTY_MSG));
         String inputJson = "{\"name\": \"\"}";
-        ResultActions resultActions = mockMvc.perform(post("/api/genre")
-                .content(inputJson)
-                .contentType("application/json")
-        );
-        resultActions.andExpect(status().is4xxClientError())
-                .andExpect(content().contentType("application/json;charset=UTF-8"))
-                .andExpect(content().string(containsString(NAME_MUST_BE_NOT_EMPTY_MSG)));
+        String outputJson = createApiExceptionJson("Ошибка пользовательского ввода",
+                NAME_MUST_BE_NOT_EMPTY_MSG);
+        webTestClient.post()
+                .uri("/api/genre")
+                .contentType(MediaType.APPLICATION_JSON)
+                .body(BodyInserters.fromValue(inputJson))
+                .exchange()
+                .expectStatus().is4xxClientError()
+                .expectHeader().contentType(MediaType.APPLICATION_JSON)
+                .expectBody().json(outputJson);
     }
 }

@@ -33,7 +33,7 @@ class GenreDaoMongoTest extends BaseDaoMongoTest {
     @Test
     @DisplayName("Успешный поиск по имени")
     void findByName_ok() {
-        Optional<Genre> genre = genreDao.findByName(NOVEL_GENRE_NAME);
+        Optional<Genre> genre = genreDao.findByName(NOVEL_GENRE_NAME).blockOptional();
         assertThat(genre.isPresent()).isTrue();
         assertThat(genre.get()).isEqualTo(novelGenre);
     }
@@ -41,14 +41,14 @@ class GenreDaoMongoTest extends BaseDaoMongoTest {
     @Test
     @DisplayName("Поиск по имени не нашел жанр")
     void findByName_notFound() {
-        Optional<Genre> genre = genreDao.findByName(WRONG_NOVEL_GENRE_NAME);
+        Optional<Genre> genre = genreDao.findByName(WRONG_NOVEL_GENRE_NAME).blockOptional();
         assertThat(genre).isEmpty();
     }
 
     @Test
     @DisplayName("Добавление жанра успешно")
     void save_ok() {
-        Genre genre = genreDao.save(new Genre(NEW_GENRE_NAME));
+        Genre genre = genreDao.save(new Genre(NEW_GENRE_NAME)).block();
         Genre genreFromDb = mongoTemplate.findById(genre.getId(), Genre.class);
         assertThat(genreFromDb).isNotNull();
         assertThat(genreFromDb).isEqualTo(genre);
@@ -57,7 +57,7 @@ class GenreDaoMongoTest extends BaseDaoMongoTest {
     @Test
     @DisplayName("Получение списка жанров")
     void getAll() {
-        Collection<Genre> genres = genreDao.findAll();
+        Collection<Genre> genres = genreDao.findAll().collectList().block();
         assertThat(genres).containsExactlyInAnyOrderElementsOf(List.of(novelGenre));
     }
 }

@@ -6,14 +6,13 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.dao.TransientDataAccessResourceException;
+import reactor.core.publisher.Mono;
 import ru.otus.demen.books.dao.BookDao;
 import ru.otus.demen.books.model.Author;
 import ru.otus.demen.books.model.BookComment;
 import ru.otus.demen.books.model.Genre;
 import ru.otus.demen.books.service.exception.DataAccessServiceException;
 import ru.otus.demen.books.service.exception.NotFoundException;
-
-import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
@@ -52,15 +51,15 @@ class BookCommentServiceImplTest {
     @Test
     @DisplayName("Успешное добавление комментария")
     void add_ok() {
-        when(bookDao.countById(WAR_AND_PEACE_ID)).thenReturn(1L);
-        BookComment bookComment = bookCommentService.add(WAR_AND_PEACE_ID, COMMENT_TEXT);
+        when(bookDao.countById(WAR_AND_PEACE_ID)).thenReturn(Mono.just(1L));
+        BookComment bookComment = bookCommentService.add(WAR_AND_PEACE_ID, COMMENT_TEXT).block();
         assertThat(bookComment.getText()).isEqualTo(warAndPeaceComment.getText());
     }
 
     @Test
     @DisplayName("При добавлении комментария с неверным id книги выбрасывается NotFoundException")
     void add_bookNotFound() {
-        when(bookDao.findById("-1")).thenReturn(Optional.empty());
+        when(bookDao.findById("-1")).thenReturn(Mono.empty());
         assertThatThrownBy(() -> bookCommentService.add("-1", "Комментарий"))
                 .isInstanceOf(NotFoundException.class);
     }
@@ -77,14 +76,14 @@ class BookCommentServiceImplTest {
     @Test
     @DisplayName("Успешное удаление комментария")
     void deleteById_ok() {
-        when(bookDao.removeCommentById(WAR_AND_PEACE_COMMENT_ID)).thenReturn(1L);
-        assertThat(bookCommentService.deleteById(WAR_AND_PEACE_COMMENT_ID)).isTrue();
+        when(bookDao.removeCommentById(WAR_AND_PEACE_COMMENT_ID)).thenReturn(Mono.just(1L));
+        assertThat(bookCommentService.deleteById(WAR_AND_PEACE_COMMENT_ID).block()).isTrue();
     }
 
     @Test
     @DisplayName("Удаление комментария отсуствующего в хранилище")
     void deleteById_idNotFound() {
-        when(bookDao.removeCommentById(WAR_AND_PEACE_COMMENT_ID)).thenReturn(0L);
-        assertThat(bookCommentService.deleteById(WAR_AND_PEACE_COMMENT_ID)).isFalse();
+        when(bookDao.removeCommentById(WAR_AND_PEACE_COMMENT_ID)).thenReturn(Mono.just(0L));
+        assertThat(bookCommentService.deleteById(WAR_AND_PEACE_COMMENT_ID).block()).isFalse();
     }
 }

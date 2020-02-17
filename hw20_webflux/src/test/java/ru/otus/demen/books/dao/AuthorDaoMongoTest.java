@@ -8,9 +8,7 @@ import reactor.core.publisher.Mono;
 import reactor.test.StepVerifier;
 import ru.otus.demen.books.model.Author;
 
-import java.util.Collection;
 import java.util.List;
-import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -83,7 +81,6 @@ class AuthorDaoMongoTest extends BaseDaoMongoTest {
     void findByNameAndSurname_authorNotFound() {
         Mono<Author> author = authorDao.findByFirstNameAndSurname(DOSTOEVSKY_FIRST_NAME, DOSTOEVSKY_SURNAME);
         StepVerifier.create(author)
-            .assertNext(author1 -> assertThat(author1).isEqualTo(tolstoyAuthor))
             .verifyComplete();
     }
 }

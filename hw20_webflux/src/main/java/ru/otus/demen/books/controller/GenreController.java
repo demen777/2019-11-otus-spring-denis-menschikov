@@ -9,9 +9,6 @@ import ru.otus.demen.books.controller.dto.GenreDto;
 import ru.otus.demen.books.controller.dto.mapper.GenreDtoMapper;
 import ru.otus.demen.books.service.GenreService;
 
-import java.util.List;
-import java.util.stream.Collectors;
-
 @SuppressWarnings("SameReturnValue")
 @Slf4j
 @RestController
