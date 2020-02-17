@@ -1,0 +1,19 @@
+spring:
+
+  shell:
+    interactive:
+      enabled: false
+
+  data:
+    mongodb:
+      database: libraryDb
+      host: localhost
+
+logging:
+  level:
+    org:
+      springframework:
+        data:
+          mongodb:
+            core:
+              MongoTemplate: DEBUG
