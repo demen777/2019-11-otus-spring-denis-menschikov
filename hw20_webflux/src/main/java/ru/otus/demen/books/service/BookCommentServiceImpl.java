@@ -4,6 +4,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.dao.DataAccessException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import reactor.core.publisher.Mono;
 import ru.otus.demen.books.dao.BookDao;
 import ru.otus.demen.books.model.Book;
 import ru.otus.demen.books.model.BookComment;
@@ -20,40 +21,36 @@ public class BookCommentServiceImpl implements BookCommentService {
 
     @Override
     @Transactional
-    public BookComment add(String bookId, String text) {
+    public Mono<BookComment> add(String bookId, String text) {
         if (text == null || text.isEmpty()) {
             throw new IllegalParameterException("Текст комментария должен быть непустым");
         }
         try {
-            long count = bookDao.countById(bookId);
-            if (count == 0) {
+            Mono<Long> count = bookDao.countById(bookId);
+            count.filter(c -> c == 0).flatMap(c -> {
                 throw new NotFoundException(String.format("Не найдена книга с id=%s", bookId));
-            }
+            });
             BookComment bookComment = new BookComment(text);
             bookDao.addComment(bookId, bookComment);
-            return bookComment;
-        }
-        catch (DataAccessException error) {
+            return Mono.just(bookComment);
+        } catch (DataAccessException error) {
             throw new DataAccessServiceException("Ошибка Dao во время добавления комментария", error);
         }
     }
 
-    private Book getBook(String bookId) {
-        Optional<Book> bookOptional = bookDao.findById(bookId);
-        return bookOptional.orElseThrow(
-                () -> new NotFoundException(String.format("Не найдена книга с id=%s", bookId)));
+    private Mono<Book> getBook(String bookId) {
+        return bookDao.findById(bookId).switchIfEmpty(Mono.error(new NotFoundException(String.format("Не найдена " +
+            "книга с id=%s", bookId))));
     }
 
     @Override
     @Transactional
-    public boolean deleteById(String bookCommentId) {
+    public Mono<Boolean> deleteById(String bookCommentId) {
         try {
-            long deletedQuantity = bookDao.removeCommentById(bookCommentId);
-            return deletedQuantity > 0;
-        }
-        catch (DataAccessException error) {
+            return bookDao.removeCommentById(bookCommentId).map(deletedQuantity -> deletedQuantity > 0);
+        } catch (DataAccessException error) {
             throw new DataAccessServiceException(
-                    String.format("Ошибка Dao во время удаления комментария с id=%s", bookCommentId), error);
+                String.format("Ошибка Dao во время удаления комментария с id=%s", bookCommentId), error);
         }
     }
 }

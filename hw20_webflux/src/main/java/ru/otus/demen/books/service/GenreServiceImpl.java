@@ -4,6 +4,8 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.dao.DataAccessException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import reactor.core.publisher.Flux;
+import reactor.core.publisher.Mono;
 import ru.otus.demen.books.dao.GenreDao;
 import ru.otus.demen.books.model.Genre;
 import ru.otus.demen.books.service.exception.*;
@@ -18,7 +20,7 @@ public class GenreServiceImpl implements GenreService {
 
     @Override
     @Transactional
-    public Optional<Genre> findByName(String name) {
+    public Mono<Genre> findByName(String name) {
         try {
             return genreDao.findByName(name);
         } catch (DataAccessException error) {
@@ -29,22 +31,19 @@ public class GenreServiceImpl implements GenreService {
 
     @Override
     @Transactional
-    public Genre getByName(String name) {
-        Optional<Genre> genreOptional = findByName(name);
-        return genreOptional
-                .orElseThrow(() -> new NotFoundException(String.format("Не найден жанр %s", name)));
+    public Mono<Genre> getByName(String name) {
+        return findByName(name).switchIfEmpty(Mono.error(new NotFoundException(String.format("Не найден жанр %s", name))));
     }
 
     @Override
     @Transactional
-    public Genre add(String name) {
+    public Mono<Genre> add(String name) {
         if (name == null || name.isEmpty()) {
             throw new IllegalParameterException("Имя жанра должно быть непустым");
         }
-        Optional<Genre> alreadyExistsGenre = findByName(name);
-        if (alreadyExistsGenre.isPresent()) {
+        findByName(name).map((genre) -> {
             throw new AlreadyExistsException(String.format("Жанр с именем %s уже есть в БД", name));
-        }
+        });
         try {
             return genreDao.save(new Genre(name));
         }
@@ -56,7 +55,7 @@ public class GenreServiceImpl implements GenreService {
 
     @Override
     @Transactional
-    public Collection<Genre> getAll() {
+    public Flux<Genre> getAll() {
         try {
             return genreDao.findAll();
         }

@@ -7,6 +7,8 @@ import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.context.annotation.Import;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.ResultActions;
+import reactor.core.publisher.Flux;
+import reactor.core.publisher.Mono;
 import ru.otus.demen.books.model.Author;
 import ru.otus.demen.books.model.Book;
 import ru.otus.demen.books.model.BookComment;
@@ -27,12 +29,12 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @WebMvcTest(BookController.class)
 @Import(ControllerTestConfiguration.class)
 class BookControllerTest {
-    private static final Genre NOVEL = new Genre(1L, "Роман");
-    private static final Author TOLSTOY = new Author(1L, "Лев", "Толстой");
-    private static final Book WAR_AND_PEACE = new Book(1L, "Война и мир", TOLSTOY, NOVEL);
-    private static final Book ANNA_KARENINA = new Book(2L, "Анна Каренина", TOLSTOY, NOVEL);
+    private static final Genre NOVEL = new Genre("Роман");
+    private static final Author TOLSTOY = new Author("Лев", "Толстой");
+    private static final Book WAR_AND_PEACE = new Book("Война и мир", TOLSTOY, NOVEL);
+    private static final Book ANNA_KARENINA = new Book("Анна Каренина", TOLSTOY, NOVEL);
     public static final BookComment WAR_AND_PEACE_COMMENT
-            = new BookComment(1L, "Объемная книга", WAR_AND_PEACE);
+            = new BookComment("Объемная книга");
     public static final String RESULT_OK_JSON = "{\"result\": \"OK\"}";
 
     @Autowired
@@ -53,7 +55,7 @@ class BookControllerTest {
     @Test
     @DisplayName("Успешная выдача списка книг")
     void getBookList_ok() throws Exception {
-        when(bookService.findAll()).thenReturn(List.of(WAR_AND_PEACE, ANNA_KARENINA));
+        when(bookService.findAll()).thenReturn(Flux.just(WAR_AND_PEACE, ANNA_KARENINA));
         ResultActions resultActions = mockMvc.perform(get("/api/books"));
         resultActions.andExpect(status().isOk())
                 .andExpect(content().contentType("application/json;charset=UTF-8"))
@@ -64,12 +66,11 @@ class BookControllerTest {
     @Test
     @DisplayName("Успешное добавление комментария")
     void addComment_ok() throws Exception {
-        when(bookService.getById(WAR_AND_PEACE.getId())).thenReturn(WAR_AND_PEACE);
-        when(bookCommentService.getByBookId(WAR_AND_PEACE.getId())).thenReturn(List.of(WAR_AND_PEACE_COMMENT));
+        when(bookService.getById(WAR_AND_PEACE.getId())).thenReturn(Mono.just(WAR_AND_PEACE));
         when(bookCommentService.add(WAR_AND_PEACE.getId(), WAR_AND_PEACE_COMMENT.getText()))
-                .thenReturn(WAR_AND_PEACE_COMMENT);
+            .thenReturn(Mono.just(WAR_AND_PEACE_COMMENT));
         String inputJson = String.format("{\"text\": \"%s\"}", WAR_AND_PEACE_COMMENT.getText());
-        String inputUrl = String.format("/api/book/%d/comment", WAR_AND_PEACE.getId());
+        String inputUrl = String.format("/api/book/%s/comment", WAR_AND_PEACE.getId());
         ResultActions resultActions = mockMvc.perform(post(inputUrl)
                 .content(inputJson)
                 .contentType("application/json"));
@@ -82,8 +83,8 @@ class BookControllerTest {
     @DisplayName("Успешный ввод новой книги")
     void addBook_ok() throws Exception {
         when(bookService.add(ANNA_KARENINA.getName(), WAR_AND_PEACE.getAuthor().getId(),
-                WAR_AND_PEACE.getGenre().getId())).thenReturn(ANNA_KARENINA);
-        String inputJson = String.format("{\"name\": \"%s\", \"authorId\": \"%d\", \"genreId\": \"%d\"}",
+                WAR_AND_PEACE.getGenre().getId())).thenReturn(Mono.just(ANNA_KARENINA));
+        String inputJson = String.format("{\"name\": \"%s\", \"authorId\": \"%s\", \"genreId\": \"%s\"}",
                 ANNA_KARENINA.getName(), WAR_AND_PEACE.getAuthor().getId(),
                 WAR_AND_PEACE.getGenre().getId());
         ResultActions resultActions = mockMvc.perform(post("/api/book")

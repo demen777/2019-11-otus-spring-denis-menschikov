@@ -4,6 +4,8 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
+import reactor.core.publisher.Mono;
+import reactor.test.StepVerifier;
 import ru.otus.demen.books.model.Author;
 
 import java.util.Collection;
@@ -37,21 +39,24 @@ class AuthorDaoMongoTest extends BaseDaoMongoTest {
     @Test
     @DisplayName("Успешный поиск методом findById")
     void findById_ok() {
-        Optional<Author> author = authorDao.findById(tolstoyAuthor.getId());
-        assertThat(author).isPresent().get().isEqualTo(tolstoyAuthor);
+        Mono<Author> author = authorDao.findById(tolstoyAuthor.getId());
+        StepVerifier.create(author)
+            .assertNext(author1 -> assertThat(author1).isEqualTo(tolstoyAuthor))
+            .verifyComplete();
     }
 
     @Test
     @DisplayName("Поиск методом findById не нашел автора")
     void findById_authorNotFound() {
-        Optional<Author> author = authorDao.findById(WRONG_AUTHOR_ID);
-        assertThat(author).isEmpty();
+        Mono<Author> author = authorDao.findById(WRONG_AUTHOR_ID);
+        StepVerifier.create(author)
+            .verifyComplete();
     }
 
     @Test
     @DisplayName("Успешное добавление автора")
     void save_ok() {
-        Author authorWithId = authorDao.save(newAuthor);
+        Author authorWithId = authorDao.save(newAuthor).block();
         Author fromDb = mongoTemplate.findById(authorWithId.getId(), Author.class);
         assertThat(fromDb).isNotNull();
         assertThat(fromDb.getFirstName()).isEqualTo(newAuthor.getFirstName());
@@ -62,22 +67,23 @@ class AuthorDaoMongoTest extends BaseDaoMongoTest {
     @DisplayName("Успешное получение списка всех авторов")
     void getAll_ok() {
         mongoTemplate.save(newAuthor);
-        Collection<Author> authors = authorDao.findAll();
+        List<Author> authors = authorDao.findAll().collectList().block();
         assertThat(authors).containsExactlyInAnyOrderElementsOf(List.of(tolstoyAuthor, newAuthor));
     }
 
     @Test
     @DisplayName("Успешный поиск по имени и фамилии")
     void findByNameAndSurname_ok() {
-        Optional<Author> author = authorDao.findByFirstNameAndSurname(TOLSTOY_FIRST_NAME, TOLSTOY_SURNAME);
-        assertThat(author).isPresent();
-        assertThat(author.get()).isEqualTo(tolstoyAuthor);
+        Author author = authorDao.findByFirstNameAndSurname(TOLSTOY_FIRST_NAME, TOLSTOY_SURNAME).block();
+        assertThat(author).isEqualTo(tolstoyAuthor);
     }
 
     @Test
     @DisplayName("Поиск по имени и фамилии не нашел автора")
     void findByNameAndSurname_authorNotFound() {
-        Optional<Author> author = authorDao.findByFirstNameAndSurname(DOSTOEVSKY_FIRST_NAME, DOSTOEVSKY_SURNAME);
-        assertThat(author).isEmpty();
+        Mono<Author> author = authorDao.findByFirstNameAndSurname(DOSTOEVSKY_FIRST_NAME, DOSTOEVSKY_SURNAME);
+        StepVerifier.create(author)
+            .assertNext(author1 -> assertThat(author1).isEqualTo(tolstoyAuthor))
+            .verifyComplete();
     }
 }

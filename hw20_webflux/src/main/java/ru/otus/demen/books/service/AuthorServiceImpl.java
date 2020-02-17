@@ -4,6 +4,8 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.dao.DataAccessException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import reactor.core.publisher.Flux;
+import reactor.core.publisher.Mono;
 import ru.otus.demen.books.dao.AuthorDao;
 import ru.otus.demen.books.model.Author;
 import ru.otus.demen.books.service.exception.*;
@@ -18,7 +20,7 @@ public class AuthorServiceImpl implements AuthorService {
 
     @Override
     @Transactional
-    public Optional<Author> findById(String id) {
+    public Mono<Author> findById(String id) {
         try {
             return authorDao.findById(id);
         } catch (DataAccessException error) {
@@ -29,15 +31,15 @@ public class AuthorServiceImpl implements AuthorService {
 
     @Override
     @Transactional
-    public Author getById(String id) {
-        Optional<Author> authorOptional = findById(id);
+    public Mono<Author> getById(String id) {
+        Mono<Author> authorOptional = findById(id);
         return authorOptional
-                .orElseThrow(() -> new NotFoundException(String.format("Не найден автор с id=%s", id)));
+                .switchIfEmpty(Mono.error(new NotFoundException(String.format("Не найден автор с id=%s", id))));
     }
 
     @Override
     @Transactional
-    public Author add(String firstName, String surname) {
+    public Mono<Author> add(String firstName, String surname) {
         try {
             if (firstName == null || firstName.isEmpty()) {
                 throw new IllegalParameterException("Имя не должно быть пустым");
@@ -45,10 +47,11 @@ public class AuthorServiceImpl implements AuthorService {
             if (surname == null || surname.isEmpty()) {
                 throw new IllegalParameterException("Фамилия не должна быть пустой");
             }
-            Optional<Author> alreadyExistsAuthor = findByNameAndSurname(firstName, surname);
-            alreadyExistsAuthor.ifPresent(author -> {
-                throw new AlreadyExistsException(String.format("Автор %s %s уже существует в БД",
-                        firstName, surname));
+            Mono<Author> alreadyExistsAuthor = findByNameAndSurname(firstName, surname);
+            alreadyExistsAuthor.flatMap((author) ->
+            {
+                throw new AlreadyExistsException(String.format("Автор %s %s уже существует в БД", firstName,
+                    surname));
             });
             Author author = new Author(firstName, surname);
             return authorDao.save(author);
@@ -60,7 +63,7 @@ public class AuthorServiceImpl implements AuthorService {
     }
 
     @Transactional
-    public Optional<Author> findByNameAndSurname(String firstName, String surname) {
+    public Mono<Author> findByNameAndSurname(String firstName, String surname) {
         try {
             return authorDao.findByFirstNameAndSurname(firstName, surname);
         } catch (DataAccessException error) {
@@ -72,7 +75,7 @@ public class AuthorServiceImpl implements AuthorService {
 
     @Override
     @Transactional
-    public Collection<Author> getAll() {
+    public Flux<Author> getAll() {
         try {
             return authorDao.findAll();
         } catch (DataAccessException error) {

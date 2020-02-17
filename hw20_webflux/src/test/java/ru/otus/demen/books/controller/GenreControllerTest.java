@@ -7,6 +7,8 @@ import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.context.annotation.Import;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.ResultActions;
+import reactor.core.publisher.Flux;
+import reactor.core.publisher.Mono;
 import ru.otus.demen.books.model.Genre;
 import ru.otus.demen.books.service.GenreService;
 import ru.otus.demen.books.service.exception.IllegalParameterException;
@@ -22,7 +24,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @WebMvcTest(GenreController.class)
 @Import(ControllerTestConfiguration.class)
 class GenreControllerTest {
-    private static final Genre NOVEL = new Genre(1L, "Роман");
+    private static final Genre NOVEL = new Genre("Роман");
     public static final String NAME_MUST_BE_NOT_EMPTY_MSG = "Имя жанра должно быть непустым";
 
     @Autowired
@@ -34,7 +36,7 @@ class GenreControllerTest {
     @Test
     @DisplayName("Успешная выдача списка жанров")
     void getAuthorList_ok() throws Exception {
-        when(genreService.getAll()).thenReturn(List.of(NOVEL));
+        when(genreService.getAll()).thenReturn(Flux.just(NOVEL));
         ResultActions resultActions = mockMvc.perform(get("/api/genres"));
         resultActions.andExpect(status().isOk())
                 .andExpect(content().contentType("application/json;charset=UTF-8"))
@@ -44,7 +46,7 @@ class GenreControllerTest {
     @Test
     @DisplayName("Успешное добавление нового жанра")
     void addGenre_ok() throws Exception {
-        when(genreService.add("Роман")).thenReturn(NOVEL);
+        when(genreService.add("Роман")).thenReturn(Mono.just(NOVEL));
         String inputJson = "{\"name\": \"Роман\"}";
         ResultActions resultActions = mockMvc.perform(post("/api/genre")
                 .content(inputJson)

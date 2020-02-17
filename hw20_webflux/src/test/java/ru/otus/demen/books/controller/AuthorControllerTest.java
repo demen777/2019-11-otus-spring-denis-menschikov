@@ -7,6 +7,8 @@ import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.context.annotation.Import;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.ResultActions;
+import reactor.core.publisher.Flux;
+import reactor.core.publisher.Mono;
 import ru.otus.demen.books.controller.dto.mapper.AuthorDtoMapper;
 import ru.otus.demen.books.model.Author;
 import ru.otus.demen.books.service.AuthorService;
@@ -23,7 +25,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @WebMvcTest(AuthorController.class)
 @Import(ControllerTestConfiguration.class)
 class AuthorControllerTest {
-    private static final Author TOLSTOY = new Author(1L, "Лев", "Толстой");
+    private static final Author TOLSTOY = new Author("Лев", "Толстой");
     public static final String FIRSTNAME_MUST_BE_NOT_EMPTY_MSG = "Имя не должно быть пустым";
     public static final String SURNAME_MUST_BE_NOT_EMPTY_MSG = "Фамилия не должна быть пустой";
 
@@ -39,7 +41,7 @@ class AuthorControllerTest {
     @Test
     @DisplayName("Успешное выдача списка авторов")
     void getAuthorList_ok() throws Exception {
-        when(authorService.getAll()).thenReturn(List.of(TOLSTOY));
+        when(authorService.getAll()).thenReturn(Flux.just(TOLSTOY));
         ResultActions resultActions = mockMvc.perform(get("/api/authors"));
         resultActions.andExpect(status().isOk())
             .andExpect(content().contentType("application/json;charset=UTF-8"))
@@ -49,7 +51,7 @@ class AuthorControllerTest {
     @Test
     @DisplayName("Успешное добавление нового автора")
     void addAuthor_ok() throws Exception {
-        when(authorService.add("Лев", "Толстой")).thenReturn(TOLSTOY);
+        when(authorService.add("Лев", "Толстой")).thenReturn(Mono.just(TOLSTOY));
         String inputJson = "{\"firstName\": \"Лев\", \"surname\": \"Толстой\"}";
         ResultActions resultActions = mockMvc.perform(post("/api/author")
                 .content(inputJson)

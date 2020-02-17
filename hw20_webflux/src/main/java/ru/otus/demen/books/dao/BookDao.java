@@ -2,11 +2,13 @@ package ru.otus.demen.books.dao;
 
 import org.springframework.data.mongodb.repository.MongoRepository;
 import org.springframework.data.mongodb.repository.ReactiveMongoRepository;
+import reactor.core.publisher.Flux;
+import reactor.core.publisher.Mono;
 import ru.otus.demen.books.model.Book;
 
 import java.util.List;
 
 public interface BookDao extends ReactiveMongoRepository<Book, String>, BookRepositoryCustom {
-    List<Book> findByAuthorSurname(String surname);
-    long countById(String id);
+    Flux<Book> findByAuthorSurname(String surname);
+    Mono<Long> countById(String id);
 }

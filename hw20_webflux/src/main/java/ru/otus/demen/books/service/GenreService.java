@@ -1,13 +1,15 @@
 package ru.otus.demen.books.service;
 
+import reactor.core.publisher.Flux;
+import reactor.core.publisher.Mono;
 import ru.otus.demen.books.model.Genre;
 
 import java.util.Collection;
 import java.util.Optional;
 
 public interface GenreService {
-    Optional<Genre> findByName(String name);
-    Genre getByName(String name);
-    Genre add(String name);
-    Collection<Genre> getAll();
+    Mono<Genre> findByName(String name);
+    Mono<Genre> getByName(String name);
+    Mono<Genre> add(String name);
+    Flux<Genre> getAll();
 }

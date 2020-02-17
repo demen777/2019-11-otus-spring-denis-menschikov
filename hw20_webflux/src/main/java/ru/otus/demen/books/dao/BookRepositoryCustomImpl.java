@@ -10,6 +10,7 @@ import org.springframework.data.mongodb.core.query.Criteria;
 import org.springframework.data.mongodb.core.query.Query;
 import org.springframework.data.mongodb.core.query.Update;
 import org.springframework.stereotype.Repository;
+import reactor.core.publisher.Mono;
 import ru.otus.demen.books.model.Book;
 import ru.otus.demen.books.model.BookComment;
 
@@ -20,24 +21,27 @@ public class BookRepositoryCustomImpl implements BookRepositoryCustom {
     private final ReactiveMongoTemplate mongoTemplate;
 
     @Override
-    public long removeCommentById(String commentId) {
-        DeleteResult deleteResult =
+    public Mono<Long> removeCommentById(String commentId) {
+        Mono<DeleteResult> deleteResult =
                 mongoTemplate.remove(new Query(Criteria.where("id").is(commentId)), BookComment.class);
         mongoTemplate.updateMulti(new Query(),
                 new Update().pull("comments", Query.query(Criteria.where("$id").is(new ObjectId(commentId)))),
                 Book.class);
-        return deleteResult.getDeletedCount();
+        return deleteResult.map(DeleteResult::getDeletedCount);
     }
 
     @Override
-    public void addComment(String bookId, BookComment bookComment) {
+    public Mono<Void> addComment(String bookId, BookComment bookComment) {
         mongoTemplate.insert(bookComment);
-        UpdateResult updateResult = mongoTemplate.updateFirst(new Query(Criteria.where("id").is(bookId)),
+        Mono<UpdateResult> updateResult = mongoTemplate.updateFirst(new Query(Criteria.where("id").is(bookId)),
                 new Update().push("comments", bookComment),
                 Book.class);
-        if (updateResult.getModifiedCount() == 0) {
-            mongoTemplate.remove(bookComment);
-            throw new IdNotFoundException(String.format("No exists book with id=%s", bookId));
-        }
+        return updateResult.flatMap(result -> {
+            if(result.getModifiedCount() == 0) {
+                mongoTemplate.remove(bookComment);
+                return Mono.error(new IdNotFoundException(String.format("No exists book with id=%s", bookId)));
+            }
+            return Mono.empty();
+        });
     }
 }

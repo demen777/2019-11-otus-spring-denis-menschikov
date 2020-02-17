@@ -4,6 +4,8 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.dao.DataAccessException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import reactor.core.publisher.Flux;
+import reactor.core.publisher.Mono;
 import ru.otus.demen.books.dao.AuthorDao;
 import ru.otus.demen.books.dao.BookDao;
 import ru.otus.demen.books.dao.GenreDao;
@@ -26,19 +28,18 @@ public class BookServiceImpl implements BookService {
 
     @Override
     @Transactional
-    public Book add(String name, String authorId, String genreName) {
+    public Mono<Book> add(String name, String authorId, String genreName) {
         if (name == null || name.isEmpty()) {
             throw new IllegalParameterException("Имя книги должно быть не пустым");
         }
         try {
-            Optional<Author> authorOptional = authorDao.findById(authorId);
-            Author author = authorOptional.orElseThrow(
-                    () -> new NotFoundException(String.format("Не найден автор с id=%s", authorId)));
-            Optional<Genre> genreOptional = genreDao.findByName(genreName);
-            Genre genre = genreOptional.orElseThrow(
-                    () -> new NotFoundException(String.format("Не найден жанр с именем %s", genreName)));
-            Book book = new Book(name, author, genre);
-            return bookDao.save(book);
+            Mono<Genre> genreOptional = genreDao.findByName(genreName)
+                .switchIfEmpty(Mono.error(new NotFoundException(String.format("Не найден жанр с именем %s",
+                    genreName))));
+            return authorDao.findById(authorId)
+                .switchIfEmpty(Mono.error(new NotFoundException(String.format("Не найден автор с id=%s", authorId))))
+                .zipWith(genreOptional, (author, genre) -> new Book(name, author, genre))
+                .flatMap(bookDao::save);
         } catch (DataAccessException error) {
             throw new DataAccessServiceException("Ошибка Dao во время добавления книги", error);
         }
@@ -46,7 +47,7 @@ public class BookServiceImpl implements BookService {
 
     @Override
     @Transactional
-    public List<Book> findBySurname(String surname) {
+    public Flux<Book> findBySurname(String surname) {
         try {
             return bookDao.findByAuthorSurname(surname);
         } catch (DataAccessException error) {
@@ -57,12 +58,31 @@ public class BookServiceImpl implements BookService {
 
     @Override
     @Transactional
-    public Book getById(String id) {
+    public Mono<Book> getById(String id) {
         try {
-            Optional<Book> book = bookDao.findById(id);
-            return book.orElseThrow(() -> new NotFoundException(String.format("Не найдена книга с id=%s", id)));
+            return bookDao.findById(id).switchIfEmpty(Mono.error(new NotFoundException(String.format("Не " +
+                "найдена книга с id=%s", id))));
         } catch (DataAccessException error) {
             throw new DataAccessServiceException(String.format("Ошибка Dao во время поиска книги по id %s", id), error);
         }
+    }
+
+    @Override
+    @Transactional
+    public Flux<Book> findAll() {
+        return bookDao.findAll();
+    }
+
+    @Override
+    @Transactional
+    public Mono<Void> deleteById(String id) {
+        return bookDao.deleteById(id);
+    }
+
+    @Override
+    @Transactional
+    public Mono<Void> update(String id, String name, String authorId, String genreId) {
+        // TODO
+        return Mono.empty();
     }
 }
