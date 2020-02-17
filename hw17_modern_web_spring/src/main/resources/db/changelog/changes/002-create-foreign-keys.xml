@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!--suppress XmlUnusedNamespaceDeclaration -->
+<databaseChangeLog
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xmlns:ext="http://www.liquibase.org/xml/ns/dbchangelog-ext"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.8.xsd
+        http://www.liquibase.org/xml/ns/dbchangelog-ext http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-ext.xsd">
+
+    <changeSet id="002" author="demen777">
+        <addForeignKeyConstraint baseTableName="books" baseColumnNames="author_id"
+                                 constraintName="books_author_fk"
+                                 referencedTableName="authors" referencedColumnNames="id"/>
+        <addForeignKeyConstraint baseTableName="books" baseColumnNames="genre_id"
+                                 constraintName="books_genre_fk"
+                                 referencedTableName="genres" referencedColumnNames="id"/>
+        <addForeignKeyConstraint baseTableName="book_comments" baseColumnNames="book_id"
+                                 constraintName="book_comments_book_fk"
+                                 referencedTableName="books" referencedColumnNames="id"/>
+    </changeSet>
+</databaseChangeLog>
