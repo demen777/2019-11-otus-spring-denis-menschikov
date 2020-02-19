@@ -10,9 +10,6 @@ import ru.otus.demen.books.dao.AuthorDao;
 import ru.otus.demen.books.model.Author;
 import ru.otus.demen.books.service.exception.*;
 
-import java.util.Collection;
-import java.util.Optional;
-
 @Service
 @RequiredArgsConstructor
 public class AuthorServiceImpl implements AuthorService {

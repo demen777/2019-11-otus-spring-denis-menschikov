@@ -12,8 +12,6 @@ import ru.otus.demen.books.service.exception.DataAccessServiceException;
 import ru.otus.demen.books.service.exception.IllegalParameterException;
 import ru.otus.demen.books.service.exception.NotFoundException;
 
-import java.util.Optional;
-
 @Service
 @RequiredArgsConstructor
 public class BookCommentServiceImpl implements BookCommentService {

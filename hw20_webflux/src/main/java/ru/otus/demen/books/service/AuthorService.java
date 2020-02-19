@@ -4,9 +4,6 @@ import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 import ru.otus.demen.books.model.Author;
 
-import java.util.Collection;
-import java.util.Optional;
-
 public interface AuthorService {
     Mono<Author> findById(String id);
     Mono<Author> getById(String id);

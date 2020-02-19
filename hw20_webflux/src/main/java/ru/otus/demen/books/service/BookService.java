@@ -4,9 +4,6 @@ import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 import ru.otus.demen.books.model.Book;
 
-import java.util.Arrays;
-import java.util.List;
-
 public interface BookService {
     Mono<Book> add(String name, String authorId, String genreName);
     Flux<Book> findBySurname(String surname);

@@ -9,15 +9,11 @@ import reactor.core.publisher.Mono;
 import ru.otus.demen.books.dao.AuthorDao;
 import ru.otus.demen.books.dao.BookDao;
 import ru.otus.demen.books.dao.GenreDao;
-import ru.otus.demen.books.model.Author;
 import ru.otus.demen.books.model.Book;
 import ru.otus.demen.books.model.Genre;
 import ru.otus.demen.books.service.exception.DataAccessServiceException;
 import ru.otus.demen.books.service.exception.IllegalParameterException;
 import ru.otus.demen.books.service.exception.NotFoundException;
-
-import java.util.List;
-import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
