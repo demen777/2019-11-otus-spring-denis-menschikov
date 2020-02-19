@@ -18,12 +18,13 @@ public class GenreServiceImpl implements GenreService {
     @Override
     @Transactional
     public Mono<Genre> findByName(String name) {
-        try {
-            return genreDao.findByName(name);
-        } catch (DataAccessException error) {
-            throw new DataAccessServiceException(
-                String.format("Ошибка Dao во время поиска жанра по имени %s", name), error);
-        }
+        return genreDao.findByName(name).onErrorMap(error -> {
+            if (error instanceof DataAccessException) {
+                return new DataAccessServiceException(
+                    String.format("Ошибка Dao во время поиска жанра по имени %s", name), error);
+            }
+            return error;
+        });
     }
 
     @Override
@@ -38,16 +39,17 @@ public class GenreServiceImpl implements GenreService {
         if (name == null || name.isEmpty()) {
             throw new IllegalParameterException("Имя жанра должно быть непустым");
         }
-        findByName(name).map((genre) -> {
-            throw new AlreadyExistsException(String.format("Жанр с именем %s уже есть в БД", name));
-        });
-        try {
-            return genreDao.save(new Genre(name));
-        }
-        catch (DataAccessException error) {
-            throw new DataAccessServiceException(
-                String.format("Ошибка Dao во время добавления жанра по имени %s", name), error);
-        }
+        return findByName(name)
+            .flatMap(genre -> Mono.error(new AlreadyExistsException(String.format("Жанр с именем %s уже есть в БД",
+                name))))
+            .then(genreDao.save(new Genre(name)))
+            .onErrorMap(error -> {
+                if (error instanceof DataAccessException) {
+                    return new DataAccessServiceException(
+                        String.format("Ошибка Dao во время добавления жанра по имени %s", name), error);
+                }
+                return error;
+            });
     }
 
     @Override
@@ -55,8 +57,7 @@ public class GenreServiceImpl implements GenreService {
     public Flux<Genre> getAll() {
         try {
             return genreDao.findAll();
-        }
-        catch (DataAccessException error) {
+        } catch (DataAccessException error) {
             throw new DataAccessServiceException("Ошибка Dao во время получения списка жанров", error);
         }
     }

@@ -59,7 +59,7 @@ class BookDaoMongoTest extends BaseDaoMongoTest {
     @Test
     @DisplayName("Успешное добавление новой книги")
     void save_ok() {
-        Book book = bookDao.save(new Book(ANNA_KARENINA_NAME, tolstoyAuthor, novelGenre)).block();
+        Book book = bookDao.save(new Book(ANNA_KARENINA_NAME, tolstoyAuthor, novelGenre)).blockOptional().orElseThrow();
         Book bookFromDb = mongoTemplate.findById(book.getId(), Book.class);
         assertThat(bookFromDb).isNotNull();
         assertThat(bookFromDb).isEqualTo(book);
@@ -91,7 +91,7 @@ class BookDaoMongoTest extends BaseDaoMongoTest {
     @DisplayName("Успешное удаление комментария по id")
     void deleteById_ok() {
         assertThat(getMongoArraySize("book", "comments", warAndPeace.getId())).isEqualTo(1);
-        assertThat(bookDao.removeCommentById(warAndPeaceComment.getId())).isEqualTo(1);
+        assertThat(bookDao.removeCommentById(warAndPeaceComment.getId()).block()).isEqualTo(1);
         assertThat(mongoTemplate.count(new Query(), BookComment.class)).isEqualTo(0);
         Book bookFromDb = mongoTemplate.findById(warAndPeace.getId(), Book.class);
         assertThat(bookFromDb).isNotNull();
@@ -115,14 +115,14 @@ class BookDaoMongoTest extends BaseDaoMongoTest {
     @Test
     @DisplayName("Комментарий по id не найден")
     void deleteById_notFound() {
-        assertThat(bookDao.removeCommentById(NO_EXIST_OBJECT_ID)).isEqualTo(0);
+        assertThat(bookDao.removeCommentById(NO_EXIST_OBJECT_ID).block()).isEqualTo(0);
     }
 
     @Test
     @DisplayName("Успешное добавление комментария")
     public void addComment_ok() {
         BookComment newComment = new BookComment("Новый комментарий");
-        bookDao.addComment(warAndPeace.getId(), newComment);
+        bookDao.addComment(warAndPeace.getId(), newComment).block();
         assertThat(mongoTemplate.findAll(BookComment.class)).hasSize(2);
         Book dbBook = mongoTemplate.findById(warAndPeace.getId(), Book.class);
         assertThat(dbBook).isNotNull();
@@ -133,7 +133,7 @@ class BookDaoMongoTest extends BaseDaoMongoTest {
     @DisplayName("Добавление комментария в несуществующую книгу")
     public void addComment_book_no_exists() {
         BookComment newComment = new BookComment("Новый комментарий");
-        assertThatThrownBy(() -> bookDao.addComment(NO_EXIST_OBJECT_ID, newComment))
+        assertThatThrownBy(() -> bookDao.addComment(NO_EXIST_OBJECT_ID, newComment).block())
                 .isInstanceOf(IdNotFoundException.class);
         assertThat(mongoTemplate.findAll(BookComment.class)).hasSize(1);
     }

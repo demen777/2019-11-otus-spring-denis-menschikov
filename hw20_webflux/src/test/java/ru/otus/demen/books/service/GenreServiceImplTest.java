@@ -8,6 +8,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.dao.DataAccessResourceFailureException;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
+import reactor.test.StepVerifier;
 import ru.otus.demen.books.dao.GenreDao;
 import ru.otus.demen.books.model.Genre;
 import ru.otus.demen.books.service.exception.*;
@@ -77,9 +78,9 @@ class GenreServiceImplTest {
     @Test
     @DisplayName("При поиске жанра произошло DataAccessException исключение в GenreDao")
     void findByName_genreDaoThrowDataAccessException() {
-        when(genreDao.findByName(NOVEL_GENRE_NAME))
-                .thenThrow(new DataAccessResourceFailureException("DataAccessResourceFailureException!!!"));
-        assertThatThrownBy(() -> genreService.findByName(NOVEL_GENRE_NAME))
+        when(genreDao.findByName(NOVEL_GENRE_NAME)).thenReturn(
+            Mono.error(new DataAccessResourceFailureException("DataAccessResourceFailureException!!!")));
+        assertThatThrownBy(() -> genreService.findByName(NOVEL_GENRE_NAME).block())
                 .isInstanceOf(DataAccessServiceException.class);
     }
 
@@ -103,9 +104,12 @@ class GenreServiceImplTest {
     @DisplayName("Исключение при добавлении жанра который уже есть в БД")
     void add_alreadyExists() {
         when(genreDao.findByName(NOVEL_GENRE_NAME)).thenReturn(Mono.just(novelGenre));
-        assertThatThrownBy(() -> genreService.add(NOVEL_GENRE_NAME))
-                .isInstanceOf(AlreadyExistsException.class)
-                .hasMessageStartingWith(String.format("Жанр с именем %s уже есть в БД", NOVEL_GENRE_NAME));
+        when(genreDao.save(new Genre(NOVEL_GENRE_NAME))).thenReturn(Mono.just(novelGenre));
+        Mono<Genre> genreMono = genreService.add(NOVEL_GENRE_NAME);
+        StepVerifier.create(genreMono)
+            .expectErrorMatches(throwable -> throwable instanceof AlreadyExistsException
+                && String.format("Жанр с именем %s уже есть в БД", NOVEL_GENRE_NAME).equals(throwable.getMessage()))
+            .verify();
     }
 
     @Test

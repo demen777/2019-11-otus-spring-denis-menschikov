@@ -22,25 +22,28 @@ public class BookRepositoryCustomImpl implements BookRepositoryCustom {
     @Override
     public Mono<Long> removeCommentById(String commentId) {
         Mono<DeleteResult> deleteResult =
-                mongoTemplate.remove(new Query(Criteria.where("id").is(commentId)), BookComment.class);
-        mongoTemplate.updateMulti(new Query(),
-                new Update().pull("comments", Query.query(Criteria.where("$id").is(new ObjectId(commentId)))),
-                Book.class);
-        return deleteResult.map(DeleteResult::getDeletedCount);
+            mongoTemplate.remove(new Query(Criteria.where("id").is(commentId)), BookComment.class);
+        Mono<UpdateResult> updateResult = mongoTemplate.updateMulti(new Query(),
+            new Update().pull("comments", Query.query(Criteria.where("$id").is(new ObjectId(commentId)))),
+            Book.class);
+        return updateResult.then(deleteResult.map(DeleteResult::getDeletedCount));
     }
 
     @Override
     public Mono<Void> addComment(String bookId, BookComment bookComment) {
-        mongoTemplate.insert(bookComment);
-        Mono<UpdateResult> updateResult = mongoTemplate.updateFirst(new Query(Criteria.where("id").is(bookId)),
-                new Update().push("comments", bookComment),
-                Book.class);
-        return updateResult.flatMap(result -> {
-            if(result.getModifiedCount() == 0) {
-                mongoTemplate.remove(bookComment);
-                return Mono.error(new IdNotFoundException(String.format("No exists book with id=%s", bookId)));
-            }
-            return Mono.empty();
-        });
+        return mongoTemplate.exists(new Query(Criteria.where("id").is(bookId)), Book.class)
+            .flatMap(isExists -> {
+                if (!isExists) {
+                    return Mono.error(new IdNotFoundException(String.format("No exists book with id=%s", bookId)));
+                }
+                return Mono.empty();
+            })
+            .then(mongoTemplate.insert(bookComment))
+            .flatMap(dbBookComment ->
+                mongoTemplate.updateFirst(new Query(Criteria.where("id").is(bookId)),
+                    new Update().push("comments", dbBookComment),
+                    Book.class)
+            )
+            .then(Mono.empty());
     }
 }

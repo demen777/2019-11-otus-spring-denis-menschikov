@@ -48,10 +48,11 @@ class GenreDaoMongoTest extends BaseDaoMongoTest {
     @Test
     @DisplayName("Добавление жанра успешно")
     void save_ok() {
-        Genre genre = genreDao.save(new Genre(NEW_GENRE_NAME)).block();
-        Genre genreFromDb = mongoTemplate.findById(genre.getId(), Genre.class);
+        Optional<Genre> genre = genreDao.save(new Genre(NEW_GENRE_NAME)).blockOptional();
+        assertThat(genre).isPresent();
+        Genre genreFromDb = mongoTemplate.findById(genre.get().getId(), Genre.class);
         assertThat(genreFromDb).isNotNull();
-        assertThat(genreFromDb).isEqualTo(genre);
+        assertThat(genreFromDb).isEqualTo(genre.get());
     }
 
     @Test
