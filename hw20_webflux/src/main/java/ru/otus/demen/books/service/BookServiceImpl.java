@@ -9,11 +9,14 @@ import reactor.core.publisher.Mono;
 import ru.otus.demen.books.dao.AuthorDao;
 import ru.otus.demen.books.dao.BookDao;
 import ru.otus.demen.books.dao.GenreDao;
+import ru.otus.demen.books.model.Author;
 import ru.otus.demen.books.model.Book;
 import ru.otus.demen.books.model.Genre;
 import ru.otus.demen.books.service.exception.DataAccessServiceException;
 import ru.otus.demen.books.service.exception.IllegalParameterException;
 import ru.otus.demen.books.service.exception.NotFoundException;
+
+import static ru.otus.demen.books.service.DataAccessExceptionWrapper.wrapDataAccessException;
 
 @Service
 @RequiredArgsConstructor
@@ -26,41 +29,34 @@ public class BookServiceImpl implements BookService {
     @Transactional
     public Mono<Book> add(String name, String authorId, String genreName) {
         if (name == null || name.isEmpty()) {
-            throw new IllegalParameterException("Имя книги должно быть не пустым");
+            return Mono.error(new IllegalParameterException("Имя книги должно быть не пустым"));
         }
-        try {
-            Mono<Genre> genreOptional = genreDao.findByName(genreName)
+        Mono<Genre> genreOptional = genreDao.findByName(genreName)
                 .switchIfEmpty(Mono.error(new NotFoundException(String.format("Не найден жанр с именем %s",
-                    genreName))));
-            return authorDao.findById(authorId)
+                        genreName))));
+        return authorDao.findById(authorId)
                 .switchIfEmpty(Mono.error(new NotFoundException(String.format("Не найден автор с id=%s", authorId))))
                 .zipWith(genreOptional, (author, genre) -> new Book(name, author, genre))
-                .flatMap(bookDao::save);
-        } catch (DataAccessException error) {
-            throw new DataAccessServiceException("Ошибка Dao во время добавления книги", error);
-        }
+                .flatMap(bookDao::save)
+                .onErrorMap(error -> wrapDataAccessException("Ошибка Dao во время добавления книги", error));
     }
 
     @Override
     @Transactional
     public Flux<Book> findBySurname(String surname) {
-        try {
-            return bookDao.findByAuthorSurname(surname);
-        } catch (DataAccessException error) {
-            throw new DataAccessServiceException(
-                    String.format("Ошибка Dao во время поиска книг по фамилии %s", surname), error);
-        }
+        return bookDao.findByAuthorSurname(surname).onErrorMap(
+                error -> wrapDataAccessException(
+                        String.format("Ошибка Dao во время поиска книг по фамилии %s", surname), error));
     }
 
     @Override
     @Transactional
     public Mono<Book> getById(String id) {
-        try {
-            return bookDao.findById(id).switchIfEmpty(Mono.error(new NotFoundException(String.format("Не " +
-                "найдена книга с id=%s", id))));
-        } catch (DataAccessException error) {
-            throw new DataAccessServiceException(String.format("Ошибка Dao во время поиска книги по id %s", id), error);
-        }
+        return bookDao.findById(id)
+                .switchIfEmpty(Mono.error(new NotFoundException(String.format("Не " +
+                        "найдена книга с id=%s", id))))
+                .onErrorMap(error -> wrapDataAccessException(
+                        String.format("Ошибка Dao во время поиска книги по id %s", id), error));
     }
 
     @Override
@@ -78,7 +74,22 @@ public class BookServiceImpl implements BookService {
     @Override
     @Transactional
     public Mono<Void> update(String id, String name, String authorId, String genreId) {
-        // TODO
-        return Mono.empty();
+        Mono<Genre> genreMono = genreDao.findById(genreId)
+                .switchIfEmpty(Mono.error(new NotFoundException(String.format("Не найден жанр с id %s",
+                        genreId))));
+        Mono<Author> authorMono = authorDao.findById(authorId)
+                .switchIfEmpty(Mono.error(new NotFoundException(String.format("Не найден автор с id=%s", authorId))));
+        Mono<Book> bookMono = bookDao.findById(id)
+                .switchIfEmpty(Mono.error(new NotFoundException(String.format("Не найдена книга с id=%s", id))));
+        return Mono.zip(bookMono, genreMono, authorMono)
+                .flatMap(tuple3 -> updateBook(tuple3.getT1(), tuple3.getT2(), tuple3.getT3(), name))
+                .then(Mono.empty());
+    }
+
+    private Mono<Book> updateBook(Book book, Genre genre, Author author, String name) {
+        book.setAuthor(author);
+        book.setGenre(genre);
+        book.setName(name);
+        return bookDao.save(book);
     }
 }
