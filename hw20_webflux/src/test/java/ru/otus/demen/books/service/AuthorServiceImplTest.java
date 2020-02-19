@@ -71,8 +71,9 @@ class AuthorServiceImplTest {
     @DisplayName("При поиске автора произошло DataAccessException исключение в AuthorDao")
     void findById_authorDaoThrowDataAccessException() {
         when(authorDao.findById(TOLSTOY_AUTHOR_ID))
-                .thenThrow(new DataAccessResourceFailureException("DataAccessResourceFailureException!!!"));
-        assertThatThrownBy(() -> authorService.findById(TOLSTOY_AUTHOR_ID))
+                .thenReturn(Mono.error(
+                        new DataAccessResourceFailureException("DataAccessResourceFailureException!!!")));
+        assertThatThrownBy(() -> authorService.findById(TOLSTOY_AUTHOR_ID).block())
                 .isInstanceOf(DataAccessServiceException.class).hasMessageStartingWith(ERR_MSG_DAO_ERROR);
     }
 
@@ -88,7 +89,7 @@ class AuthorServiceImplTest {
     @DisplayName("Получение автора методом getById выбросило исключение ServiceError ввиду отсуствия автора")
     void getById_authorNotFoundById() {
         when(authorDao.findById(WRONG_AUTHOR_ID)).thenReturn(Mono.empty());
-        assertThatThrownBy(() -> authorService.getById(WRONG_AUTHOR_ID))
+        assertThatThrownBy(() -> authorService.getById(WRONG_AUTHOR_ID).block())
                 .isInstanceOf(NotFoundException.class).hasMessageContaining(ERR_MSG_AUTHOR_ID_NOT_FOUND);
     }
 
@@ -96,6 +97,7 @@ class AuthorServiceImplTest {
     @DisplayName("Успешное добавление автора")
     void add_ok() {
         when(authorDao.save(new Author(TOLSTOY_FIRST_NAME, TOLSTOY_SURNAME))).thenReturn(Mono.just(tolstoyAuthor));
+        when(authorDao.findByFirstNameAndSurname(TOLSTOY_FIRST_NAME, TOLSTOY_SURNAME)).thenReturn(Mono.empty());
         Author author = authorService.add(TOLSTOY_FIRST_NAME, TOLSTOY_SURNAME).block();
         assertThat(author).isEqualTo(tolstoyAuthor);
     }
@@ -103,18 +105,21 @@ class AuthorServiceImplTest {
     @Test
     @DisplayName("Попытка добавить уже существующего в БД автора")
     void add_alreadyExists() {
+        when(authorDao.save(new Author(TOLSTOY_FIRST_NAME, TOLSTOY_SURNAME))).thenReturn(Mono.just(tolstoyAuthor));
         when(authorDao.findByFirstNameAndSurname(TOLSTOY_FIRST_NAME, TOLSTOY_SURNAME))
                 .thenReturn(Mono.just(tolstoyAuthor));
-        assertThatThrownBy(() -> authorService.add(TOLSTOY_FIRST_NAME, TOLSTOY_SURNAME))
+        assertThatThrownBy(() -> authorService.add(TOLSTOY_FIRST_NAME, TOLSTOY_SURNAME).block())
                 .isInstanceOf(AlreadyExistsException.class).hasMessageContaining(ERR_MSG_AUTHOR_ALREADY_EXISTS);
     }
 
     @Test
     @DisplayName("При добавлении автора произошло DataAccessException исключение в AuthorDao")
     void add_authorDaoThrowDataAccessException() {
+        when(authorDao.findByFirstNameAndSurname(TOLSTOY_FIRST_NAME, TOLSTOY_SURNAME)).thenReturn(Mono.empty());
         when(authorDao.save(tolstoyAuthorWithoutId))
-                .thenThrow(new DataAccessResourceFailureException("DataAccessResourceFailureException!!!"));
-        assertThatThrownBy(() -> authorService.add(TOLSTOY_FIRST_NAME, TOLSTOY_SURNAME))
+                .thenReturn(Mono.error(
+                        new DataAccessResourceFailureException("DataAccessResourceFailureException!!!")));
+        assertThatThrownBy(() -> authorService.add(TOLSTOY_FIRST_NAME, TOLSTOY_SURNAME).block())
                 .isInstanceOf(DataAccessServiceException.class).hasMessageStartingWith(ERR_MSG_DAO_ERROR);
     }
 
