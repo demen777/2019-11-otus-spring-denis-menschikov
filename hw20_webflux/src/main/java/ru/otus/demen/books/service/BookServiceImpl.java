@@ -1,7 +1,6 @@
 package ru.otus.demen.books.service;
 
 import lombok.RequiredArgsConstructor;
-import org.springframework.dao.DataAccessException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import reactor.core.publisher.Flux;
@@ -12,7 +11,6 @@ import ru.otus.demen.books.dao.GenreDao;
 import ru.otus.demen.books.model.Author;
 import ru.otus.demen.books.model.Book;
 import ru.otus.demen.books.model.Genre;
-import ru.otus.demen.books.service.exception.DataAccessServiceException;
 import ru.otus.demen.books.service.exception.IllegalParameterException;
 import ru.otus.demen.books.service.exception.NotFoundException;
 

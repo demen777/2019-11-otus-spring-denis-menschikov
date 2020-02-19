@@ -6,5 +6,5 @@ import ru.otus.demen.books.model.BookComment;
 
 public interface BookRepositoryCustom {
     Mono<Long> removeCommentById(String commentId);
-    Mono<Void> addComment(String bookId, BookComment bookComment);
+    Mono<BookComment> addComment(String bookId, BookComment bookComment);
 }

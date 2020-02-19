@@ -21,7 +21,7 @@ import static ru.otus.demen.books.controller.ControllerTestUtils.createApiExcept
 @WebFluxTest(AuthorController.class)
 @Import(ControllerTestConfiguration.class)
 class GenreControllerTest {
-    private static Genre novel = new Genre("Роман");
+    private static final Genre novel = new Genre("Роман");
     public static final String NOVEL_ID = "1";
     public static final String NAME_MUST_BE_NOT_EMPTY_MSG = "Имя жанра должно быть непустым";
 
@@ -38,7 +38,7 @@ class GenreControllerTest {
 
     @Test
     @DisplayName("Успешная выдача списка жанров")
-    void getAuthorList_ok() throws Exception {
+    void getAuthorList_ok() {
         when(genreService.getAll()).thenReturn(Flux.just(novel));
         String outputJson = String.format("[{\"id\": \"%s\", \"name\": \"Роман\"}]", NOVEL_ID);
         webTestClient.get()
@@ -51,7 +51,7 @@ class GenreControllerTest {
 
     @Test
     @DisplayName("Успешное добавление нового жанра")
-    void addGenre_ok() throws Exception {
+    void addGenre_ok() {
         when(genreService.add("Роман")).thenReturn(Mono.just(novel));
         String inputJson = "{\"name\": \"Роман\"}";
         String outputJson = String.format("{\"id\": \"%s\", \"name\": \"Роман\"}", NOVEL_ID);
@@ -67,7 +67,7 @@ class GenreControllerTest {
 
     @Test
     @DisplayName("Ввод нового жанра с пустым наименованием")
-    void addGenre_emptyName() throws Exception {
+    void addGenre_emptyName() {
         when(genreService.add(""))
                 .thenThrow(new IllegalParameterException(NAME_MUST_BE_NOT_EMPTY_MSG));
         String inputJson = "{\"name\": \"\"}";

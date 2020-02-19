@@ -3,7 +3,6 @@ package ru.otus.demen.books.service;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.ui.Model;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 import ru.otus.demen.books.dao.GenreDao;

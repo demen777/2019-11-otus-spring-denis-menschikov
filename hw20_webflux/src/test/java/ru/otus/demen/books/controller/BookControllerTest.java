@@ -40,7 +40,7 @@ class BookControllerTest {
 
     @Test
     @DisplayName("Успешная выдача списка книг")
-    void getBookList_ok() throws Exception {
+    void getBookList_ok() {
         when(bookService.findAll()).thenReturn(Flux.just(warAndPeace, ANNA_KARENINA));
         webTestClient.get()
                 .uri("/api/books")

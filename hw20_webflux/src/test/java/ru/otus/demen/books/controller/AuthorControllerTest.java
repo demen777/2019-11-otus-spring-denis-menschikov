@@ -39,7 +39,7 @@ class AuthorControllerTest {
 
     @Test
     @DisplayName("Успешное выдача списка авторов")
-    void getAuthorList_ok() throws Exception {
+    void getAuthorList_ok() {
         when(authorService.getAll()).thenReturn(Flux.just(tolstoy));
         String outputJson = String.format("[{\"id\": \"%s\", \"firstName\": \"Лев\", \"surname\": \"Толстой\"}]",
                 TOLSTOY_ID);
@@ -53,7 +53,7 @@ class AuthorControllerTest {
 
     @Test
     @DisplayName("Успешное добавление нового автора")
-    void addAuthor_ok() throws Exception {
+    void addAuthor_ok() {
         when(authorService.add("Лев", "Толстой")).thenReturn(Mono.just(tolstoy));
         String inputJson = "{\"firstName\": \"Лев\", \"surname\": \"Толстой\"}";
         String outputJson = String.format("{\"id\": \"%s\", \"firstName\": \"Лев\", \"surname\": \"Толстой\"}",
@@ -70,7 +70,7 @@ class AuthorControllerTest {
 
     @Test
     @DisplayName("Ввод нового автора с пустым именем")
-    void addAuthor_emptyFirstName() throws Exception {
+    void addAuthor_emptyFirstName() {
         when(authorService.add("", "Толстой"))
                 .thenThrow(new IllegalParameterException(FIRSTNAME_MUST_BE_NOT_EMPTY_MSG));
         String inputJson = "{\"firstName\": \"\", \"surname\": \"Толстой\"}";
@@ -88,7 +88,7 @@ class AuthorControllerTest {
 
     @Test
     @DisplayName("Ввод нового автора с пустой фамилией")
-    void addAuthor_emptySurname() throws Exception {
+    void addAuthor_emptySurname() {
         when(authorService.add("Лев", ""))
                 .thenThrow(new IllegalParameterException(SURNAME_MUST_BE_NOT_EMPTY_MSG));
         String inputJson = "{\"firstName\": \"Лев\", \"surname\": \"\"}";

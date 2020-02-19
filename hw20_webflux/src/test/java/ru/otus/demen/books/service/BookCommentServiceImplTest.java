@@ -29,6 +29,7 @@ class BookCommentServiceImplTest {
     private static final String WAR_AND_PEACE_ID = "1";
     private static final String COMMENT_TEXT = "Хорошая книга";
     private static final String WAR_AND_PEACE_COMMENT_ID = "1";
+    private static final String NO_EXIST_OBJECT_ID = "000000000000000000000000";
 
     private BookComment warAndPeaceComment;
 
@@ -52,15 +53,19 @@ class BookCommentServiceImplTest {
     @DisplayName("Успешное добавление комментария")
     void add_ok() {
         when(bookDao.countById(WAR_AND_PEACE_ID)).thenReturn(Mono.just(1L));
-        BookComment bookComment = bookCommentService.add(WAR_AND_PEACE_ID, COMMENT_TEXT).block();
+        when(bookDao.addComment(WAR_AND_PEACE_ID, new BookComment(COMMENT_TEXT)))
+                .thenReturn(Mono.just(warAndPeaceComment));
+        BookComment bookComment = bookCommentService.add(WAR_AND_PEACE_ID, COMMENT_TEXT).blockOptional().orElseThrow();
         assertThat(bookComment.getText()).isEqualTo(warAndPeaceComment.getText());
     }
 
     @Test
     @DisplayName("При добавлении комментария с неверным id книги выбрасывается NotFoundException")
     void add_bookNotFound() {
-        when(bookDao.findById("-1")).thenReturn(Mono.empty());
-        assertThatThrownBy(() -> bookCommentService.add("-1", "Комментарий"))
+        when(bookDao.countById(NO_EXIST_OBJECT_ID)).thenReturn(Mono.just(0L));
+        when(bookDao.addComment(NO_EXIST_OBJECT_ID, new BookComment(COMMENT_TEXT)))
+                .thenReturn(Mono.just(warAndPeaceComment));
+        assertThatThrownBy(() -> bookCommentService.add(NO_EXIST_OBJECT_ID, COMMENT_TEXT).block())
                 .isInstanceOf(NotFoundException.class);
     }
 
@@ -68,8 +73,11 @@ class BookCommentServiceImplTest {
     @DisplayName("При добавлении комментария происходит ошибка на уровне Dao -> выбрасывается DataAccessServiceException")
     void add_dataAccessServiceException() {
         when(bookDao.countById(WAR_AND_PEACE_ID))
-                .thenThrow(new TransientDataAccessResourceException("TransientDataAccessResourceException"));
-        assertThatThrownBy(() -> bookCommentService.add(WAR_AND_PEACE_ID, "Комментарий"))
+                .thenReturn(
+                        Mono.error(new TransientDataAccessResourceException("TransientDataAccessResourceException")));
+        when(bookDao.addComment(WAR_AND_PEACE_ID, new BookComment(COMMENT_TEXT)))
+                .thenReturn(Mono.just(warAndPeaceComment));
+        assertThatThrownBy(() -> bookCommentService.add(WAR_AND_PEACE_ID, COMMENT_TEXT).block())
                 .isInstanceOf(DataAccessServiceException.class);
     }
 
