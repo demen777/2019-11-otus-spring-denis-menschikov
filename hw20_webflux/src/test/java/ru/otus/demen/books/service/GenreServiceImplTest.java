@@ -71,7 +71,7 @@ class GenreServiceImplTest {
     @DisplayName("Получение жанра методом getByName выбросило исключение ServiceError ввиду отсуствия жанра")
     void getByName_genreNotFoundByName() {
         when(genreDao.findByName(WRONG_NOVEL_GENRE_NAME)).thenReturn(Mono.empty());
-        assertThatThrownBy(() -> genreService.getByName(WRONG_NOVEL_GENRE_NAME))
+        assertThatThrownBy(() -> genreService.getByName(WRONG_NOVEL_GENRE_NAME).block())
                 .isInstanceOf(NotFoundException.class).hasMessageContaining("Не найден жанр");
     }
 
@@ -88,7 +88,7 @@ class GenreServiceImplTest {
     @DisplayName("Успешное добавление жанра")
     void add_ok() {
         when(genreDao.save(new Genre(NOVEL_GENRE_NAME))).thenReturn(Mono.just(novelGenre));
-        when(genreDao.findByName(NOVEL_GENRE_NAME)).thenReturn(Mono.just(novelGenre));
+        when(genreDao.findByName(NOVEL_GENRE_NAME)).thenReturn(Mono.empty());
         Genre genre = genreService.add(NOVEL_GENRE_NAME).block();
         assertThat(genre).isEqualTo(novelGenre);
     }
@@ -96,7 +96,7 @@ class GenreServiceImplTest {
     @Test
     @DisplayName("Исключение при добавлении пустого имени жанра")
     void add_emptyName() {
-        assertThatThrownBy(() -> genreService.add("")).isInstanceOf(IllegalParameterException.class)
+        assertThatThrownBy(() -> genreService.add("").block()).isInstanceOf(IllegalParameterException.class)
                 .hasMessageStartingWith("Имя жанра должно быть непустым");
     }
 
