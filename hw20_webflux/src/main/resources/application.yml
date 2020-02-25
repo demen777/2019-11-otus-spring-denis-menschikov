@@ -1,0 +1,10 @@
+spring:
+
+  shell:
+    interactive:
+      enabled: true
+
+  data:
+    mongodb:
+      database: libraryDb
+      host: localhost
