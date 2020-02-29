@@ -11,7 +11,7 @@
     <changeSet id="004" author="demen777">
 
         <createTable tableName="users">
-            <column name="username" type="boolean">
+            <column name="username" type="varchar(100)">
                 <constraints primaryKey="true" nullable="false"/>
             </column>
             <column name="password_hash" type="varchar(100)">

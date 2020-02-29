@@ -1,5 +1,6 @@
 package ru.otus.demen.books.security;
 
+import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -13,7 +14,8 @@ import ru.otus.demen.books.model.User;
 @RequiredArgsConstructor
 public class JpaUserDetailsService implements UserDetailsService {
     private static final GrantedAuthority ROLE = new GrantedAuthorityImpl("USER");
-    private UserDao userDao;
+    @NonNull
+    private final UserDao userDao;
 
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {

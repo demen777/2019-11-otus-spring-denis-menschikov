@@ -1,5 +1,5 @@
 div.actions {
-    margin-bottom: 16px
+    margin-bottom: 16px;
 }
 
 a.action {
@@ -9,5 +9,9 @@ a.action {
 }
 
 div.buttons {
-    margin-top: 16px
+    margin-top: 16px;
+}
+
+span.user {
+    float: right;
 }

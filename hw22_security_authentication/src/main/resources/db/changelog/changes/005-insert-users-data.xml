@@ -9,6 +9,6 @@
         http://www.liquibase.org/xml/ns/dbchangelog-ext http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-ext.xsd">
 
     <changeSet id="005" author="demen777">
-        <sqlFile path="/db/changelog/changes/003-insert-users-data.sql"/>
+        <sqlFile path="/db/changelog/changes/005-insert-users-data.sql"/>
     </changeSet>
 </databaseChangeLog>
