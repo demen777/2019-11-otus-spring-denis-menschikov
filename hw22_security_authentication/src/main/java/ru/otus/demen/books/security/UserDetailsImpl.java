@@ -1,5 +1,6 @@
 package ru.otus.demen.books.security;
 
+import lombok.EqualsAndHashCode;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -8,6 +9,7 @@ import java.util.Collection;
 import java.util.List;
 
 @RequiredArgsConstructor
+@EqualsAndHashCode
 public class UserDetailsImpl implements UserDetails {
     private final String username;
     private final String hashPassword;

@@ -23,4 +23,22 @@ public class ControllerTestConfiguration {
 
     @MockBean
     GenreService genreService;
+
+//    @Bean
+//    UserDetailsService userDetailsService() {
+//        //noinspection Convert2Lambda
+//        return new UserDetailsService() {
+//            @Override
+//            public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
+//                if ("testuser".equals(username)) {
+//                    return new UserDetailsImpl("testuser",
+//                            "$2y$12$086fsoQB5wZJHgfpI.tZFe3syUsrDNu0/FLlePfNc4Wh8CD6wxfjO", // tp
+//                            true,
+//                            new GrantedAuthorityImpl("USER")
+//                    );
+//                }
+//                throw new UsernameNotFoundException("User not found");
+//            }
+//        };
+//    }
 }
