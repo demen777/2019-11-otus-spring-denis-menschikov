@@ -9,6 +9,7 @@ import ru.otus.demen.books.service.BookService;
 import ru.otus.demen.books.service.GenreService;
 
 
+@SuppressWarnings("SpellCheckingInspection")
 @TestConfiguration
 @ComponentScan(basePackages = {"ru.otus.demen.books.controller", "ru.otus.demen.books.controller.dto.mapper"})
 public class ControllerTestConfiguration {
