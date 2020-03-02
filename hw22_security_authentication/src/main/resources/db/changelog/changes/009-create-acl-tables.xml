@@ -1,0 +1,116 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!--suppress XmlUnusedNamespaceDeclaration -->
+<databaseChangeLog
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xmlns:ext="http://www.liquibase.org/xml/ns/dbchangelog-ext"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.8.xsd
+        http://www.liquibase.org/xml/ns/dbchangelog-ext http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-ext.xsd">
+
+    <changeSet id="009" author="demen777">
+
+        <createTable tableName="acl_class">
+            <column name="id" type="bigint" autoIncrement="true">
+                <constraints primaryKey="true" nullable="false"/>
+            </column>
+            <column name="class" type="varchar(1000)">
+                <constraints unique="true" nullable="false"/>
+            </column>
+        </createTable>
+
+        <createTable tableName="acl_sid">
+            <column name="id" type="bigint" autoIncrement="true">
+                <constraints primaryKey="true" nullable="false"/>
+            </column>
+            <column name="principal" type="tinyint">
+                <constraints nullable="false"/>
+            </column>
+            <column name="sid" type="varchar(100)">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+
+        <addUniqueConstraint columnNames="principal, surname"
+                             constraintName="acl_sid_unique"
+                             deferrable="false"
+                             tableName="acl_sid"/>
+
+        <createTable tableName="acl_object_identity">
+            <column name="id" type="bigint" autoIncrement="true">
+                <constraints primaryKey="true" nullable="false"/>
+            </column>
+            <column name="object_id_class" type="bigint">
+                <constraints nullable="false"/>
+            </column>
+            <column name="object_id_identity" type="bigint">
+                <constraints nullable="false"/>
+            </column>
+            <column name="parent_object" type="bigint"/>
+            <column name="owner_sid" type="bigint">
+                <constraints nullable="false"/>
+            </column>
+            <column name="entries_inheriting" type="boolean">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+
+        <addUniqueConstraint columnNames="object_id_class, object_id_identity"
+                             constraintName="acl_object_identity_unique"
+                             deferrable="false"
+                             tableName="acl_object_identity"/>
+
+        <addForeignKeyConstraint baseTableName="acl_object_identity" baseColumnNames="object_id_class"
+                                 constraintName="acl_object_identity_acl_class_fk"
+                                 referencedTableName="acl_class" referencedColumnNames="id"/>
+
+        <addForeignKeyConstraint baseTableName="acl_object_identity" baseColumnNames="owner_sid"
+                                 constraintName="acl_object_identity_acl_sid_fk"
+                                 referencedTableName="acl_sid" referencedColumnNames="id"/>
+
+        <addForeignKeyConstraint baseTableName="acl_object_identity" baseColumnNames="parent_object"
+                                 constraintName="acl_object_identity_parent_object_fk"
+                                 referencedTableName="acl_object_identity" referencedColumnNames="id"/>
+
+        <createTable tableName="acl_entry">
+            <column name="id" type="bigint" autoIncrement="true">
+                <constraints primaryKey="true" nullable="false"/>
+            </column>
+            <column name="acl_object_identity" type="bigint">
+                <constraints nullable="false"/>
+            </column>
+            <column name="ace_order" type="integer">
+                <constraints nullable="false"/>
+            </column>
+            <column name="sid" type="bigint">
+                <constraints nullable="false"/>
+            </column>
+            <column name="mask" type="integer">
+                <constraints nullable="false"/>
+            </column>
+            <column name="granting" type="boolean">
+                <constraints nullable="false"/>
+            </column>
+            <column name="audit_success" type="boolean">
+                <constraints nullable="false"/>
+            </column>
+            <column name="audit_failure" type="boolean">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+
+        <addUniqueConstraint columnNames="acl_object_identity, ace_order"
+                             constraintName="acl_entry_unique"
+                             deferrable="false"
+                             tableName="acl_entry"/>
+
+        <addForeignKeyConstraint baseTableName="acl_entry" baseColumnNames="acl_object_identity"
+                                 constraintName="acl_entry_acl_object_identity_fk"
+                                 referencedTableName="acl_object_identity" referencedColumnNames="id"/>
+
+        <addForeignKeyConstraint baseTableName="acl_entry" baseColumnNames="sid"
+                                 constraintName="acl_entry_acl_sid_fk"
+                                 referencedTableName="acl_sid" referencedColumnNames="id"/>
+
+    </changeSet>
+</databaseChangeLog>
