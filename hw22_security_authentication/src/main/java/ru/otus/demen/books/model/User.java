@@ -21,7 +21,7 @@ public class User {
     private boolean enabled;
 
     @ManyToMany
-    @JoinTable(name="user_roles",
+    @JoinTable(name="user_role",
             joinColumns = @JoinColumn(name = "username"),
             inverseJoinColumns = @JoinColumn(name = "role_name"))
     private List<Role> roles;

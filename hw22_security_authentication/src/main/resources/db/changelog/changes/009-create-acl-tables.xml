@@ -31,7 +31,7 @@
             </column>
         </createTable>
 
-        <addUniqueConstraint columnNames="principal, surname"
+        <addUniqueConstraint columnNames="principal, sid"
                              constraintName="acl_sid_unique"
                              deferrable="false"
                              tableName="acl_sid"/>
