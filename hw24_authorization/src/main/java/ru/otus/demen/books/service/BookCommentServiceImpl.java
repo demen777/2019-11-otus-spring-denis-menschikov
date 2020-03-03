@@ -2,6 +2,8 @@ package ru.otus.demen.books.service;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.dao.DataAccessException;
+import org.springframework.security.access.AccessDeniedException;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Service;
 import ru.otus.demen.books.dao.BookCommentDao;
 import ru.otus.demen.books.dao.BookDao;
@@ -23,6 +25,7 @@ public class BookCommentServiceImpl implements BookCommentService {
 
     @Override
     @Transactional
+    @PreAuthorize("hasPermission(#bookId, 'ru.otus.demen.books.model.Book', 'READ')")
     public BookComment add(long bookId, String text) {
         if (text == null || text.isEmpty()) {
             throw new IllegalParameterException("Текст комментария должен быть непустым");
@@ -45,8 +48,13 @@ public class BookCommentServiceImpl implements BookCommentService {
 
     @Override
     @Transactional
-    public boolean deleteById(long bookCommentId) {
+    @PreAuthorize("hasPermission(#bookId, 'ru.otus.demen.books.model.Book', 'READ')")
+    public boolean deleteById(long bookId, long bookCommentId) {
         try {
+            Optional<BookComment> bookComment = bookCommentDao.findByBookIdAndId(bookId, bookCommentId);
+            bookComment.orElseThrow(() -> new IllegalParameterException(
+                    String.format("Comment with bookCommentId=%d not found in book with bookId=%d",
+                            bookCommentId, bookId)));
             long deletedQuantity = bookCommentDao.removeById(bookCommentId);
             return deletedQuantity > 0;
         }
@@ -58,6 +66,7 @@ public class BookCommentServiceImpl implements BookCommentService {
 
     @Override
     @Transactional
+    @PreAuthorize("hasPermission(#bookId, 'ru.otus.demen.books.model.Book', 'READ')")
     public Collection<BookComment> getByBookId(long bookId) {
         try {
             getBook(bookId);

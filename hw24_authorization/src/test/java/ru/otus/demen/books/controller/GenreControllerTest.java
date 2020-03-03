@@ -22,7 +22,7 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 @WebMvcTest(GenreController.class)
-@WithMockUser(value = "testuser")
+@WithMockUser(roles = "ADMIN")
 @Import(ControllerTestConfiguration.class)
 class GenreControllerTest {
     private static final Genre NOVEL = new Genre(1L, "Роман");

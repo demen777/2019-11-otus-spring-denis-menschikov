@@ -7,6 +7,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.dao.DataAccessResourceFailureException;
 import org.springframework.dao.DataIntegrityViolationException;
+import org.springframework.security.test.context.support.WithMockUser;
 import ru.otus.demen.books.dao.AuthorDao;
 import ru.otus.demen.books.dao.BookDao;
 import ru.otus.demen.books.dao.GenreDao;
@@ -17,10 +18,7 @@ import ru.otus.demen.books.service.exception.DataAccessServiceException;
 import ru.otus.demen.books.service.exception.IllegalParameterException;
 import ru.otus.demen.books.service.exception.NotFoundException;
 
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
@@ -28,6 +26,7 @@ import static org.mockito.Mockito.when;
 
 
 @SpringBootTest(classes = ServiceTestConfiguration.class)
+@WithMockUser(roles = "ADMIN")
 class BookServiceImplTest {
     private static final String ERR_MSG_DAO_ERROR = "Ошибка Dao";
     private static final long TOLSTOY_AUTHOR_ID = 1L;
@@ -118,7 +117,7 @@ class BookServiceImplTest {
     @Test
     @DisplayName("Успешное получение списка книг по фамилии автора")
     void findBySurname_ok() {
-        List<Book> expectedBooks = Arrays.asList(warAndPeaceWithId, annaKareninaWithId);
+        List<Book> expectedBooks = new ArrayList<>(Arrays.asList(warAndPeaceWithId, annaKareninaWithId));
         when(bookDao.findByAuthorSurname(TOLSTOY_SURNAME)).thenReturn(expectedBooks);
         List<Book> books = bookService.findBySurname(TOLSTOY_SURNAME);
         assertThat(books).containsExactlyInAnyOrderElementsOf(expectedBooks);

@@ -22,7 +22,7 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 @WebMvcTest(AuthorController.class)
-@WithMockUser(value = "testuser")
+@WithMockUser(roles = "ADMIN")
 @Import(ControllerTestConfiguration.class)
 class AuthorControllerTest {
     private static final Author TOLSTOY = new Author(1L, "Лев", "Толстой");

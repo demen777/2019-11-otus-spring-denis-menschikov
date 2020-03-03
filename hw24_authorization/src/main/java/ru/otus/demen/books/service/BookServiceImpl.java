@@ -3,6 +3,9 @@ package ru.otus.demen.books.service;
 import lombok.RequiredArgsConstructor;
 import org.springframework.dao.DataAccessException;
 import org.springframework.security.access.prepost.PostFilter;
+import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.acls.domain.ObjectIdentityImpl;
+import org.springframework.security.acls.model.MutableAcl;
 import org.springframework.stereotype.Service;
 import ru.otus.demen.books.dao.AuthorDao;
 import ru.otus.demen.books.dao.BookCommentDao;
@@ -11,6 +14,7 @@ import ru.otus.demen.books.dao.GenreDao;
 import ru.otus.demen.books.model.Author;
 import ru.otus.demen.books.model.Book;
 import ru.otus.demen.books.model.Genre;
+import ru.otus.demen.books.security.BookAclCreator;
 import ru.otus.demen.books.service.exception.DataAccessServiceException;
 import ru.otus.demen.books.service.exception.IllegalParameterException;
 import ru.otus.demen.books.service.exception.NotFoundException;
@@ -26,6 +30,7 @@ public class BookServiceImpl implements BookService {
     private final GenreDao genreDao;
     private final BookDao bookDao;
     private final BookCommentDao bookCommentDao;
+    private final BookAclCreator bookAclCreator;
 
     @Override
     @Transactional
@@ -41,7 +46,9 @@ public class BookServiceImpl implements BookService {
             Genre genre = genreOptional.orElseThrow(
                 () -> new NotFoundException(String.format("Не найден жанр с id=%d", genreId)));
             Book book = new Book(name, author, genre);
-            return bookDao.save(book);
+            book = bookDao.save(book);
+            bookAclCreator.createAcl(book);
+            return book;
         } catch (DataAccessException error) {
             throw new DataAccessServiceException("Ошибка Dao во время добавления книги", error);
         }
@@ -61,6 +68,7 @@ public class BookServiceImpl implements BookService {
 
     @Override
     @Transactional
+    @PreAuthorize("hasPermission(#id, 'ru.otus.demen.books.model.Book', 'READ')")
     public Book getById(long id) {
         try {
             Optional<Book> book = bookDao.findById(id);
@@ -72,6 +80,7 @@ public class BookServiceImpl implements BookService {
 
     @Override
     @Transactional
+    @PostFilter("hasPermission(filterObject, 'READ')")
     public List<Book> findAll() {
         try {
             return bookDao.findAll();
@@ -82,6 +91,7 @@ public class BookServiceImpl implements BookService {
 
     @Override
     @Transactional
+    @PreAuthorize("hasPermission(#id, 'ru.otus.demen.books.model.Book', 'READ')")
     public void update(long id, String name, long authorId, long genreId) {
         try {
             Book book = bookDao.findById(id)
@@ -102,6 +112,7 @@ public class BookServiceImpl implements BookService {
 
     @Override
     @Transactional
+    @PreAuthorize("hasPermission(#id, 'ru.otus.demen.books.model.Book', 'READ')")
     public void deleteById(long id) {
         try {
             bookCommentDao.deleteByBookId(id);

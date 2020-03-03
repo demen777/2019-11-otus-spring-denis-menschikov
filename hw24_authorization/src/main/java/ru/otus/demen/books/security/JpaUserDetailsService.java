@@ -10,6 +10,9 @@ import org.springframework.stereotype.Service;
 import ru.otus.demen.books.dao.UserDao;
 import ru.otus.demen.books.model.User;
 
+import java.util.List;
+import java.util.stream.Collectors;
+
 @Service
 @RequiredArgsConstructor
 public class JpaUserDetailsService implements UserDetailsService {
@@ -27,6 +30,9 @@ public class JpaUserDetailsService implements UserDetailsService {
     }
 
     private UserDetails userDetailsFromUser(User user) {
-        return new UserDetailsImpl(user.getUsername(), user.getPasswordHash(), user.isEnabled(), ROLE);
+        List<GrantedAuthority> grantedAuthorities = user.getRoles().stream()
+                .map(role -> new GrantedAuthorityImpl(role.getName()))
+                .collect(Collectors.toList());
+        return new UserDetailsImpl(user.getUsername(), user.getPasswordHash(), user.isEnabled(), grantedAuthorities);
     }
 }

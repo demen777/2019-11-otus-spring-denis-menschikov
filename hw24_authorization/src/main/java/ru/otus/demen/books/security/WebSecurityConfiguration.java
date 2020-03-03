@@ -16,7 +16,13 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 public class WebSecurityConfiguration extends WebSecurityConfigurerAdapter {
     @Override
     public void configure(WebSecurity web) {
-        web.ignoring().antMatchers("/h2-console/**");
+        web.ignoring().antMatchers(
+                "/h2-console/**",
+                "/favicon.ico",
+                "/js/**",
+                "/css/**",
+                "/error"
+        );
     }
 
     @Override
@@ -34,8 +40,8 @@ public class WebSecurityConfiguration extends WebSecurityConfigurerAdapter {
                 .authorizeRequests().antMatchers("/**")
                 .hasAnyRole("ADMIN")
                 .and()
-//                .anonymous().authorities("ROLE_ANONYMOUS").principal("anonymous")
-//                .and()
+                .anonymous().authorities("ROLE_ANONYMOUS").principal("anonymous")
+                .and()
                 .formLogin()
                 .and()
                 .logout();

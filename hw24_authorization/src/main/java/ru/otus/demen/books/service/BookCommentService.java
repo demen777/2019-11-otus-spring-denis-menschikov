@@ -6,6 +6,6 @@ import java.util.Collection;
 
 public interface BookCommentService {
     BookComment add(long bookId, String text);
-    boolean deleteById(long bookCommentId);
+    boolean deleteById(long bookId, long bookCommentId);
     Collection<BookComment> getByBookId(long bookId);
 }

@@ -2,23 +2,27 @@ package ru.otus.demen.books.security;
 
 import lombok.EqualsAndHashCode;
 import lombok.RequiredArgsConstructor;
+import lombok.ToString;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
+import org.thymeleaf.expression.Lists;
 
 import java.util.Collection;
+import java.util.Collections;
 import java.util.List;
 
 @RequiredArgsConstructor
 @EqualsAndHashCode
+@ToString
 public class UserDetailsImpl implements UserDetails {
     private final String username;
     private final String hashPassword;
     private final boolean enabled;
-    private final GrantedAuthority authority;
+    private final List<GrantedAuthority> grantedAuthorities;
 
     @Override
     public Collection<GrantedAuthority> getAuthorities() {
-        return List.of(authority);
+        return Collections.unmodifiableList(grantedAuthorities);
     }
 
     @Override

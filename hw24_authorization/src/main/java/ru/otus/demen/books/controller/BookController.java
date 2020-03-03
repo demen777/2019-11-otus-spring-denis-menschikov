@@ -103,7 +103,7 @@ public class BookController {
     @GetMapping("/book/delete-comment")
     public ModelAndView deleteComment(@RequestParam("book_id") long bookId, @RequestParam("comment_id") long commentId)
     {
-        bookCommentService.deleteById(commentId);
+        bookCommentService.deleteById(bookId, commentId);
         return fillModelAndReturnView(bookId);
     }
 

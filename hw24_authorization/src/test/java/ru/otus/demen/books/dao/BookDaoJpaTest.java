@@ -29,10 +29,12 @@ class BookDaoJpaTest {
     private static final String WAR_AND_PEACE_NAME = "Война и мир";
     private static final long ANNA_KARENINA_ID = 2L;
     private static final String ANNA_KARENINA_NAME = "Анна Каренина";
+    private static final Long NON_EXISTS_ID = -1L;
 
     private Author tolstoyAuthor;
     private Genre novelGenre;
     private Book warAndPeaceWithId;
+    private Book annaKareninaWithId;
 
     @Autowired
     BookDao bookDao;
@@ -49,6 +51,8 @@ class BookDaoJpaTest {
         warAndPeaceWithId =
                 new Book(WAR_AND_PEACE_NAME, tolstoyAuthor, novelGenre);
         warAndPeaceWithId.setId(WAR_AND_PEACE_ID);
+        annaKareninaWithId = new Book(ANNA_KARENINA_NAME, tolstoyAuthor, novelGenre);
+        annaKareninaWithId.setId(ANNA_KARENINA_ID);
     }
 
     @Test
@@ -65,7 +69,7 @@ class BookDaoJpaTest {
     @DisplayName("Поиск по фамилии возвращает список книг")
     void findBySurname_ok() {
         Collection<Book> books = bookDao.findByAuthorSurname(TOLSTOY_SURNAME);
-        assertThat(books).containsExactlyInAnyOrderElementsOf(List.of(warAndPeaceWithId));
+        assertThat(books).containsExactlyInAnyOrderElementsOf(List.of(warAndPeaceWithId, annaKareninaWithId));
     }
 
     @Test
@@ -79,7 +83,7 @@ class BookDaoJpaTest {
     @Test
     @DisplayName("Поиск по id не нашел книгу")
     void findById_notFound() {
-        Optional<Book> book = bookDao.findById(ANNA_KARENINA_ID);
+        Optional<Book> book = bookDao.findById(NON_EXISTS_ID);
         assertThat(book).isEmpty();
     }
 }

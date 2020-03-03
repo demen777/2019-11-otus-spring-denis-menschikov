@@ -28,7 +28,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 
 @WebMvcTest(BookController.class)
-@WithMockUser(value = "testuser")
+@WithMockUser(roles = "ADMIN")
 @Import(ControllerTestConfiguration.class)
 class BookControllerTest {
     private static final Genre NOVEL = new Genre(1L, "Роман");
@@ -198,7 +198,8 @@ class BookControllerTest {
             .andExpect(content().string(containsString(WAR_AND_PEACE.getName())))
             .andExpect(model().attributeExists("book", "bookComments"))
             .andExpect(view().name("view_book"));
-        verify(bookCommentService, times(1)).deleteById(WAR_AND_PEACE_COMMENT.getId());
+        verify(bookCommentService, times(1)).deleteById(WAR_AND_PEACE.getId(),
+                WAR_AND_PEACE_COMMENT.getId());
     }
 
     @Test
