@@ -2,6 +2,7 @@ package ru.otus.demen.books.service;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.dao.DataAccessException;
+import org.springframework.security.access.prepost.PostFilter;
 import org.springframework.stereotype.Service;
 import ru.otus.demen.books.dao.AuthorDao;
 import ru.otus.demen.books.dao.BookCommentDao;
@@ -48,6 +49,7 @@ public class BookServiceImpl implements BookService {
 
     @Override
     @Transactional
+    @PostFilter("hasPermission(filterObject, 'READ')")
     public List<Book> findBySurname(String surname) {
         try {
             return bookDao.findByAuthorSurname(surname);
