@@ -4,8 +4,6 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.dao.DataAccessException;
 import org.springframework.security.access.prepost.PostFilter;
 import org.springframework.security.access.prepost.PreAuthorize;
-import org.springframework.security.acls.domain.ObjectIdentityImpl;
-import org.springframework.security.acls.model.MutableAcl;
 import org.springframework.stereotype.Service;
 import ru.otus.demen.books.dao.AuthorDao;
 import ru.otus.demen.books.dao.BookCommentDao;

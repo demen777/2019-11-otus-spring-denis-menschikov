@@ -5,7 +5,6 @@ import org.springframework.cache.ehcache.EhCacheFactoryBean;
 import org.springframework.cache.ehcache.EhCacheManagerFactoryBean;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.context.annotation.Scope;
 import org.springframework.security.access.expression.method.DefaultMethodSecurityExpressionHandler;
 import org.springframework.security.access.expression.method.MethodSecurityExpressionHandler;
 import org.springframework.security.acls.AclPermissionEvaluator;
@@ -17,6 +16,7 @@ import org.springframework.security.acls.model.PermissionGrantingStrategy;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 
 import javax.sql.DataSource;
+import java.util.Objects;
 
 @Configuration
 public class AclConfiguration {
@@ -55,7 +55,7 @@ public class AclConfiguration {
     @Bean
     public EhCacheBasedAclCache aclCache() {
         return new EhCacheBasedAclCache(
-            aclEhCacheFactoryBean().getObject(),
+                Objects.requireNonNull(aclEhCacheFactoryBean().getObject()),
             permissionGrantingStrategy(),
             aclAuthorizationStrategy()
         );
@@ -64,7 +64,7 @@ public class AclConfiguration {
     @Bean
     public EhCacheFactoryBean aclEhCacheFactoryBean() {
         EhCacheFactoryBean ehCacheFactoryBean = new EhCacheFactoryBean();
-        ehCacheFactoryBean.setCacheManager(aclCacheManager().getObject());
+        ehCacheFactoryBean.setCacheManager(Objects.requireNonNull(aclCacheManager().getObject()));
         ehCacheFactoryBean.setCacheName("aclCache");
         return ehCacheFactoryBean;
     }

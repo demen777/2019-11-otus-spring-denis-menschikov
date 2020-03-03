@@ -6,6 +6,7 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.dao.TransientDataAccessResourceException;
+import org.springframework.security.test.context.support.WithMockUser;
 import ru.otus.demen.books.dao.BookCommentDao;
 import ru.otus.demen.books.dao.BookDao;
 import ru.otus.demen.books.model.Author;
@@ -13,7 +14,7 @@ import ru.otus.demen.books.model.Book;
 import ru.otus.demen.books.model.BookComment;
 import ru.otus.demen.books.model.Genre;
 import ru.otus.demen.books.service.exception.DataAccessServiceException;
-import ru.otus.demen.books.service.exception.NotFoundException;
+import ru.otus.demen.books.service.exception.IllegalParameterException;
 
 import java.util.Optional;
 
@@ -23,6 +24,7 @@ import static org.mockito.Mockito.when;
 
 
 @SpringBootTest(classes = ServiceTestConfiguration.class)
+@WithMockUser(roles = "ADMIN")
 class BookCommentServiceImplTest {
     private static final long TOLSTOY_AUTHOR_ID = 1L;
     private static final String TOLSTOY_FIRST_NAME = "Лев";
@@ -69,14 +71,6 @@ class BookCommentServiceImplTest {
     }
 
     @Test
-    @DisplayName("При добавлении комментария с неверным id книги выбрасывается NotFoundException")
-    void add_bookNotFound() {
-        when(bookDao.findById(-1L)).thenReturn(Optional.empty());
-        assertThatThrownBy(() -> bookCommentService.add(-1L, "Комментарий"))
-                .isInstanceOf(NotFoundException.class);
-    }
-
-    @Test
     @DisplayName("При добавлении комментария происходит ошибка на уровне Dao -> выбрасывается DataAccessServiceException")
     void add_dataAccessServiceException() {
         when(bookDao.findById(WAR_AND_PEACE_ID))
@@ -86,16 +80,10 @@ class BookCommentServiceImplTest {
     }
 
     @Test
-    @DisplayName("Успешное удаление комментария")
-    void deleteById_ok() {
-        when(bookCommentDao.removeById(WAR_AND_PEACE_COMMENT_ID)).thenReturn(1L);
-        assertThat(bookCommentService.deleteById(WAR_AND_PEACE_ID, WAR_AND_PEACE_COMMENT_ID)).isTrue();
-    }
-
-    @Test
-    @DisplayName("Удаление комментария отсуствующего в хранилище")
+    @DisplayName("Удаление комментария отсуствующего для книги")
     void deleteById_idNotFound() {
         when(bookCommentDao.removeById(WAR_AND_PEACE_COMMENT_ID)).thenReturn(0L);
-        assertThat(bookCommentService.deleteById(WAR_AND_PEACE_ID, WAR_AND_PEACE_COMMENT_ID)).isFalse();
+        assertThatThrownBy(() -> bookCommentService.deleteById(WAR_AND_PEACE_ID, WAR_AND_PEACE_COMMENT_ID))
+                .isInstanceOf(IllegalParameterException.class);
     }
 }

@@ -38,6 +38,9 @@ class BookServiceImplTest {
     private static final String WAR_AND_PEACE_NAME = "Война и мир";
     private static final long ANNA_KARENINA_ID = 2L;
     private static final String ANNA_KARENINA_NAME = "Анна Каренина";
+    private static final Author DOSTOEVSKY = new Author(2L, "Федор", "Достоевский");
+    private static final Genre NOVEL = new Genre(NOVEL_GENRE_ID, NOVEL_GENRE_NAME);
+    private static final Book IDIOT = new Book(3L, "Идиот", DOSTOEVSKY, NOVEL);
 
     private Book annaKareninaWithId;
     private Author tolstoyAuthor;
@@ -88,12 +91,11 @@ class BookServiceImplTest {
     @Test
     @DisplayName("Успешное добавление книги")
     void add_ok() {
-        when(authorDao.findById(TOLSTOY_AUTHOR_ID)).thenReturn(Optional.of(tolstoyAuthor));
+        when(authorDao.findById(DOSTOEVSKY.getId())).thenReturn(Optional.of(DOSTOEVSKY));
         when(genreDao.findById(NOVEL_GENRE_ID)).thenReturn(Optional.of(novelGenre));
-        Book book = new Book(WAR_AND_PEACE_NAME, tolstoyAuthor, novelGenre);
-        when(bookDao.save(book)).thenReturn(warAndPeaceWithId);
-        Book bookFromService = bookService.add(WAR_AND_PEACE_NAME, TOLSTOY_AUTHOR_ID, NOVEL_GENRE_ID);
-        assertThat(bookFromService).isEqualTo(warAndPeaceWithId);
+        when(bookDao.save(IDIOT)).thenReturn(IDIOT);
+        Book bookFromService = bookService.add(IDIOT.getName(), DOSTOEVSKY.getId(), NOVEL.getId());
+        assertThat(bookFromService).isEqualTo(IDIOT);
     }
 
     @Test

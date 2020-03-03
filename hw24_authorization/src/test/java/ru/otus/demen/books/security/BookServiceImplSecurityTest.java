@@ -1,16 +1,11 @@
 package ru.otus.demen.books.security;
 
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.params.ParameterizedTest;
-import org.junit.jupiter.params.provider.ValueSource;
-import org.mockito.Mock;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.security.access.AccessDeniedException;
 import org.springframework.security.test.context.support.WithMockUser;
-import org.springframework.test.annotation.DirtiesContext;
 import ru.otus.demen.books.dao.AuthorDao;
 import ru.otus.demen.books.dao.BookCommentDao;
 import ru.otus.demen.books.dao.BookDao;
@@ -19,11 +14,9 @@ import ru.otus.demen.books.model.Author;
 import ru.otus.demen.books.model.Book;
 import ru.otus.demen.books.model.Genre;
 import ru.otus.demen.books.service.BookService;
-import ru.otus.demen.books.service.BookServiceImpl;
 
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.List;
 import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -31,7 +24,6 @@ import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.mockito.Mockito.*;
 
 @SpringBootTest
-@DirtiesContext
 class BookServiceImplSecurityTest {
     private final static Author TOLSTOY = new Author(1L, "Лев", "Толстой");
     private final static Genre NOVEL = new Genre(1L, "Роман");

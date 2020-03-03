@@ -5,7 +5,7 @@ import org.springframework.security.access.expression.method.MethodSecurityExpre
 import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity;
 import org.springframework.security.config.annotation.method.configuration.GlobalMethodSecurityConfiguration;
 
-@EnableGlobalMethodSecurity(prePostEnabled = true, securedEnabled = false)
+@EnableGlobalMethodSecurity(prePostEnabled = true)
 public class GlobalSecurityConfiguration extends GlobalMethodSecurityConfiguration {
     @Autowired
     MethodSecurityExpressionHandler defaultMethodSecurityExpressionHandler;

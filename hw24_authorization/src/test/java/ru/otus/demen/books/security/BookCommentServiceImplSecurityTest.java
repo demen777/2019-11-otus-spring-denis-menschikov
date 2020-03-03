@@ -6,31 +6,23 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.security.access.AccessDeniedException;
 import org.springframework.security.test.context.support.WithMockUser;
-import org.springframework.test.annotation.DirtiesContext;
-import ru.otus.demen.books.dao.AuthorDao;
 import ru.otus.demen.books.dao.BookCommentDao;
 import ru.otus.demen.books.dao.BookDao;
-import ru.otus.demen.books.dao.GenreDao;
 import ru.otus.demen.books.model.Author;
 import ru.otus.demen.books.model.Book;
 import ru.otus.demen.books.model.BookComment;
 import ru.otus.demen.books.model.Genre;
 import ru.otus.demen.books.service.BookCommentService;
-import ru.otus.demen.books.service.BookService;
 
-import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
-import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.when;
 
 @SpringBootTest
-@DirtiesContext
 class BookCommentServiceImplSecurityTest {
     private final static Author TOLSTOY = new Author(1L, "Лев", "Толстой");
     private final static Genre NOVEL = new Genre(1L, "Роман");

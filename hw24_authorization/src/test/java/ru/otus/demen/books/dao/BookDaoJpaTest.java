@@ -30,9 +30,10 @@ class BookDaoJpaTest {
     private static final long ANNA_KARENINA_ID = 2L;
     private static final String ANNA_KARENINA_NAME = "Анна Каренина";
     private static final Long NON_EXISTS_ID = -1L;
+    private static final Author DOSTOEVSKY = new Author(2L, "Федор", "Достоевский");
+    private static final Genre NOVEL = new Genre(NOVEL_GENRE_ID, NOVEL_GENRE_NAME);
+    private static final Book IDIOT = new Book(3L, "Идиот", DOSTOEVSKY, NOVEL);
 
-    private Author tolstoyAuthor;
-    private Genre novelGenre;
     private Book warAndPeaceWithId;
     private Book annaKareninaWithId;
 
@@ -44,9 +45,9 @@ class BookDaoJpaTest {
 
     @BeforeEach
     void setUp() {
-        tolstoyAuthor = new Author(TOLSTOY_FIRST_NAME, TOLSTOY_SURNAME);
+        Author tolstoyAuthor = new Author(TOLSTOY_FIRST_NAME, TOLSTOY_SURNAME);
         tolstoyAuthor.setId(TOLSTOY_AUTHOR_ID);
-        novelGenre = new Genre(NOVEL_GENRE_NAME);
+        Genre novelGenre = new Genre(NOVEL_GENRE_NAME);
         novelGenre.setId(NOVEL_GENRE_ID);
         warAndPeaceWithId =
                 new Book(WAR_AND_PEACE_NAME, tolstoyAuthor, novelGenre);
@@ -58,7 +59,7 @@ class BookDaoJpaTest {
     @Test
     @DisplayName("Успешное добавление новой книги")
     void save_ok() {
-        Book book = bookDao.save(new Book(ANNA_KARENINA_NAME, tolstoyAuthor, novelGenre));
+        Book book = bookDao.save(IDIOT);
         em.clear();
         Book bookFromDb = em.find(Book.class, book.getId());
         assertThat(bookFromDb).isNotNull();
