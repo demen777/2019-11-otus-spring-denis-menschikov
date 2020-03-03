@@ -13,5 +13,9 @@
     <include file="/db/changelog/changes/003-insert-initial-data.xml"/>
     <include file="/db/changelog/changes/004-create-users-table.xml"/>
     <include file="/db/changelog/changes/005-insert-users-data.xml"/>
+    <include file="/db/changelog/changes/006-create-roles-table.xml"/>
+    <include file="/db/changelog/changes/007-insert-roles-data.xml"/>
+    <include file="/db/changelog/changes/008-insert-user_roles-data.xml"/>
+    <include file="/db/changelog/changes/009-create-acl-tables.xml"/>
 
 </databaseChangeLog>

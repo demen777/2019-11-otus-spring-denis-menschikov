@@ -2,8 +2,8 @@ package ru.otus.demen.books.model;
 
 import lombok.*;
 
-import javax.persistence.Entity;
-import javax.persistence.Id;
+import javax.persistence.*;
+import java.util.List;
 
 @Data
 @NoArgsConstructor
@@ -19,4 +19,10 @@ public class User {
 
     @NonNull
     private boolean enabled;
+
+    @ManyToMany
+    @JoinTable(name="user_role",
+            joinColumns = @JoinColumn(name = "username"),
+            inverseJoinColumns = @JoinColumn(name = "role_name"))
+    private List<Role> roles;
 }
