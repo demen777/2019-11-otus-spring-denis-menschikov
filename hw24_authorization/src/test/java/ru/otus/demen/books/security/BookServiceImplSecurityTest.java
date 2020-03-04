@@ -1,5 +1,6 @@
 package ru.otus.demen.books.security;
 
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -23,23 +24,23 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.mockito.Mockito.*;
 
-@SpringBootTest
+@SpringBootTest(classes = AclSecurityTestConfiguration.class)
 class BookServiceImplSecurityTest {
     private final static Author TOLSTOY = new Author(1L, "Лев", "Толстой");
     private final static Genre NOVEL = new Genre(1L, "Роман");
     private final static Book WAR_AND_PEACE = new Book(1L, "Война и мир", TOLSTOY, NOVEL);
     private final static Book ANNA_KARENINA = new Book(2L, "Анна Каренина", TOLSTOY, NOVEL);
 
-    @MockBean
+    @Autowired
     private BookDao bookDao;
 
-    @MockBean
+    @Autowired
     private BookCommentDao bookCommentDao;
 
-    @MockBean
+    @Autowired
     private AuthorDao authorDao;
 
-    @MockBean
+    @Autowired
     private GenreDao genreDao;
 
     @Autowired
@@ -47,6 +48,7 @@ class BookServiceImplSecurityTest {
 
     @Test
     @WithMockUser(username = "user", roles = "USER")
+    @DisplayName("Фильтрация специальных книг при получении из по фамилии автора с ролью USER")
     void findBySurname_by_user() {
         when(bookDao.findByAuthorSurname(TOLSTOY.getSurname()))
                 .thenReturn(new ArrayList<>(Arrays.asList(WAR_AND_PEACE, ANNA_KARENINA)));
@@ -55,6 +57,7 @@ class BookServiceImplSecurityTest {
 
     @Test
     @WithMockUser(username = "operator", roles = "OPERATOR")
+    @DisplayName("Отсутсвие фильтрации специальных книг при получении из по фамилии автора с ролью OPERATOR")
     void findBySurname_by_operator() {
         when(bookDao.findByAuthorSurname(TOLSTOY.getSurname()))
                 .thenReturn(new ArrayList<>(Arrays.asList(WAR_AND_PEACE, ANNA_KARENINA)));
@@ -64,6 +67,7 @@ class BookServiceImplSecurityTest {
 
     @Test
     @WithMockUser(username = "special", roles = {"USER", "SPECIAL_BOOK"})
+    @DisplayName("Отсутсвие фильтрации специальных книг при получении из по фамилии автора с ролью SPECIAL_BOOK")
     void findBySurname_by_special() {
         when(bookDao.findByAuthorSurname(TOLSTOY.getSurname()))
                 .thenReturn(new ArrayList<>(Arrays.asList(WAR_AND_PEACE, ANNA_KARENINA)));
@@ -74,12 +78,14 @@ class BookServiceImplSecurityTest {
 
     @Test
     @WithMockUser(username = "user", roles = "USER")
+    @DisplayName("Отказ в доступе при попытке получить специальную книгу по id ролью USER")
     void getById_special_by_user() {
         assertThatThrownBy(() -> bookService.getById(ANNA_KARENINA.getId())).isInstanceOf(AccessDeniedException.class);
     }
 
     @Test
     @WithMockUser(username = "special", roles = {"USER", "SPECIAL_BOOK"})
+    @DisplayName("Успешное получение специальной книги по id ролью SPECIAL_BOOK")
     void getById_special_by_special() {
         when(bookDao.findById(ANNA_KARENINA.getId())).thenReturn(Optional.of(ANNA_KARENINA));
         assertThat(bookService.getById(ANNA_KARENINA.getId())).isEqualTo(ANNA_KARENINA);
@@ -87,6 +93,7 @@ class BookServiceImplSecurityTest {
 
     @Test
     @WithMockUser(username = "admin", roles = "ADMIN")
+    @DisplayName("Успешное получение специальной книги по id ролью ADMIN")
     void getById_special_by_admin() {
         when(bookDao.findById(ANNA_KARENINA.getId())).thenReturn(Optional.of(ANNA_KARENINA));
         assertThat(bookService.getById(ANNA_KARENINA.getId())).isEqualTo(ANNA_KARENINA);
@@ -94,6 +101,7 @@ class BookServiceImplSecurityTest {
 
     @Test
     @WithMockUser(username = "user", roles = "USER")
+    @DisplayName("Успешное получение не специальной книги по id ролью USER")
     void getById_non_special_by_user() {
         when(bookDao.findById(WAR_AND_PEACE.getId())).thenReturn(Optional.of(WAR_AND_PEACE));
         assertThat(bookService.getById(WAR_AND_PEACE.getId())).isEqualTo(WAR_AND_PEACE);
@@ -101,6 +109,7 @@ class BookServiceImplSecurityTest {
 
     @Test
     @WithMockUser(username = "user", roles = "USER")
+    @DisplayName("Фильтрация специальных книг при получении списка всех книг с ролью USER")
     void findAll_by_user() {
         when(bookDao.findAll()).thenReturn(new ArrayList<>(Arrays.asList(WAR_AND_PEACE, ANNA_KARENINA)));
         assertThat(bookService.findAll()).containsExactlyInAnyOrder(WAR_AND_PEACE);
@@ -108,6 +117,7 @@ class BookServiceImplSecurityTest {
 
     @Test
     @WithMockUser(username = "special", roles = {"USER", "SPECIAL_BOOK"})
+    @DisplayName("Отсутствие фильтрации специальных книг при получении списка всех книг с ролью SPECIAL_BOOK")
     void findAll_by_special() {
         when(bookDao.findAll()).thenReturn(new ArrayList<>(Arrays.asList(WAR_AND_PEACE, ANNA_KARENINA)));
         assertThat(bookService.findAll()).containsExactlyInAnyOrder(WAR_AND_PEACE, ANNA_KARENINA);
@@ -116,6 +126,7 @@ class BookServiceImplSecurityTest {
 
     @Test
     @WithMockUser(username = "user", roles = "USER")
+    @DisplayName("Успешное изменение не специальной книги ролью USER")
     void update_non_special_by_user() {
         when(bookDao.findById(WAR_AND_PEACE.getId())).thenReturn(Optional.of(WAR_AND_PEACE));
         when(authorDao.findById(TOLSTOY.getId())).thenReturn(Optional.of(TOLSTOY));
@@ -127,6 +138,7 @@ class BookServiceImplSecurityTest {
 
     @Test
     @WithMockUser(username = "user", roles = "USER")
+    @DisplayName("Отказ в доступе при попытке изменить специальную книгу ролью USER")
     void update_special_by_user() {
         assertThatThrownBy(() ->
                 bookService.update(ANNA_KARENINA.getId(), ANNA_KARENINA.getName(), TOLSTOY.getId(), NOVEL.getId()))
@@ -135,6 +147,7 @@ class BookServiceImplSecurityTest {
 
     @Test
     @WithMockUser(username = "special", roles = {"USER", "SPECIAL_BOOK"})
+    @DisplayName("Успешное изменение специальной книги ролью SPECIAL_BOOK")
     void update_special_by_special() {
         when(bookDao.findById(ANNA_KARENINA.getId())).thenReturn(Optional.of(ANNA_KARENINA));
         when(authorDao.findById(TOLSTOY.getId())).thenReturn(Optional.of(TOLSTOY));
@@ -146,12 +159,14 @@ class BookServiceImplSecurityTest {
 
     @Test
     @WithMockUser(username = "user", roles = "USER")
+    @DisplayName("Успешное удаление не специальной книги ролью USER")
     void deleteById_non_special_by_user() {
         bookService.deleteById(WAR_AND_PEACE.getId());
     }
 
     @Test
     @WithMockUser(username = "user", roles = "USER")
+    @DisplayName("Отказ в доступе при попытке удалить специальную книгу ролью USER")
     void deleteById_special_by_user() {
         assertThatThrownBy(() -> bookService.deleteById(ANNA_KARENINA.getId()))
                 .isInstanceOf(AccessDeniedException.class);
@@ -159,6 +174,7 @@ class BookServiceImplSecurityTest {
 
     @Test
     @WithMockUser(username = "special", roles = {"USER", "SPECIAL_BOOK"})
+    @DisplayName("Успешное удаление специальной книги ролью SPECIAL_BOOK")
     void deleteById_special_by_special() {
         bookService.deleteById(ANNA_KARENINA.getId());
     }

@@ -14,7 +14,7 @@ import ru.otus.demen.books.service.GenreService;
 @TestConfiguration
 @ComponentScan(basePackages = {"ru.otus.demen.books.controller.dto.mapper"})
 @Import(WebSecurityConfiguration.class)
-public class SecurityTestConfiguration {
+public class WebSecurityTestConfiguration {
     @MockBean
     BookService bookService;
 

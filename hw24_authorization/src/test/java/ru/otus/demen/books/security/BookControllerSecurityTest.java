@@ -18,7 +18,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.MOCK, classes = BookController.class)
 @AutoConfigureMockMvc
-@Import(SecurityTestConfiguration.class)
+@Import(WebSecurityTestConfiguration.class)
 public class BookControllerSecurityTest {
     private static final String GET_VIEW_BOOK_URI = "/book/view?id=1";
     private static final String GET_EDIT_BOOK_URI = "/book/edit?id=1";
