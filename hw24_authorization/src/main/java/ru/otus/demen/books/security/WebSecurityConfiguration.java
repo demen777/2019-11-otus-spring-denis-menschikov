@@ -17,34 +17,38 @@ public class WebSecurityConfiguration extends WebSecurityConfigurerAdapter {
     @Override
     public void configure(WebSecurity web) {
         web.ignoring().antMatchers(
-                "/h2-console/**",
-                "/favicon.ico",
-                "/js/**",
-                "/css/**",
-                "/error"
+            "/h2-console/**",
+            "/favicon.ico",
+            "/js/**",
+            "/css/**",
+            "/error"
         );
     }
 
     @Override
     public void configure(HttpSecurity http) throws Exception {
         http.csrf().disable()
-                .authorizeRequests().antMatchers(HttpMethod.GET, "/", "/books", "/book/view")
-                .hasAnyRole("USER", "OPERATOR", "ADMIN")
-                .and()
-                .authorizeRequests().antMatchers(HttpMethod.POST, "/book/view")
-                .hasAnyRole("USER", "OPERATOR", "ADMIN")
-                .and()
-                .authorizeRequests().antMatchers("/book/edit", "/book/add")
-                .hasAnyRole("OPERATOR", "ADMIN")
-                .and()
-                .authorizeRequests().antMatchers("/**")
-                .hasAnyRole("ADMIN")
-                .and()
-                .anonymous().authorities("ROLE_ANONYMOUS").principal("anonymous")
-                .and()
-                .formLogin()
-                .and()
-                .logout();
+            .authorizeRequests().antMatchers(
+                HttpMethod.GET,
+            "/",  "/books", "/book/view",
+            "/genres",
+            "/authors")
+            .hasAnyRole("USER", "OPERATOR", "ADMIN")
+            .and()
+            .authorizeRequests().antMatchers(HttpMethod.POST, "/book/view")
+            .hasAnyRole("USER", "OPERATOR", "ADMIN")
+            .and()
+            .authorizeRequests().antMatchers("/book/edit", "/book/add")
+            .hasAnyRole("OPERATOR", "ADMIN")
+            .and()
+            .authorizeRequests().antMatchers("/**")
+            .hasAnyRole("ADMIN")
+            .and()
+            .anonymous().authorities("ROLE_ANONYMOUS").principal("anonymous")
+            .and()
+            .formLogin()
+            .and()
+            .logout();
     }
 
     @Bean
@@ -54,7 +58,7 @@ public class WebSecurityConfiguration extends WebSecurityConfigurerAdapter {
 
     @Autowired
     public void configure(AuthenticationManagerBuilder auth, UserDetailsService userDetailsService)
-            throws Exception {
+        throws Exception {
         auth.userDetailsService(userDetailsService);
     }
 }
