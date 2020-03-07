@@ -1,0 +1,14 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.w3.org/1999/xhtml">
+<body>
+<nav th:fragment="menu">
+    <a class="action" href="books.html" th:href="@{/books}">Книги</a>
+    <a class="action" href="authors.html" th:href="@{/authors}">Авторы</a>
+    <a class="action" href="genres.html" th:href="@{/genres}">Жанры</a>
+    <span class="user" sec:authorize="isAuthenticated()">
+        <b sec:authentication="name">Bob</b>
+        <a class="action" th:href="@{/logout}">Logout</a>
+    </span>
+</nav>
+</body>
+</html>
