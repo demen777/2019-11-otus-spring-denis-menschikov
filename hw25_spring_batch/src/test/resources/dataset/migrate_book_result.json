@@ -1,0 +1,8 @@
+{
+  "ru.otus.demen.books.mongo_model.Author": [
+    { "id": "1", "firstName": "Лев", "surname": "Толстой"},
+    { "id": "2", "firstName": "Федор", "surname": "Достоевский"},
+    { "id": "3", "firstName": "Антон", "surname": "Чехов"},
+    { "id": "4", "firstName": "Михаил", "surname": "Лермонтов"}
+  ]
+}
