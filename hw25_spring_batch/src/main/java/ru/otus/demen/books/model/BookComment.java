@@ -4,13 +4,6 @@ import lombok.*;
 
 import javax.persistence.*;
 
-@NamedEntityGraph(name = "BookComment[book]",
-    attributeNodes = {@NamedAttributeNode(value = "book", subgraph = "Book[author,genre]")},
-        subgraphs = {@NamedSubgraph(
-                name = "Book[author,genre]",
-                attributeNodes = {@NamedAttributeNode("author"), @NamedAttributeNode("genre")}
-        )}
-)
 @Data
 @NoArgsConstructor
 @RequiredArgsConstructor
@@ -22,9 +15,4 @@ public class BookComment {
 
     @NonNull
     private String text;
-
-    @NonNull
-    @ManyToOne
-    @JoinColumn(name = "book_id", nullable = false)
-    private Book book;
 }

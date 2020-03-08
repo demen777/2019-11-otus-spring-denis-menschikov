@@ -1,5 +1,9 @@
 spring:
 
+  batch:
+    job:
+      enabled: false
+
   shell:
     interactive:
       enabled: false

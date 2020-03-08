@@ -12,11 +12,10 @@ insert into books(id, name, author_id, genre_id) values (2, 'Анна Карен
 insert into books(id, name, author_id, genre_id) values (3, 'Преступление и наказание', 2, 1);
 insert into books(id, name, author_id, genre_id) values (4, 'Идиот', 2, 1);
 insert into books(id, name, author_id, genre_id) values (5, 'Бедные люди', 2, 1);
-insert into books(id, name, author_id, genre_id) values (6, 'Воскресение', 1, 1);
+insert into books(id, name, author_id, genre_id) values (6, 'Вишневый сад', 3, 3);
 insert into books(id, name, author_id, genre_id) values (7, 'Дама с собачкой', 3, 2);
-insert into books(id, name, author_id, genre_id) values (8, 'Вишневый сад', 3, 3);
-insert into books(id, name, author_id, genre_id) values (9, 'Маскарад', 4, 3);
-insert into books(id, name, author_id, genre_id) values (10, 'Герой нашего времени', 4, 1);
+
+
 
 insert into book_comments(id, book_id, text) values (1, 1, 'Большая книга');
 insert into book_comments(id, book_id, text) values (2, 1, 'Толстой рулит');

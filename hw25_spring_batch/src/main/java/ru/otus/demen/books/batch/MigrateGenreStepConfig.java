@@ -11,9 +11,7 @@ import org.springframework.batch.item.database.builder.JpaPagingItemReaderBuilde
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.data.mongodb.core.MongoOperations;
-import ru.otus.demen.books.mapper.AuthorMapper;
 import ru.otus.demen.books.mapper.GenreMapper;
-import ru.otus.demen.books.model.Author;
 import ru.otus.demen.books.model.Genre;
 
 import javax.persistence.EntityManagerFactory;

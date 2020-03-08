@@ -3,6 +3,8 @@ package ru.otus.demen.books.model;
 import lombok.*;
 
 import javax.persistence.*;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Objects;
 
 @Getter
@@ -11,9 +13,6 @@ import java.util.Objects;
 @RequiredArgsConstructor
 @NoArgsConstructor
 @Entity
-@NamedEntityGraph(name = "Book[author,genre]",
-    attributeNodes = {@NamedAttributeNode(value = "author"), @NamedAttributeNode(value = "genre")}
-)
 public class Book {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -23,27 +22,35 @@ public class Book {
     private String name;
 
     @NonNull
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "author_id")
     private Author author;
 
     @NonNull
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "genre_id")
     private Genre genre;
+
+
+    @NonNull
+    @OneToMany(fetch = FetchType.EAGER)
+    @JoinColumn(name = "book_id")
+    private List<BookComment> comments = new ArrayList<>();
 
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         Book book = (Book) o;
-        return name.equals(book.name) &&
-            author.equals(book.author) &&
-            genre.equals(book.genre);
+        return id == book.id &&
+                name.equals(book.name) &&
+                author.equals(book.author) &&
+                genre.equals(book.genre) &&
+                comments.equals(book.comments);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(name, author, genre);
+        return Objects.hash(id, name, author, genre, comments);
     }
 }

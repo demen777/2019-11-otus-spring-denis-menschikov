@@ -1,7 +1,6 @@
 package ru.otus.demen.books.mapper;
 
 import org.mapstruct.Mapper;
-import ru.otus.demen.books.model.Author;
 import ru.otus.demen.books.model.Genre;
 
 @Mapper(componentModel = "spring")

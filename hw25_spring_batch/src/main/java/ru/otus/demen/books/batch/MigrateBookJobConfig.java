@@ -4,7 +4,6 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.batch.core.Job;
 import org.springframework.batch.core.Step;
 import org.springframework.batch.core.configuration.annotation.JobBuilderFactory;
-import org.springframework.batch.core.configuration.annotation.StepScope;
 import org.springframework.batch.core.launch.support.RunIdIncrementer;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
@@ -21,11 +20,13 @@ public class MigrateBookJobConfig {
 
     @Bean
     public Job migrateBookJob(@Qualifier("migrateAuthorStep") Step migrateAuthorStep,
-                              @Qualifier("migrateGenreStep") Step migrateGenreStep) {
+                              @Qualifier("migrateGenreStep") Step migrateGenreStep,
+                              @Qualifier("migrateBookStep") Step migrateBookStep) {
         return jobBuilderFactory.get(MIGRATE_BOOK_JOB_NAME)
                 .incrementer(new RunIdIncrementer())
                 .start(migrateAuthorStep)
                 .next(migrateGenreStep)
+                .next(migrateBookStep)
                 .build();
     }
 }
