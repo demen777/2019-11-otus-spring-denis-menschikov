@@ -28,4 +28,4 @@ spring:
   data:
     mongodb:
       database: libraryDb
-      host: dmserver
+      host: localhost
