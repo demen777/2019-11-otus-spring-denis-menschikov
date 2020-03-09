@@ -19,12 +19,14 @@ public class MigrateBookJobConfig {
     private JobBuilderFactory jobBuilderFactory;
 
     @Bean
-    public Job migrateBookJob(@Qualifier("migrateAuthorStep") Step migrateAuthorStep,
+    public Job migrateBookJob(@Qualifier("clearDbStep") Step clearDbStep,
+                              @Qualifier("migrateAuthorStep") Step migrateAuthorStep,
                               @Qualifier("migrateGenreStep") Step migrateGenreStep,
                               @Qualifier("migrateBookStep") Step migrateBookStep) {
         return jobBuilderFactory.get(MIGRATE_BOOK_JOB_NAME)
                 .incrementer(new RunIdIncrementer())
-                .start(migrateAuthorStep)
+                .start(clearDbStep)
+                .next(migrateAuthorStep)
                 .next(migrateGenreStep)
                 .next(migrateBookStep)
                 .build();

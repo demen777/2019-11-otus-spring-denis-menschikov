@@ -20,7 +20,6 @@
         </encoder>
     </appender>
 
-
     <logger name="ru.otus.demen" level="debug"
             additivity="false">
         <appender-ref ref="LOG_FILE" />
@@ -41,8 +40,12 @@
         <appender-ref ref="LOG_FILE" />
     </logger>
 
-
     <root level="debug">
         <appender-ref ref="LOG_FILE" />
     </root>
+
+    <logger name="root" level="INFO">
+        <appender-ref ref="STDOUT" />
+    </logger>
+
 </configuration>
