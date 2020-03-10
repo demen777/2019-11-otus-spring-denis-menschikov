@@ -1,4 +1,4 @@
-package ru.otus.demen.books.batch;
+package ru.otus.demen.books.batch.item_writer;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.batch.item.ItemWriter;

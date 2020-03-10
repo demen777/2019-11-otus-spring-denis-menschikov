@@ -1,4 +1,4 @@
-package ru.otus.demen.books.batch;
+package ru.otus.demen.books.batch.item_listener;
 
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.batch.core.ItemReadListener;
