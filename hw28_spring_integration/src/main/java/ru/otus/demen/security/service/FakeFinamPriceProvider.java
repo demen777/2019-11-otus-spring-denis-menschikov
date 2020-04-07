@@ -5,7 +5,7 @@ import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
 
-@Service("finamProceProvider")
+@Service("finamPriceProvider")
 @Slf4j
 public class FakeFinamPriceProvider implements FinamPriceProvider {
     @Override
