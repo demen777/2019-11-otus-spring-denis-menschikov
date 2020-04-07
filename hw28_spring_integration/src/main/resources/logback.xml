@@ -20,7 +20,7 @@
         </encoder>
     </appender>
 
-    <logger name="ru.otus.demen" level="debug"
+    <logger name="ru.otus.demen" level="info"
             additivity="false">
         <appender-ref ref="LOG_FILE" />
     </logger>

@@ -1,10 +1,12 @@
 package ru.otus.demen.security.service;
 
+import org.springframework.stereotype.Service;
 import ru.otus.demen.security.model.Security;
 import ru.otus.demen.security.model.SecurityClass;
 
 import java.util.Map;
 
+@Service("securityService")
 public class FakeSecurityService implements SecurityService {
     private final Map<String, Security> securityMap = Map.of(
             "T", new Security("T", new SecurityClass("SPBXM")),

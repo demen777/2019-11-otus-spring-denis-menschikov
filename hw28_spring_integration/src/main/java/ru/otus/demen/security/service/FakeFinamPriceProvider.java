@@ -13,7 +13,7 @@ public class FakeFinamPriceProvider implements FinamPriceProvider {
         if ("WRONG_SECURITY_CODE".equals(securityCode)) {
             throw new IllegalArgumentException(String.format("Not found price for security=%s", securityCode));
         }
-        BigDecimal price = BigDecimal.valueOf(securityCode.hashCode());
+        BigDecimal price = BigDecimal.valueOf(securityCode.hashCode()/100.0);
         log.info("FinamPriceProvider price={} for security={}", price, securityCode);
         return price;
     }

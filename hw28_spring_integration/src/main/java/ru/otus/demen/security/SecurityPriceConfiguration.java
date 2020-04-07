@@ -20,8 +20,10 @@ public class SecurityPriceConfiguration {
                     Security security = ((Security)(message.getPayload()));
                     return MessageBuilder.withPayload(security.getCode())
                             .copyHeaders(message.getHeaders())
-                            .setHeader("securityClassCode", security.getSecurityClass().getCode());
+                            .setHeader("securityClassCode", security.getSecurityClass().getCode())
+                        .build();
                 })
+                .log()
                 .route(routeToPriceProvider())
                 .get();
     }
@@ -30,12 +32,12 @@ public class SecurityPriceConfiguration {
     public HeaderValueRouter routeToPriceProvider() {
         HeaderValueRouter router = new HeaderValueRouter("securityClassCode");
         router.setChannelMapping("SPBXM", "inputYahooPriceProviderChannel");
-        router.setDefaultOutputChannelName("inputYahooPriceProviderChannel");
+        router.setChannelMapping("TQBR", "inputFinamPriceProviderChannel");
         return router;
     }
 
     @Bean
-    public IntegrationFlow yahooPriceProvider() {
+    public IntegrationFlow yahooPriceProviderFlow() {
         return IntegrationFlows.from("inputYahooPriceProviderChannel")
                 .handle("yahooPriceProvider", "getCurrentPrice")
                 .channel("getCurrentPriceOutputChannel")
@@ -43,7 +45,7 @@ public class SecurityPriceConfiguration {
     }
 
     @Bean
-    public IntegrationFlow finamPriceProvider() {
+    public IntegrationFlow finamPriceProviderFlow() {
         return IntegrationFlows.from("inputFinamPriceProviderChannel")
                 .handle("finamPriceProvider", "getCurrentPrice")
                 .channel("getCurrentPriceOutputChannel")
