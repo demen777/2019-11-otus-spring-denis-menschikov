@@ -14,7 +14,7 @@ public class SecurityPriceConfiguration {
 
     @Bean
     public IntegrationFlow toPriceProvider() {
-        return IntegrationFlows.from("getCurrentPriceInputChannel")
+        return IntegrationFlows.from("currentPriceInputChannel")
                 .handle("securityService", "get")
                 .transform(Message.class, message -> {
                     Security security = ((Security)(message.getPayload()));
@@ -40,7 +40,7 @@ public class SecurityPriceConfiguration {
     public IntegrationFlow yahooPriceProviderFlow() {
         return IntegrationFlows.from("inputYahooPriceProviderChannel")
                 .handle("yahooPriceProvider", "getCurrentPrice")
-                .channel("getCurrentPriceOutputChannel")
+                .channel("currentPriceOutputChannel")
                 .get();
     }
 
@@ -48,7 +48,7 @@ public class SecurityPriceConfiguration {
     public IntegrationFlow finamPriceProviderFlow() {
         return IntegrationFlows.from("inputFinamPriceProviderChannel")
                 .handle("finamPriceProvider", "getCurrentPrice")
-                .channel("getCurrentPriceOutputChannel")
+                .channel("currentPriceOutputChannel")
                 .get();
     }
 }
