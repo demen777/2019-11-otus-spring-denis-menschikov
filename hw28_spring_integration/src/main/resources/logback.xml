@@ -30,7 +30,7 @@
         <appender-ref ref="LOG_FILE" />
     </root>
 
-    <logger name="root" level="INFO">
+    <logger name="ru.otus.demen" level="INFO">
         <appender-ref ref="STDOUT" />
     </logger>
 
