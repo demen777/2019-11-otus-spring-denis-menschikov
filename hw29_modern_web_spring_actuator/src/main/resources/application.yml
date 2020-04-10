@@ -38,3 +38,7 @@ spring:
 
   liquibase:
     change-log: classpath:db/changelog/db.changelog-master.xml
+
+  data:
+    rest:
+      base-path: /datarest
