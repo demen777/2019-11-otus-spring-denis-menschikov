@@ -1,0 +1,8 @@
+{
+  "properties": [
+    {
+      "name": "actuator.health.books.urlForCheck",
+      "type": "java.lang.String",
+      "description": "URL-Path for actuator health check."
+  }
+] }

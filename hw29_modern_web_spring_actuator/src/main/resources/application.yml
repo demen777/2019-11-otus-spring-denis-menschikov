@@ -1,3 +1,23 @@
+actuator:
+
+  health:
+    books:
+      urlForCheck: /books
+
+management:
+
+  endpoint:
+    health:
+      show-details: always
+
+  endpoints:
+    web:
+      exposure:
+        include: health,loggers,metrics
+
+server:
+  port: 8080
+
 spring:
 
   datasource:
@@ -18,12 +38,3 @@ spring:
 
   liquibase:
     change-log: classpath:db/changelog/db.changelog-master.xml
-
-management:
-  endpoint:
-    health:
-      show-details: always
-  endpoints:
-    web:
-      exposure:
-        include: health,loggers,metrics
