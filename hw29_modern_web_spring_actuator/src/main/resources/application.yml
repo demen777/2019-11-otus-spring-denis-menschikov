@@ -2,7 +2,12 @@ actuator:
 
   health:
     books:
-      urlForCheck: /books
+      host-for-check: localhost
+      path-for-check: /api/books
+
+logging:
+  file:
+    name: home_work.log
 
 management:
 
@@ -13,12 +18,18 @@ management:
   endpoints:
     web:
       exposure:
-        include: health,loggers,metrics
+        include: health,logfile,metrics
+
 
 server:
   port: 8080
 
+
 spring:
+
+  data:
+    rest:
+      base-path: /datarest
 
   datasource:
     url: jdbc:h2:mem:testdb
@@ -38,7 +49,3 @@ spring:
 
   liquibase:
     change-log: classpath:db/changelog/db.changelog-master.xml
-
-  data:
-    rest:
-      base-path: /datarest
