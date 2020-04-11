@@ -1,0 +1,16 @@
+version: '2'
+services:
+  books:
+    image: books:latest
+    ports:
+      - 8080:8080
+    environment:
+      - spring.datasource.url=jdbc:h2://h2db:1521/books
+  h2db:
+    image: oscarfonts/h2:latest
+    environment:
+      - H2_OPTIONS=-ifNotExists
+    volumes:
+      - h2_dbdata:/opt/h2-data
+volumes:
+  h2_dbdata:

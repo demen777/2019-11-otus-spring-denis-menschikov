@@ -1,0 +1,13 @@
+div.actions {
+    margin-bottom: 16px
+}
+
+a.action {
+    color: #5B80B2;
+    font-weight: bold;
+    margin-right: 12px;
+}
+
+div.buttons {
+    margin-top: 16px
+}
