@@ -1,3 +1,7 @@
+lag-generator:
+  maxLagInMilliseconds: 10000
+  lagIncrement: 10
+
 resilience4j.circuitbreaker:
   instances:
     productDb:

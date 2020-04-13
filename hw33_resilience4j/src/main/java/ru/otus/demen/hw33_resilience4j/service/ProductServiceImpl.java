@@ -6,6 +6,7 @@ import org.springframework.stereotype.Service;
 import ru.otus.demen.hw33_resilience4j.domain.Product;
 import ru.otus.demen.hw33_resilience4j.repository.ProductRepository;
 
+import javax.tools.Tool;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
@@ -15,13 +16,16 @@ import java.util.Optional;
 @Service
 public class ProductServiceImpl implements ProductService {
     private final ProductRepository productRepository;
+    private final LagGenerator lagGenerator;
 
     private final Map<String, Product> productCache = new HashMap<>();
+
 
     @Override
     @CircuitBreaker(name = "productDb", fallbackMethod = "fallback")
     public Optional<Product> get(String name) {
         Optional<Product> product = productRepository.findById(name);
+        lagGenerator.run();
         product.ifPresent(product1 -> productCache.put(product1.getName(), product1));
         return product;
     }
