@@ -1,17 +1,18 @@
 lag-generator:
-  maxLagInMilliseconds: 10000
+  maxLagInMilliseconds: 350
   lagIncrement: 10
 
 resilience4j.circuitbreaker:
   instances:
     productDb:
+      slowCallRateThreshold: 50
+      slowCallDurationThreshold: 200
+      slidingWindowType: TIME_BASED
       registerHealthIndicator: true
       slidingWindowSize: 10
-      permittedNumberOfCallsInHalfOpenState: 2
-      slidingWindowType: TIME_BASED
-      minimumNumberOfCalls: 1
-      waitDurationInOpenState: 60s
-      failureRateThreshold: 50
+      minimumNumberOfCalls: 5
+      waitDurationInOpenState: 10s
+
 
 spring:
 
