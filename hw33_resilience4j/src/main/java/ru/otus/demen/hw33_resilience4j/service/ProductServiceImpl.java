@@ -7,7 +7,6 @@ import org.springframework.stereotype.Service;
 import ru.otus.demen.hw33_resilience4j.domain.Product;
 import ru.otus.demen.hw33_resilience4j.repository.ProductRepository;
 
-import javax.tools.Tool;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
@@ -32,6 +31,7 @@ public class ProductServiceImpl implements ProductService {
         return product;
     }
 
+    @SuppressWarnings("unused")
     public Optional<Product> fallback(String name, RuntimeException e) {
         if (productCache.containsKey(name)) {
             log.info("Call fallback");

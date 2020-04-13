@@ -16,9 +16,11 @@ public class MainService implements CommandLineRunner {
 
     @Override
     public void run(String... args) throws Exception {
+        //noinspection InfiniteLoopStatement
         while (true) {
             Optional<Product> product = productService.get("Кофе");
             log.info(product.toString());
+            //noinspection BusyWait
             Thread.sleep(100);
         }
     }
